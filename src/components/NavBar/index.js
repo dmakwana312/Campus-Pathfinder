@@ -4,16 +4,15 @@ import {
     Grid, SwipeableDrawer, Button
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import {useTheme, makeStyles} from '@material-ui/core/styles';
+import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import {useStyles} from '../style.js';
+import { useStyles } from '../style.js';
 
 const NavBar = () => {
-    
+
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const classes = useStyles();
-    console.log(theme);
 
     const [drawerOpen, setDrawerOpen] = useState(false);
 
