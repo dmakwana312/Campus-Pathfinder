@@ -6,30 +6,14 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import {useTheme, makeStyles} from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-
-const useStyles = makeStyles(() => ({
-    list: {
-        width: 200,
-    },
-    button: {
-        marginRight: 30,
-        cursor: "pointer",
-    },
-
-    sideBarIcon: {
-        padding: 0,
-        color: "white",
-        cursor: "pointer",
-    }
-}));
-    
-
+import {useStyles} from '../style.js';
 
 const NavBar = () => {
     
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const classes = useStyles();
+    console.log(theme);
 
     const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -37,7 +21,7 @@ const NavBar = () => {
     const createDrawer = () => {
         return (
             <div>
-                <AppBar >
+                <AppBar className={classes.appBar}>
                     <Toolbar>
                         <Grid container direction="row" justify="space-between" alignItems="center">
                             <MenuIcon
@@ -76,7 +60,7 @@ const NavBar = () => {
     //Larger Screens
     const destroyDrawer = () => {
         return (
-            <AppBar>
+            <AppBar className={classes.appBar}>
                 <Toolbar>
                     <Typography style={{ flexGrow: 1 }} color="inherit" >Title</Typography>
                     <Button className={classes.button} color="inherit">OPTION 1</Button>
@@ -85,10 +69,6 @@ const NavBar = () => {
                 </Toolbar>
             </AppBar>
         )
-    }
-
-    const createNavBar = () => {
-        return isMobile ? createDrawer() : destroyDrawer();
     }
 
     return (
