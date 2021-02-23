@@ -10,6 +10,8 @@ const useStyles = makeStyles((theme) => ({
     },
     root: {
         display: 'flex',
+        overflowY: 'hidden',
+        overflowX: 'hidden',
     },
     canvas: {
         backgroundColor: "#e6e5e3",
@@ -20,32 +22,32 @@ const useStyles = makeStyles((theme) => ({
         width: 100,
     },
     createMapHeading: {
-       width: 100,
-},
+        width: 100,
+    },
     // Appbar styling
     appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-},
+        zIndex: theme.zIndex.drawer + 1,
+    },
     list: {
-    width: 200,
-},
+        width: 200,
+    },
     button: {
-    marginRight: 30,
-    cursor: "pointer",
-},
+        marginRight: 30,
+        cursor: "pointer",
+    },
     sideBarIcon: {
-    padding: 0,
-    color: "white",
-    cursor: "pointer",
-},
+        padding: 0,
+        color: "white",
+        cursor: "pointer",
+    },
     // Sidebar Styling
     drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-},
+        width: drawerWidth,
+        flexShrink: 0,
+    },
     drawerPaper: {
-    width: drawerWidth,
-},    
+        width: drawerWidth,
+    },
 }));
 
 export { useStyles }

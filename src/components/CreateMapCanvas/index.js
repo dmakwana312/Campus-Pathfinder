@@ -1,22 +1,73 @@
 import React from 'react';
-import { Stage, Layer, Rect } from 'react-konva';
+import { Stage, Layer, Line } from 'react-konva';
 import { useStyles } from '../style.js';
-const CreateMapCanvas = () => {
+import Shape from '../Shape';
+
+
+const CreateMapCanvas = (props) => {
     const classes = useStyles();
+
+
     return (
         <Stage
-
-        height={document.documentElement.clientHeight}
             className={classes.canvas}
+            width={document.documentElement.clientWidth}
+            height={document.documentElement.clientHeight}
+            draggable
+            ref={props.stageRef}
         >
-            <Layer>
+            <Layer
+                ref={props.layerRef}
+            >
+                {props.shapes.map((shape, key) => {
 
-                <Rect
+                    return (
+                        <Shape
+                            key={key}
+                            index={key}
+                            shapeProps={shape}
+                            dragStart={props.dragStart}
+                            dragMove={props.dragMove}
+                            dragEnd={props.dragEnd}
 
-                    fill="blue"
-                    width={150}
-                    height={150}
-                />
+                        />
+                    )
+                })}
+
+                {props.guides.map((guide, key) => {
+                    if (guide['orientation'] === 'V') {
+                        return (
+                            <Line
+                                key={key}
+                                x={guide['lineGuide']}
+                                y={0}
+                                points={[0, -6000, 0, 6000]}
+                                stroke={'#0000FF'}
+                                strokeWidth={1}
+                                name={'guide-line'}
+                                dash={[4, 6]}
+                            />
+                        );
+                    }
+                    else if (guide['orientation'] === 'H') {
+                        return (
+                            <Line
+
+                                key={key}
+                                x={0}
+                                y={guide['lineGuide']}
+                                points={[-6000, 0, 6000, 0]}
+                                stroke={'#0000FF'}
+                                strokeWidth={1}
+                                name={'guide-line'}
+                                dash={[4, 6]}
+
+
+                            />
+                        );
+                    }
+                })}
+
             </Layer>
         </Stage>
     );

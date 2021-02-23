@@ -79,7 +79,7 @@ function getSteps() {
 
 
 const CreateMapProgressTracker = () => {
-    const [activeStep] = React.useState(2);
+    const [activeStep] = React.useState(0);
     const steps = getSteps();
 
     return (
