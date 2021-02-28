@@ -1,20 +1,42 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import NavBar from '../NavBar';
 import CreateMapSidebar from '../CreateMapSidebar';
 import CreateMapObjectPropertiesSidebar from '../CreateMapObjectPropertiesSidebar';
 import CreateMapCanvas from '../CreateMapCanvas';
 import { useStyles } from '../style.js';
 import Toolbar from '@material-ui/core/Toolbar';
+import Modal from '@material-ui/core/Modal'
 import CreateMapProgressTracker from '../CreateMapProgressTracker';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 
 import { getGuides } from '../snapGuidesGeneration.js';
+
+import { categories } from '../categories.js';
+
 const CreateMapPage = () => {
+
+    const [objectCategories, setObjectCategories] = useState(categories);
 
     const classes = useStyles();
     const [shapes, setShapes] = useState([]);
     const [lineGuides, setLineGuides] = useState([]);
+    const [selectedIndex, setSelectedIndex] = useState(-1);
+    const [viewCategoryEditModal, setViewCategoryEditModal] = useState(false);
+    const [viewAddCategoryModal, setViewAddCategoryModal] = useState(false);
+    const [newCategoryName, setNewCategoryName] = useState("");
+    const [newCategoryMainColour, setNewCategoryMainColour] = useState("");
+    const [newCategoryFontColour, setNewCategoryFontColour] = useState("");
     const layerRef = useRef();
     const stageRef = useRef();
+
 
     function createShape(shapeType) {
         var newShape = {
@@ -23,11 +45,15 @@ const CreateMapPage = () => {
             width: 100,
             height: 100,
             selected: false,
-            fill: "red",
-            label: "Label",
-            fontSize: 15
-
-
+            fill: "#FF0000",
+            label: "Building",
+            fontSize: 15,
+            name: "building",
+            selected: false,
+            textAlign: "center",
+            rotation: 0,
+            category: 0,
+            // textRotation: 0,
         }
 
         var allShapes = [...shapes];
@@ -37,12 +63,13 @@ const CreateMapPage = () => {
 
     function dragStart(e, index) {
         var allShapes = [...shapes];
-        allShapes[index]["fill"] = 'blue';
+        allShapes[index]["fill"] = '#0000FF';
         setShapes(allShapes);
-
+        setSelectedIndex(index);
     }
 
     function dragMove(e, index) {
+
         var shapesOnCanvas = layerRef.current.getChildren(function (node) {
             return node.getClassName() === 'Group';
         });
@@ -103,18 +130,9 @@ const CreateMapPage = () => {
             }
         });
 
-
-
         e.target.absolutePosition(absolutePosition)
 
-        // var allShapes = [...shapes];
-
-        // allShapes[index]["x"] = Math.floor(e.target.x());
-        // allShapes[index]["y"] = Math.floor(e.target.y());
-        // setShapes(allShapes);
-
         setLineGuides(guides);
-
     }
 
 
@@ -124,34 +142,191 @@ const CreateMapPage = () => {
 
         allShapes[index]["x"] = Math.floor(shape.x());
         allShapes[index]["y"] = Math.floor(shape.y());
-        allShapes[index]["fill"] = 'red';
+        allShapes[index]["fill"] = '#FF0000';
         setShapes(allShapes);
         setLineGuides([]);
 
     }
 
-    return (
-        <div className={classes.root}>
-            <NavBar />
-            <CreateMapSidebar buttonClick={createShape} />
-            <main className={classes.content}>
-                <Toolbar />
-                <div>
-                    <CreateMapProgressTracker />
-                </div>
+    function updatePropertiesOfShape(propertyName, propertyValue) {
+        var allShapes = [...shapes];
+        allShapes[selectedIndex][propertyName] = propertyValue;
+        setShapes(allShapes);
 
-                <CreateMapCanvas
-                    dragStart={dragStart}
-                    dragMove={dragMove}
-                    dragEnd={dragEnd}
-                    guides={lineGuides}
-                    shapes={shapes}
-                    layerRef={layerRef}
-                    stageRef={stageRef}
+    }
+
+    function onSelect(index) {
+        var allShapes = [...shapes];
+
+        for (var i = 0; i < allShapes.length; i++) {
+            if (index === i) {
+                allShapes[i]["selected"] = true;
+            }
+            else {
+                allShapes[i]["selected"] = false;
+            }
+        }
+
+        setShapes(allShapes);
+        setSelectedIndex(index);
+    }
+
+    function checkDeselect(e) {
+        var clickedOnEmpty = e.target === e.target.getStage();
+
+        if (clickedOnEmpty) {
+            var shapesArray = [...shapes];
+            for (var i = 0; i < shapesArray.length; i++) {
+                shapesArray[i]["selected"] = false;
+            }
+            setShapes(shapesArray);
+            setSelectedIndex(-1);
+        }
+
+    }
+
+    function showAddCategoryModal() {
+
+        setNewCategoryName("");
+        setNewCategoryMainColour("");
+        setNewCategoryFontColour("");
+        setViewAddCategoryModal(true);
+        // var categories = [...objectCategories];
+
+        // categories.push({categoryName: 3});
+
+        // setObjectCategories(categories);
+
+    }
+
+    function addCategory() {
+        if (newCategoryName === "" || newCategoryMainColour === "" || newCategoryFontColour === "") {
+            alert("Ensure All Fields Are Filled Out");
+        }
+        else {
+            var newCategory = {
+                categoryName: newCategoryName,
+                mainColour: newCategoryMainColour,
+                fontColour: newCategoryFontColour
+            }
+
+            var allCategories = [...objectCategories];
+            allCategories.push(newCategory);
+            setObjectCategories(allCategories);
+            setViewAddCategoryModal(false);
+        }
+    }
+
+    return (
+        <React.Fragment>
+            {console.log(objectCategories[0])}
+            <div className={classes.root}>
+                <NavBar />
+                <CreateMapSidebar buttonClick={createShape} />
+                <main className={classes.content}>
+                    <Toolbar />
+                    <div>
+                        <CreateMapProgressTracker />
+                    </div>
+
+                    <CreateMapCanvas
+                        dragStart={dragStart}
+                        dragMove={dragMove}
+                        dragEnd={dragEnd}
+                        guides={lineGuides}
+                        shapes={shapes}
+                        layerRef={layerRef}
+                        stageRef={stageRef}
+                        onSelect={onSelect}
+                        updateProperty={updatePropertiesOfShape}
+                        checkDeselect={checkDeselect}
+                        categories={objectCategories}
+                    />
+                </main>
+                <CreateMapObjectPropertiesSidebar
+                    properties={shapes[selectedIndex]}
+                    updateProperty={updatePropertiesOfShape}
+                    categories={objectCategories}
+                    showCategoryModal={() => setViewCategoryEditModal(true)}
                 />
-            </main>
-            <CreateMapObjectPropertiesSidebar />
-        </div>
+            </div>
+            {viewCategoryEditModal &&
+                <Modal
+                    open={viewCategoryEditModal}
+                    onClose={() => setViewCategoryEditModal(false)}
+                    aria-labelledby="simple-modal-title"
+                    aria-describedby="simple-modal-description"
+                >
+                    <div className={classes.modalContent}>
+                        <TableContainer component={Paper}>
+                            <Table className={classes.table} aria-label="simple table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Category Name</TableCell>
+                                        <TableCell align="center">Shape Colour</TableCell>
+                                        <TableCell align="center">Font Colour</TableCell>
+
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {objectCategories.map((category, key) => {
+                                        return (
+                                            <TableRow key={key}>
+                                                <TableCell component="th" scope="row">
+                                                    <TextField
+
+                                                        // disabled={fieldEnabled}
+
+                                                        // onChange={(e) => fieldEdit(e, "label")}
+                                                        value={category["categoryName"]}
+                                                        onClick={() => console.log("clicked")}
+                                                    />
+                                                </TableCell>
+                                                <TableCell align="right">{category["mainColour"]}</TableCell>
+                                                <TableCell align="right">{category["fontColour"]}</TableCell>
+                                            </TableRow>
+                                        )
+                                    })}
+
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <Button onClick={showAddCategoryModal} style={{ float: "right" }}>adsfghjk</Button>
+
+                    </div>
+                </Modal>}
+            {viewAddCategoryModal &&
+                <Modal
+                    open={viewAddCategoryModal}
+                    onClose={() => setViewAddCategoryModal(false)}
+                    aria-labelledby="simple-modal-title"
+                    aria-describedby="simple-modal-description"
+                >
+                    <div className={classes.modalContent}>
+                        <TextField
+                            className={classes.textField}
+                            variant="outlined"
+                            label="Category Name"
+                            onChange={(e) => setNewCategoryName(e.target.value)}
+                        />
+                        <TextField
+                            className={classes.textField}
+                            variant="outlined"
+                            label="Main Colour"
+                            onChange={(e) => setNewCategoryMainColour(e.target.value)}
+                        />
+                        <TextField
+                            className={classes.textField}
+                            variant="outlined"
+                            label="Font Colour"
+                            onChange={(e) => setNewCategoryFontColour(e.target.value)}
+                        />
+                        <Button onClick={addCategory}>Save</Button>
+
+                    </div>
+                </Modal>}
+        </React.Fragment>
+
     );
 
 }

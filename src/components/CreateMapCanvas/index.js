@@ -7,7 +7,6 @@ import Shape from '../Shape';
 const CreateMapCanvas = (props) => {
     const classes = useStyles();
 
-
     return (
         <Stage
             className={classes.canvas}
@@ -15,12 +14,13 @@ const CreateMapCanvas = (props) => {
             height={document.documentElement.clientHeight}
             draggable
             ref={props.stageRef}
+            onMouseDown={(e) => props.checkDeselect(e)}
+            onTouchStart={(e) => props.checkDeselect(e)}
         >
             <Layer
                 ref={props.layerRef}
             >
                 {props.shapes.map((shape, key) => {
-
                     return (
                         <Shape
                             key={key}
@@ -29,6 +29,11 @@ const CreateMapCanvas = (props) => {
                             dragStart={props.dragStart}
                             dragMove={props.dragMove}
                             dragEnd={props.dragEnd}
+                            onSelect={props.onSelect}
+                            updatePropertiesOfShape={props.updateProperty}
+                            shapeColour={props.categories[shape.category]["mainColour"]}
+                            fontColour={props.categories[shape.category]["fontColour"]}
+                            
 
                         />
                     )

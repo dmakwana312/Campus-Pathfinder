@@ -24,6 +24,38 @@ const useStyles = makeStyles((theme) => ({
     createMapHeading: {
         width: 100,
     },
+    propertiesForm: {
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        justify: "center",
+
+    },
+    propertiesFormDisabled: {
+        filter: "blur(5px)"
+    },
+    propertiesFormDisabledText: {
+        position: "absolute",
+        textAlign: "center"
+    },
+    textField: {
+        margin: theme.spacing(1),
+        width: '100%',
+        justifyContent: 'center',
+    },
+    positionTextField: {
+        width: "10.7ch",
+    },
+    modalContent: {
+        position: 'absolute',
+        backgroundColor: theme.palette.background.paper,
+        border: '2px solid #000',
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing(2, 4, 3),
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)'
+    },
     // Appbar styling
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
