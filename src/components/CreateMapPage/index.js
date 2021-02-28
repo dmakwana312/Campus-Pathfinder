@@ -39,23 +39,42 @@ const CreateMapPage = () => {
 
 
     function createShape(shapeType) {
-        var newShape = {
-            x: window.innerWidth / 8,
-            y: document.documentElement.clientWidth / 8,
-            width: 100,
-            height: 100,
-            selected: false,
-            fill: "#FF0000",
-            label: "Building",
-            fontSize: 15,
-            name: "building",
-            selected: false,
-            textAlign: "center",
-            rotation: 0,
-            category: 0,
-            // textRotation: 0,
+        var newShape = null;
+        if(shapeType === "building"){
+            newShape = {
+                x: window.innerWidth / 8,
+                y: document.documentElement.clientWidth / 8,
+                width: 100,
+                height: 100,
+                selected: false,
+                label: "Building",
+                fontSize: 15,
+                name: "building",
+                selected: false,
+                textAlign: "center",
+                rotation: 0,
+                category: 0,
+                // textRotation: 0,
+            }
         }
-
+        else if(shapeType === "path"){
+            newShape = {
+                x: window.innerWidth / 8,
+                y: document.documentElement.clientWidth / 8,
+                width: 50,
+                height: 50,
+                selected: false,
+                label: "Path",
+                fontSize: 15,
+                name: "path",
+                selected: false,
+                textAlign: "center",
+                rotation: 0,
+                category: 1,
+                // textRotation: 0,
+            }
+        }
+        
         var allShapes = [...shapes];
         allShapes.push(newShape);
         setShapes(allShapes);
@@ -224,7 +243,6 @@ const CreateMapPage = () => {
 
     return (
         <React.Fragment>
-            {console.log(objectCategories[0])}
             <div className={classes.root}>
                 <NavBar />
                 <CreateMapSidebar buttonClick={createShape} />

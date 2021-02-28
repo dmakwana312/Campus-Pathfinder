@@ -1,12 +1,12 @@
 export var categories = [
     {
         categoryName: "Building",
-        mainColour: "#FF0000",
-        fontColour: "#FFFFFF"
+        mainColour: "#ff0000",
+        fontColour: "#ffffff"
     },
     {
-        categoryName: "Building2",
-        mainColour: "#00FF00",
-        fontColour: "#000000"
+        categoryName: "Path",
+        mainColour: "#5c5953",
+        fontColour: "#ffffff"
     }
 ];
