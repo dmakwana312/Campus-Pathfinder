@@ -34,6 +34,9 @@ const useStyles = makeStyles((theme) => ({
     propertiesFormDisabled: {
         filter: "blur(5px)"
     },
+    modalButton: {
+        marginTop: 20
+    },
     propertiesFormDisabledText: {
         position: "absolute",
         textAlign: "center"

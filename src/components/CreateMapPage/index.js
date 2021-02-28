@@ -182,7 +182,12 @@ const CreateMapPage = () => {
             setShapes(shapesArray);
             setSelectedIndex(-1);
         }
+    }
 
+    function editCategory(index, fieldName, fieldValue){
+        var allCategories = objectCategories;
+        allCategories[index][fieldName] = fieldValue;
+        setObjectCategories(allCategories);
     }
 
     function showAddCategoryModal() {
@@ -274,16 +279,22 @@ const CreateMapPage = () => {
                                             <TableRow key={key}>
                                                 <TableCell component="th" scope="row">
                                                     <TextField
-
-                                                        // disabled={fieldEnabled}
-
-                                                        // onChange={(e) => fieldEdit(e, "label")}
-                                                        value={category["categoryName"]}
-                                                        onClick={() => console.log("clicked")}
+                                                        defaultValue={category["categoryName"]}
+                                                        onChange = {(e) => editCategory(key, "categoryName", e.target.value)}
                                                     />
                                                 </TableCell>
-                                                <TableCell align="right">{category["mainColour"]}</TableCell>
-                                                <TableCell align="right">{category["fontColour"]}</TableCell>
+                                                <TableCell component="th" scope="row">
+                                                    <TextField
+                                                        defaultValue={category["mainColour"]}
+                                                        onChange = {(e) => editCategory(key, "mainColour", e.target.value)}
+                                                    />
+                                                </TableCell>
+                                                <TableCell component="th" scope="row">
+                                                    <TextField
+                                                        defaultValue={category["fontColour"]}
+                                                        onChange = {(e) => editCategory(key, "fontColour", e.target.value)}
+                                                    />
+                                                </TableCell>
                                             </TableRow>
                                         )
                                     })}
@@ -291,7 +302,7 @@ const CreateMapPage = () => {
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                        <Button onClick={showAddCategoryModal} style={{ float: "right" }}>adsfghjk</Button>
+                        <Button className={classes.modalButton} variant="contained" color="primary" onClick={showAddCategoryModal} style={{ float: "right" }}>Add New Category</Button>
 
                     </div>
                 </Modal>}
@@ -321,7 +332,7 @@ const CreateMapPage = () => {
                             label="Font Colour"
                             onChange={(e) => setNewCategoryFontColour(e.target.value)}
                         />
-                        <Button onClick={addCategory}>Save</Button>
+                        <Button className={classes.modalButton} variant="contained" color="primary" onClick={addCategory}>Save</Button>
 
                     </div>
                 </Modal>}
