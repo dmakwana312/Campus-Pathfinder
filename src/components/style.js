@@ -43,11 +43,13 @@ const useStyles = makeStyles((theme) => ({
     },
     textField: {
         margin: theme.spacing(1),
+        marginBottom: theme.spacing(0),
         width: '100%',
         justifyContent: 'center',
     },
     positionTextField: {
         width: "10.7ch",
+        borderColor: "blue"
     },
     modalContent: {
         position: 'absolute',

@@ -15,6 +15,7 @@ const NavBar = () => {
     const classes = useStyles();
 
     const [drawerOpen, setDrawerOpen] = useState(false);
+    
 
     //Small Screens
     const createDrawer = () => {
@@ -48,6 +49,7 @@ const NavBar = () => {
                             <ListItem key={2} button divider> Option 2 </ListItem>
                             <ListItem key={3} button divider> Option 3 </ListItem>
                         </List>
+                        
 
                     </div>
                 </SwipeableDrawer>

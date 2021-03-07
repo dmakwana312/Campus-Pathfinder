@@ -21,6 +21,8 @@ import { getGuides } from '../snapGuidesGeneration.js';
 
 import { categories } from '../categories.js';
 
+import { isColliding } from '../collisionDetection';
+
 const CreateMapPage = () => {
 
     const [objectCategories, setObjectCategories] = useState(categories);
@@ -37,15 +39,36 @@ const CreateMapPage = () => {
     const layerRef = useRef();
     const stageRef = useRef();
 
+    // var collisionTest = false;
+
+    // collisionTest = isColliding([13, 10, 13, 3, 6, 3, 6, 10], [14, 18, 15, 11, 10, 13]);
+    // if(collisionTest === true){
+    //     console.log("Colliding")
+    // }
+    // else{
+    //     console.log("Not Colliding")
+    // }
+
+    // collisionTest = isColliding([11, 10, 11, 3, 4, 3, 4, 10], [13, 13, 8, 9, 7, 15]);
+    // if(collisionTest === true){
+    //     console.log("Colliding")
+    // }
+    // else{
+    //     console.log("Not Colliding")
+    // }
 
     function createShape(shapeType) {
         var newShape = null;
-        if(shapeType === "building"){
+        var x = window.innerWidth / 8;
+        var y = document.documentElement.clientWidth / 8;
+        if (shapeType === "building") {
+            var width = 100;
+            var height = 100;
             newShape = {
-                x: window.innerWidth / 8,
-                y: document.documentElement.clientWidth / 8,
-                width: 100,
-                height: 100,
+                x: x,
+                y: y,
+                width: width,
+                height: height,
                 selected: false,
                 label: "Building",
                 fontSize: 15,
@@ -54,10 +77,22 @@ const CreateMapPage = () => {
                 textAlign: "center",
                 rotation: 0,
                 category: 0,
+                points: [x,
+                    y,
+                    x + width,
+                    y,
+                    x + width,
+                    y + height,
+                    x,
+                    y + height
+                ],
+                collision: false
                 // textRotation: 0,
             }
         }
-        else if(shapeType === "path"){
+        else if (shapeType === "path") {
+            var width = 50;
+            var height = 50;
             newShape = {
                 x: window.innerWidth / 8,
                 y: document.documentElement.clientWidth / 8,
@@ -71,10 +106,19 @@ const CreateMapPage = () => {
                 textAlign: "center",
                 rotation: 0,
                 category: 1,
+                points: [x,
+                    y,
+                    x + width,
+                    y,
+                    x + width,
+                    y + height,
+                    x,
+                    y + height
+                ]
                 // textRotation: 0,
             }
         }
-        
+
         var allShapes = [...shapes];
         allShapes.push(newShape);
         setShapes(allShapes);
@@ -82,20 +126,48 @@ const CreateMapPage = () => {
 
     function dragStart(e, index) {
         var allShapes = [...shapes];
-        allShapes[index]["fill"] = '#0000FF';
         setShapes(allShapes);
         setSelectedIndex(index);
     }
 
-    function dragMove(e, index) {
+    function updatePoints(index) {
+        var allShapes = [...shapes];
+        var shapeToUpdate = allShapes[selectedIndex];
 
+        var points = [shapeToUpdate.x,
+        shapeToUpdate.y,
+        shapeToUpdate.x + shapeToUpdate.width,
+        shapeToUpdate.y,
+        shapeToUpdate.x + shapeToUpdate.width,
+        shapeToUpdate.y - shapeToUpdate.height,
+        shapeToUpdate.x,
+        shapeToUpdate.y - shapeToUpdate.height
+        ];
+
+
+        for (var i = 0; i < 8; i += 2) {
+
+            var newPoint = rotatePoint(points[i], points[i + 1], shapeToUpdate.x, shapeToUpdate.y, shapeToUpdate.rotation);
+            points[i] = newPoint.x;
+            points[i + 1] = newPoint.y;
+        }
+
+        shapeToUpdate.points = points;
+
+        allShapes[index] = shapeToUpdate;
+        setShapes(allShapes);
+    }
+
+    function dragMove(e, index) {
         var shapesOnCanvas = layerRef.current.getChildren(function (node) {
             return node.getClassName() === 'Group';
         });
 
-        for (var i = 0; i < shapesOnCanvas.length; i++) {
-            // Collision Detection
-        }
+        // for (var i = 0; i < shapesOnCanvas.length; i++) {
+        //     if (e.target.index !== i) {
+        //         console.log(isColliding(e.target, shapesOnCanvas[i]));
+        //     }
+        // }
 
         var guides = getGuides(e.target, shapesOnCanvas, stageRef);
 
@@ -154,20 +226,52 @@ const CreateMapPage = () => {
         setLineGuides(guides);
     }
 
-
     function dragEnd(e, index) {
         var allShapes = [...shapes];
         var shape = e.target;
 
         allShapes[index]["x"] = Math.floor(shape.x());
         allShapes[index]["y"] = Math.floor(shape.y());
-        allShapes[index]["fill"] = '#FF0000';
-        setShapes(allShapes);
+
+        updatePoints(index);
+
+        
         setLineGuides([]);
 
+        if(e.target.getName() !== "path"){
+            var paths = layerRef.current.getChildren(function (node) {
+                return node.getName() === "path";
+            });
+    
+            for (var i = 0; i < paths.length; i++) {
+                if(isColliding(e.target, paths[i])){
+                    allShapes[index]["collision"] = true;
+                }
+                else{
+                    allShapes[index]["collision"] = false;
+                }
+    
+            }
+        }
+
+        console.log("Collision" + allShapes[index]["collision"]);
+
+        setShapes(allShapes);
+        
+    }
+
+    function rotatePoint(pointX, pointY, originX, originY, rotation) {
+        var angle = rotation * (-Math.PI / 180);
+
+        var rotatedX = Math.cos(angle) * (pointX - originX) - Math.sin(angle) * (pointY - originY) + originX;
+
+        var rotatedY = -Math.sin(angle) * (pointX - originX) - Math.cos(angle) * (pointY - originY) + originY;
+
+        return { x: rotatedX, y: rotatedY };
     }
 
     function updatePropertiesOfShape(propertyName, propertyValue) {
+
         var allShapes = [...shapes];
         allShapes[selectedIndex][propertyName] = propertyValue;
         setShapes(allShapes);
@@ -203,7 +307,7 @@ const CreateMapPage = () => {
         }
     }
 
-    function editCategory(index, fieldName, fieldValue){
+    function editCategory(index, fieldName, fieldValue) {
         var allCategories = objectCategories;
         allCategories[index][fieldName] = fieldValue;
         setObjectCategories(allCategories);
@@ -215,11 +319,6 @@ const CreateMapPage = () => {
         setNewCategoryMainColour("");
         setNewCategoryFontColour("");
         setViewAddCategoryModal(true);
-        // var categories = [...objectCategories];
-
-        // categories.push({categoryName: 3});
-
-        // setObjectCategories(categories);
 
     }
 
@@ -264,6 +363,7 @@ const CreateMapPage = () => {
                         updateProperty={updatePropertiesOfShape}
                         checkDeselect={checkDeselect}
                         categories={objectCategories}
+                        updatePoints={updatePoints}
                     />
                 </main>
                 <CreateMapObjectPropertiesSidebar
@@ -298,19 +398,19 @@ const CreateMapPage = () => {
                                                 <TableCell component="th" scope="row">
                                                     <TextField
                                                         defaultValue={category["categoryName"]}
-                                                        onChange = {(e) => editCategory(key, "categoryName", e.target.value)}
+                                                        onChange={(e) => editCategory(key, "categoryName", e.target.value)}
                                                     />
                                                 </TableCell>
                                                 <TableCell component="th" scope="row">
                                                     <TextField
                                                         defaultValue={category["mainColour"]}
-                                                        onChange = {(e) => editCategory(key, "mainColour", e.target.value)}
+                                                        onChange={(e) => editCategory(key, "mainColour", e.target.value)}
                                                     />
                                                 </TableCell>
                                                 <TableCell component="th" scope="row">
                                                     <TextField
                                                         defaultValue={category["fontColour"]}
-                                                        onChange = {(e) => editCategory(key, "fontColour", e.target.value)}
+                                                        onChange={(e) => editCategory(key, "fontColour", e.target.value)}
                                                     />
                                                 </TableCell>
                                             </TableRow>

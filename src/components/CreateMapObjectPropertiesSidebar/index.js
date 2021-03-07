@@ -29,6 +29,7 @@ const CreateMapObjectPropertiesSidebar = (props) => {
 
     let fieldEnabled = props.properties ? false : true;
     let propertiesClassName = props.properties ? "" : classes.propertiesFormDisabled;
+    
 
     return (
 
@@ -43,7 +44,9 @@ const CreateMapObjectPropertiesSidebar = (props) => {
             <Toolbar />
             <div className={classes.drawerContainer, classes.propertiesForm}>
                 <List className={propertiesClassName}>
+
                     <ListItem>
+
                         <Grid
                             container
                             alignItems="center"
@@ -74,7 +77,18 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                         </Grid>
 
                     </ListItem>
+                    <ListItem>
 
+                        <TextField
+                            className={classes.textField}
+                            
+                            variant="outlined"
+                            label="Connected"
+                            disabled
+                            value={props.properties ? props.properties.collision : ""}
+                        />
+
+                    </ListItem>
                     <ListItem>
                         <TextField
                             className={classes.textField}
@@ -167,7 +181,7 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                                         <option key={key} value={key}>{category["categoryName"]}</option>
                                     )
                                 })}
-                                
+
 
                             </Select>
 
@@ -176,7 +190,6 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                         <span><Button onClick={props.showCategoryModal} variant="contained"><EditIcon /></Button></span>
 
                     </ListItem>
-
 
                 </List>
 

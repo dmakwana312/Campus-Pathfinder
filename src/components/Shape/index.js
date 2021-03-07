@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { Rect, Group, Text, Transformer, Label, Tag } from 'react-konva';
+import { Rect, Group, Text, Transformer, Line, Tag } from 'react-konva';
 
 const Shape = (props) => {
 
@@ -16,13 +16,19 @@ const Shape = (props) => {
         }
     }, [props.shapeProps.selected])
 
-
-
     return (
         <React.Fragment>
+            {/* <Line
 
+                points={props.shapeProps.points}
+                stroke={'blue'}
+                closed={true}
+            /> */}
             <Group
                 ref={groupRef}
+                shapePoints={props.shapeProps.points}
+                // key={props.index}
+                // index={props.index}
                 draggable
                 onDragStart={(e) => props.dragStart(e, props.index)}
                 onDragMove={(e) => props.dragMove(e, props.index)}
@@ -36,6 +42,7 @@ const Shape = (props) => {
                 // offsetY={props.shapeProps.height / 2}
                 width={props.shapeProps.width}
                 height={props.shapeProps.height}
+                name={props.shapeProps.name}
 
                 onTransformEnd={(e) => {
                     var node = groupRef.current;
@@ -56,19 +63,21 @@ const Shape = (props) => {
 
                     props.updatePropertiesOfShape("x", node.x());
                     props.updatePropertiesOfShape("y", node.y());
-                    props.updatePropertiesOfShape("width", Math.max(5, width * scaleX));
-                    props.updatePropertiesOfShape("height", Math.max(height * scaleY));
+                    props.updatePropertiesOfShape("width", width * scaleX);
+                    props.updatePropertiesOfShape("height", height * scaleY);
                     props.updatePropertiesOfShape("rotation", Math.floor(node.rotation()));
+                    
+                    props.updatePoints();
+
+                    props.dragEnd(e, props.index);
 
                 }}
             >
                 <Rect
                     ref={shapeRef}
-                    key={props.index}
                     fill={props.shapeColour}
                     width={props.shapeProps.width}
                     height={props.shapeProps.height}
-
 
                 />
 
@@ -85,6 +94,7 @@ const Shape = (props) => {
                 />
 
             </Group>
+
 
             {props.shapeProps.selected && (
                 <Transformer

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Stage, Layer, Line } from 'react-konva';
 import { useStyles } from '../style.js';
 import Shape from '../Shape';
 
 
 const CreateMapCanvas = (props) => {
+
     const classes = useStyles();
 
     return (
@@ -20,22 +21,32 @@ const CreateMapCanvas = (props) => {
             <Layer
                 ref={props.layerRef}
             >
-                {props.shapes.map((shape, key) => {
-                    return (
-                        <Shape
-                            key={key}
-                            index={key}
-                            shapeProps={shape}
-                            dragStart={props.dragStart}
-                            dragMove={props.dragMove}
-                            dragEnd={props.dragEnd}
-                            onSelect={props.onSelect}
-                            updatePropertiesOfShape={props.updateProperty}
-                            shapeColour={props.categories[shape.category]["mainColour"]}
-                            fontColour={props.categories[shape.category]["fontColour"]}
-                            
 
-                        />
+                {props.shapes.map((shape, key) => {
+
+                    return (
+                        <React.Fragment>
+
+                            <Shape
+                                key={key}
+                                index={key}
+                                shapeProps={shape}
+                                dragStart={props.dragStart}
+                                dragMove={props.dragMove}
+                                dragEnd={props.dragEnd}
+                                onSelect={props.onSelect}
+                                updatePropertiesOfShape={props.updateProperty}
+                                shapeColour={props.categories[shape.category].mainColour}
+                                fontColour={props.categories[shape.category].fontColour}
+                                // updatePoints={() => props.updatePoints(key)}
+                                updatePoints={props.updatePoints}
+                            />
+
+
+
+
+                        </React.Fragment>
+
                     )
                 })}
 
@@ -57,7 +68,6 @@ const CreateMapCanvas = (props) => {
                     else if (guide['orientation'] === 'H') {
                         return (
                             <Line
-
                                 key={key}
                                 x={0}
                                 y={guide['lineGuide']}
@@ -66,8 +76,6 @@ const CreateMapCanvas = (props) => {
                                 strokeWidth={1}
                                 name={'guide-line'}
                                 dash={[4, 6]}
-
-
                             />
                         );
                     }
