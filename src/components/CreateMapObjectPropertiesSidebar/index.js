@@ -117,6 +117,10 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                             InputLabelProps={{
                                 shrink: true,
                             }}
+                            inputProps={{
+                                min: 1,
+
+                            }}
                             variant="outlined"
                             onChange={(e) => fieldEdit(e, "fontSize")}
                             value={props.properties ? props.properties.fontSize : ""}

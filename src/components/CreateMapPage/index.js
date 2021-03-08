@@ -141,7 +141,7 @@ const CreateMapPage = () => {
                 height: 10,
                 selected: false,
                 label: "Room",
-                fontSize: 15,
+                fontSize: 4,
                 name: "room",
                 selected: false,
                 textAlign: "center",

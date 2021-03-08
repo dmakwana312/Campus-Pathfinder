@@ -33,6 +33,7 @@ const CreateMapCanvas = (props) => {
 
         setStageScale(newScale)
         setStageX(-(mousePointTo.x - stage.getPointerPosition().x / newScale) * newScale);
+        
         setStageY(-(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale);
 
     };
