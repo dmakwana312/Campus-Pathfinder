@@ -29,6 +29,7 @@ const CreateMapPage = () => {
 
     const classes = useStyles();
     const [shapes, setShapes] = useState([]);
+    const [savedShapes, setSavedShapes] = useState([]);
     const [lineGuides, setLineGuides] = useState([]);
     const [selectedIndex, setSelectedIndex] = useState(-1);
     const [viewCategoryEditModal, setViewCategoryEditModal] = useState(false);
@@ -36,6 +37,8 @@ const CreateMapPage = () => {
     const [newCategoryName, setNewCategoryName] = useState("");
     const [newCategoryMainColour, setNewCategoryMainColour] = useState("");
     const [newCategoryFontColour, setNewCategoryFontColour] = useState("");
+    const [activeStep, setActiveStep] = useState(0);
+    const [buildingBeingViewed, setBuildingBeingViewed] = useState(null);
     const layerRef = useRef();
     const stageRef = useRef();
 
@@ -86,7 +89,9 @@ const CreateMapPage = () => {
                     x,
                     y + height
                 ],
-                collision: false
+                collision: false,
+                internal: []
+
                 // textRotation: 0,
             }
         }
@@ -99,7 +104,7 @@ const CreateMapPage = () => {
                 width: 50,
                 height: 50,
                 selected: false,
-                label: "Path",
+                label: "",
                 fontSize: 15,
                 name: "path",
                 selected: false,
@@ -118,9 +123,50 @@ const CreateMapPage = () => {
                 // textRotation: 0,
             }
         }
+        else if (shapeType === "room"){
+            var width = 50;
+            var height = 50;
+
+            var x = savedShapes[buildingBeingViewed].x + savedShapes[buildingBeingViewed].width / 2;
+            var y = savedShapes[buildingBeingViewed].y + savedShapes[buildingBeingViewed].height / 2;
+            console.log(x, y);
+
+            
+            var newPoint = rotatePoint(x, y, savedShapes[buildingBeingViewed].x, savedShapes[buildingBeingViewed].y, savedShapes[buildingBeingViewed].rotation)
+            console.log(newPoint)
+            newShape = {
+                x: savedShapes[buildingBeingViewed].x + savedShapes[buildingBeingViewed].width / 2,
+                y: savedShapes[buildingBeingViewed].y + savedShapes[buildingBeingViewed].height / 2,
+                width: 10,
+                height: 10,
+                selected: false,
+                label: "Room",
+                fontSize: 15,
+                name: "room",
+                selected: false,
+                textAlign: "center",
+                rotation: savedShapes[buildingBeingViewed].rotation,
+                category: 1,
+                points: [x,
+                    y,
+                    x + width,
+                    y,
+                    x + width,
+                    y + height,
+                    x,
+                    y + height
+                ]
+                // textRotation: 0,
+            }
+        }
 
         var allShapes = [...shapes];
         allShapes.push(newShape);
+        
+
+        if(activeStep === 1){
+            savedShapes[buildingBeingViewed].internal.push(newShape);
+        }
         setShapes(allShapes);
     }
 
@@ -235,29 +281,29 @@ const CreateMapPage = () => {
 
         updatePoints(index);
 
-        
+
         setLineGuides([]);
 
-        if(e.target.getName() !== "path"){
+        if (e.target.getName() !== "path") {
             var paths = layerRef.current.getChildren(function (node) {
                 return node.getName() === "path";
             });
-    
+
             for (var i = 0; i < paths.length; i++) {
-                if(isColliding(e.target, paths[i])){
+                if (isColliding(e.target, paths[i])) {
                     allShapes[index]["collision"] = true;
                 }
-                else{
+                else {
                     allShapes[index]["collision"] = false;
                 }
-    
+
             }
         }
 
         console.log("Collision" + allShapes[index]["collision"]);
 
         setShapes(allShapes);
-        
+
     }
 
     function rotatePoint(pointX, pointY, originX, originY, rotation) {
@@ -340,15 +386,31 @@ const CreateMapPage = () => {
         }
     }
 
+    function incrementStep() {
+        setSavedShapes([...shapes]);
+        setShapes([]);
+        setActiveStep(activeStep + 1);
+    }
+
+    function clearShapes(){
+        setShapes([]);
+        console.log(savedShapes[buildingBeingViewed]);
+        setBuildingBeingViewed(null);
+
+    }
+
     return (
         <React.Fragment>
             <div className={classes.root}>
-                <NavBar />
-                <CreateMapSidebar buttonClick={createShape} />
+                <NavBar incrementStep={incrementStep} />
+                <CreateMapSidebar activeStep={activeStep} buttonClick={createShape} />
                 <main className={classes.content}>
                     <Toolbar />
                     <div>
-                        <CreateMapProgressTracker />
+                        <CreateMapProgressTracker
+                            activeStep={activeStep}
+                            buildingBeingViewed={savedShapes[buildingBeingViewed]}
+                        />
                     </div>
 
                     <CreateMapCanvas
@@ -364,13 +426,19 @@ const CreateMapPage = () => {
                         checkDeselect={checkDeselect}
                         categories={objectCategories}
                         updatePoints={updatePoints}
+                        activeStep={activeStep}
+                        buildingBeingViewed={savedShapes[buildingBeingViewed]}
                     />
                 </main>
                 <CreateMapObjectPropertiesSidebar
+                    setBuildingBeingViewed={setBuildingBeingViewed}
                     properties={shapes[selectedIndex]}
                     updateProperty={updatePropertiesOfShape}
+                    savedShapes={savedShapes}
                     categories={objectCategories}
                     showCategoryModal={() => setViewCategoryEditModal(true)}
+                    activeStep={activeStep}
+                    clearShapes={clearShapes}
                 />
             </div>
             {viewCategoryEditModal &&

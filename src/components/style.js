@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center',
     },
     positionTextField: {
-        width: "10.7ch",
+        width: "9.7ch",
         borderColor: "blue"
     },
     modalContent: {

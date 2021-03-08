@@ -8,7 +8,7 @@ import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useStyles } from '../style.js';
 
-const NavBar = () => {
+const NavBar = (props) => {
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -45,7 +45,7 @@ const NavBar = () => {
                         onKeyDown={() => { setDrawerOpen(false) }}>
 
                         <List className={classes.list}>
-                            <ListItem key={1} button divider> Option 1 </ListItem>
+                            <ListItem key={1} onClick={props.incrementStep} button divider> Next Step </ListItem>
                             <ListItem key={2} button divider> Option 2 </ListItem>
                             <ListItem key={3} button divider> Option 3 </ListItem>
                         </List>
@@ -64,7 +64,7 @@ const NavBar = () => {
             <AppBar className={classes.appBar}>
                 <Toolbar>
                     <Typography style={{ flexGrow: 1 }} color="inherit" >Title</Typography>
-                    <Button className={classes.button} color="inherit">OPTION 1</Button>
+                    <Button onClick={props.incrementStep} className={classes.button} color="inherit">Next Step</Button>
                     <Button className={classes.button} color="inherit">OPTION 2</Button>
                     <Button className={classes.button} color="inherit">OPTION 3</Button>
                 </Toolbar>

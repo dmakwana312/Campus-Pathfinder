@@ -78,13 +78,12 @@ function getSteps() {
 }
 
 
-const CreateMapProgressTracker = () => {
-    const [activeStep] = React.useState(0);
+const CreateMapProgressTracker = (props) => {
     const steps = getSteps();
 
     return (
         <React.Fragment>
-            <Stepper alternativeLabel activeStep={activeStep} connector={<QontoConnector />}>
+            <Stepper alternativeLabel activeStep={props.activeStep} connector={<QontoConnector />}>
                 {steps.map((label) => (
                     <Step key={label}>
                         <StepLabel StepIconComponent={QontoStepIcon}>{label}</StepLabel>

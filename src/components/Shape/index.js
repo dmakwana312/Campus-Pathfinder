@@ -15,7 +15,7 @@ const Shape = (props) => {
 
         }
     }, [props.shapeProps.selected])
-
+    
     return (
         <React.Fragment>
             {/* <Line

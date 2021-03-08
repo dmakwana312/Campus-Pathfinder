@@ -7,9 +7,47 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { useStyles } from '../style.js';
 
-
 const CreateMapSidebar = (props) => {
     const classes = useStyles();
+
+    function activeStepIs0() {
+        return (
+            <List>
+
+                <ListItem button key={"building"} onClick={() => { props.buttonClick("building") }}>
+                    <ListItemText primary={"Building"} />
+                </ListItem>
+                <ListItem button key={"path"} onClick={() => { props.buttonClick("path") }}>
+                    <ListItemText primary={"Path"} />
+                </ListItem>
+
+            </List>
+        );
+    }
+
+    function activeStepIs1() {
+        
+        return (
+            <List>
+                <ListItem button key={"entrance"} onClick={() => { props.buttonClick("entrance") }}>
+                    <ListItemText primary={"Entrance"} />
+                </ListItem>
+                <ListItem button key={"room"} onClick={() => { props.buttonClick("room") }}>
+                    <ListItemText primary={"Room"} />
+                </ListItem>
+                <ListItem button key={"stairs"} onClick={() => { props.buttonClick("stairs") }}>
+                    <ListItemText primary={"Staircase"} />
+                </ListItem>
+                <ListItem button key={"lift"} onClick={() => { props.buttonClick("lift") }}>
+                    <ListItemText primary={"Lift"} />
+                </ListItem>
+                <ListItem button key={"path"} onClick={() => { props.buttonClick("path") }}>
+                    <ListItemText primary={"Path"} />
+                </ListItem>
+
+            </List>
+        );
+    }
 
     return (
 
@@ -23,16 +61,7 @@ const CreateMapSidebar = (props) => {
         >
             <Toolbar />
             <div className={classes.drawerContainer}>
-                <List>
-
-                    <ListItem button key={"building"} onClick={() => { props.buttonClick("building") }}>
-                        <ListItemText primary={"Building"} />
-                    </ListItem>
-                    <ListItem button key={"path"} onClick={() => { props.buttonClick("path") }}>
-                        <ListItemText primary={"Path"} />
-                    </ListItem>
-
-                </List>
+                {props.activeStep === 0 ? activeStepIs0() : activeStepIs1() }
                 <Divider />
                 {/* <List>
                     {['All mail', 'Trash', 'Spam'].map((text, index) => (
@@ -47,6 +76,5 @@ const CreateMapSidebar = (props) => {
 
     );
 }
-
 
 export default CreateMapSidebar;

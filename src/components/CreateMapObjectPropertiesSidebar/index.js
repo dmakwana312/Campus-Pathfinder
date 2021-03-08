@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Drawer from '@material-ui/core/Drawer';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
@@ -14,35 +15,30 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import EditIcon from '@material-ui/icons/Edit';
 import Button from '@material-ui/core/Button';
 
-
 import { FormatAlignLeft, FormatAlignCenter, FormatAlignRight } from '@material-ui/icons';
 
 const CreateMapObjectPropertiesSidebar = (props) => {
     const classes = useStyles();
+    const [selectedBuilding, setSelectedBuilding] = useState(-1);
 
     function fieldEdit(e, propertyName) {
 
         props.updateProperty(propertyName, e.target.value);
 
-
     }
 
     let fieldEnabled = props.properties ? false : true;
     let propertiesClassName = props.properties ? "" : classes.propertiesFormDisabled;
-    
 
-    return (
+    function activeStepIs0(selectedShape) {
 
-        <Drawer
-            className={classes.drawer}
-            variant="permanent"
-            classes={{
-                paper: classes.drawerPaper,
-            }}
-            anchor="right"
-        >
-            <Toolbar />
-            <div className={classes.drawerContainer, classes.propertiesForm}>
+        if (selectedShape !== undefined) {
+            console.log("set");
+        }
+
+        return (
+            <React.Fragment>
+                {props.activeStep === 1 ? <Button onClick={() => {setSelectedBuilding(-1); props.clearShapes();}}>Back</Button> : ""}
                 <List className={propertiesClassName}>
 
                     <ListItem>
@@ -52,6 +48,7 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                             alignItems="center"
                             justify="center"
                         >
+                            
                             <h1>Properties</h1>
                             <Grid item>
 
@@ -73,7 +70,6 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                                 />
                             </Grid>
 
-
                         </Grid>
 
                     </ListItem>
@@ -81,7 +77,7 @@ const CreateMapObjectPropertiesSidebar = (props) => {
 
                         <TextField
                             className={classes.textField}
-                            
+
                             variant="outlined"
                             label="Connected"
                             disabled
@@ -121,10 +117,6 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                             InputLabelProps={{
                                 shrink: true,
                             }}
-                            inputProps={{
-                                min: 6,
-
-                            }}
                             variant="outlined"
                             onChange={(e) => fieldEdit(e, "fontSize")}
                             value={props.properties ? props.properties.fontSize : ""}
@@ -138,28 +130,6 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                             <ToggleButton value="right" onClick={() => props.updateProperty("textAlign", "right")}><FormatAlignRight /></ToggleButton>
                         </ToggleButtonGroup>
                     </ListItem>
-
-                    {/* <ListItem>
-                        <TextField
-                            label="Rotation"
-                            disabled={fieldEnabled}
-                            className={classes.textField}
-                            type="number"
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            inputProps={{
-                                step: 90,
-                                min: 0,
-                                max: 360
-                            }}
-
-                            variant="outlined"
-                            onChange={(e) => fieldEdit(e, "textRotation")}
-                            value={props.properties ? props.properties.textRotation : ""}
-                        />
-                    </ListItem> */}
-
 
                     <Divider />
                     <ListItem>
@@ -182,9 +152,7 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                                     )
                                 })}
 
-
                             </Select>
-
 
                         </FormControl>
                         <span><Button onClick={props.showCategoryModal} variant="contained"><EditIcon /></Button></span>
@@ -192,16 +160,58 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                     </ListItem>
 
                 </List>
-
                 {fieldEnabled ? <h2 className={classes.propertiesFormDisabledText}>Select Shape to View Properties</h2> : ""}
+
+            </React.Fragment>
+
+        );
+    }
+
+    function activeStepIs1() {
+
+        return (
+
+            selectedBuilding !== -1 ?
+                activeStepIs0(props.buildingBeingViewed) :
+                <React.Fragment>
+                    <h1 style={{ textAlign: "center" }}>Select Building From Below</h1>
+                    <List>
+                        {props.savedShapes.map((shape, key) => {
+                            return (
+                                <ListItem button key={shape.label} onClick={() => { setSelectedBuilding(key); props.setBuildingBeingViewed(key) }}>
+                                    <ListItemText primary={shape.label} />
+                                </ListItem>
+                            )
+                        })}
+
+                    </List>
+                </React.Fragment>
+
+        );
+    }
+
+    let listClassName = props.activeStep === 0 ? classes.drawerContainer + " " + classes.propertiesForm : classes.drawerContainer;
+
+    return (
+
+        <Drawer
+            className={classes.drawer}
+            variant="permanent"
+            classes={{
+                paper: classes.drawerPaper,
+            }}
+            anchor="right"
+        >
+            <Toolbar />
+            <div className={listClassName}>
+
+                {props.activeStep === 0 ? activeStepIs0() : activeStepIs1()}
 
             </div>
 
         </Drawer >
 
-
     );
 }
-
 
 export default CreateMapObjectPropertiesSidebar;
