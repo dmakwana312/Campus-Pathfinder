@@ -92,27 +92,30 @@ const CreateMapCanvas = (props) => {
 
                     />
 
-                    {props.buildingBeingViewed.internal.map((shape, key) => {
-                        return (
-                            <React.Fragment>
-
-                                <Shape
-                                    key={key}
-                                    index={key}
-                                    shapeProps={shape}
-                                    dragStart={props.dragStart}
-                                    dragMove={props.dragMove}
-                                    dragEnd={props.dragEnd}
-                                    onSelect={props.onSelect}
-                                    updatePropertiesOfShape={props.updateProperty}
-                                    shapeColour={props.categories[shape.category].mainColour}
-                                    fontColour={props.categories[shape.category].fontColour}
-                                    // updatePoints={() => props.updatePoints(key)}
-                                    updatePoints={props.updatePoints}
-                                />
-                            </React.Fragment>
-
-                        )
+                    {props.buildingBeingViewed.internal[props.floorBeingViewed].map((shape, key) => {
+                        if(shape.length > 0){
+                            return (
+                                <React.Fragment>
+    
+                                    <Shape
+                                        key={key}
+                                        index={key}
+                                        shapeProps={shape}
+                                        dragStart={props.dragStart}
+                                        dragMove={props.dragMove}
+                                        dragEnd={props.dragEnd}
+                                        onSelect={props.onSelect}
+                                        updatePropertiesOfShape={props.updateProperty}
+                                        shapeColour={props.categories[shape.category].mainColour}
+                                        fontColour={props.categories[shape.category].fontColour}
+                                        // updatePoints={() => props.updatePoints(key)}
+                                        updatePoints={props.updatePoints}
+                                    />
+                                </React.Fragment>
+    
+                            )
+                        }
+                        
                     })}
 
                     {props.shapes.map((shape, key) => {

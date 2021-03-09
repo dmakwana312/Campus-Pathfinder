@@ -39,6 +39,7 @@ const CreateMapPage = () => {
     const [newCategoryFontColour, setNewCategoryFontColour] = useState("");
     const [activeStep, setActiveStep] = useState(0);
     const [buildingBeingViewed, setBuildingBeingViewed] = useState(null);
+    const [floorBeingViewed, setFloorBeingViewed] = useState(0);
     const layerRef = useRef();
     const stageRef = useRef();
 
@@ -90,7 +91,7 @@ const CreateMapPage = () => {
                     y + height
                 ],
                 collision: false,
-                internal: []
+                internal: [[]]
 
                 // textRotation: 0,
             }
@@ -129,11 +130,9 @@ const CreateMapPage = () => {
 
             var x = savedShapes[buildingBeingViewed].x + savedShapes[buildingBeingViewed].width / 2;
             var y = savedShapes[buildingBeingViewed].y + savedShapes[buildingBeingViewed].height / 2;
-            console.log(x, y);
-
-            
+ 
             var newPoint = rotatePoint(x, y, savedShapes[buildingBeingViewed].x, savedShapes[buildingBeingViewed].y, savedShapes[buildingBeingViewed].rotation)
-            console.log(newPoint)
+            
             newShape = {
                 x: savedShapes[buildingBeingViewed].x + savedShapes[buildingBeingViewed].width / 2,
                 y: savedShapes[buildingBeingViewed].y + savedShapes[buildingBeingViewed].height / 2,
@@ -165,7 +164,7 @@ const CreateMapPage = () => {
         
 
         if(activeStep === 1){
-            savedShapes[buildingBeingViewed].internal.push(newShape);
+            savedShapes[buildingBeingViewed].internal[floorBeingViewed].push(newShape);
         }
         setShapes(allShapes);
     }
@@ -300,8 +299,6 @@ const CreateMapPage = () => {
             }
         }
 
-        console.log("Collision" + allShapes[index]["collision"]);
-
         setShapes(allShapes);
 
     }
@@ -392,13 +389,17 @@ const CreateMapPage = () => {
         setActiveStep(activeStep + 1);
     }
 
+    function setBuildingBeingViewedHandler(buildingKey){
+        setBuildingBeingViewed(buildingKey);
+        setFloorBeingViewed(0);
+    }
+
     function clearShapes(){
         setShapes([]);
-        console.log(savedShapes[buildingBeingViewed]);
         setBuildingBeingViewed(null);
 
     }
-
+    
     return (
         <React.Fragment>
             <div className={classes.root}>
@@ -428,10 +429,12 @@ const CreateMapPage = () => {
                         updatePoints={updatePoints}
                         activeStep={activeStep}
                         buildingBeingViewed={savedShapes[buildingBeingViewed]}
+                        floorBeingViewed={floorBeingViewed}
                     />
                 </main>
                 <CreateMapObjectPropertiesSidebar
-                    setBuildingBeingViewed={setBuildingBeingViewed}
+                    setBuildingBeingViewed={setBuildingBeingViewedHandler}
+                    buildingBeingViewed={savedShapes[buildingBeingViewed]}
                     properties={shapes[selectedIndex]}
                     updateProperty={updatePropertiesOfShape}
                     savedShapes={savedShapes}
@@ -439,6 +442,7 @@ const CreateMapPage = () => {
                     showCategoryModal={() => setViewCategoryEditModal(true)}
                     activeStep={activeStep}
                     clearShapes={clearShapes}
+                    setFloorBeingViewed={setFloorBeingViewed}
                 />
             </div>
             {viewCategoryEditModal &&

@@ -14,12 +14,28 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import EditIcon from '@material-ui/icons/Edit';
 import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import PropTypes from 'prop-types';
+import SwipeableViews from 'react-swipeable-views';
 
 import { FormatAlignLeft, FormatAlignCenter, FormatAlignRight } from '@material-ui/icons';
 
 const CreateMapObjectPropertiesSidebar = (props) => {
     const classes = useStyles();
     const [selectedBuilding, setSelectedBuilding] = useState(-1);
+    const [value, setValue] = useState(0);
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
+
+    const handleChangeIndex = (index) => {
+        setValue(index);
+    };
+
+    let listClassName = props.activeStep === 0 ? classes.drawerContainer + " " + classes.propertiesForm : classes.drawerContainer;
 
     function fieldEdit(e, propertyName) {
 
@@ -30,15 +46,10 @@ const CreateMapObjectPropertiesSidebar = (props) => {
     let fieldEnabled = props.properties ? false : true;
     let propertiesClassName = props.properties ? "" : classes.propertiesFormDisabled;
 
-    function activeStepIs0(selectedShape) {
-
-        if (selectedShape !== undefined) {
-            console.log("set");
-        }
-
+    function properties() {
         return (
-            <React.Fragment>
-                {props.activeStep === 1 ? <Button onClick={() => {setSelectedBuilding(-1); props.clearShapes();}}>Back</Button> : ""}
+
+            <div className={classes.drawerContainer + " " + classes.propertiesForm}>
                 <List className={propertiesClassName}>
 
                     <ListItem>
@@ -48,8 +59,7 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                             alignItems="center"
                             justify="center"
                         >
-                            
-                            <h1>Properties</h1>
+
                             <Grid item>
 
                                 <TextField
@@ -166,35 +176,81 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                 </List>
                 {fieldEnabled ? <h2 className={classes.propertiesFormDisabledText}>Select Shape to View Properties</h2> : ""}
 
-            </React.Fragment>
-
+            </div>
         );
     }
 
-    function activeStepIs1() {
+    function floors() {
 
-        return (
-
-            selectedBuilding !== -1 ?
-                activeStepIs0(props.buildingBeingViewed) :
-                <React.Fragment>
-                    <h1 style={{ textAlign: "center" }}>Select Building From Below</h1>
+        if (props.buildingBeingViewed) {
+            return (
+                <div className={listClassName}>
+                    <h1 style={{ textAlign: "center" }}>Select Floor From Below</h1>
                     <List>
-                        {props.savedShapes.map((shape, key) => {
+                        {props.buildingBeingViewed.internal.map((floor, key) => {
+                            // console.log("Floor " + key);
                             return (
-                                <ListItem button key={shape.label} onClick={() => { setSelectedBuilding(key); props.setBuildingBeingViewed(key) }}>
-                                    <ListItemText primary={shape.label} />
+                                <ListItem button key={"floor" + key} onClick={() => { props.setFloorBeingViewed(key) }}>
+                                    <ListItemText primary={"Floor " + key} />
                                 </ListItem>
                             )
                         })}
 
                     </List>
-                </React.Fragment>
+                </div>
+            );
+        }
 
+    }
+
+    function buildings() {
+
+        return (
+            <div className={listClassName}>
+                <h1 style={{ textAlign: "center" }}>Select Building From Below</h1>
+                <List>
+                    {props.savedShapes.map((shape, key) => {
+                        return (
+                            <ListItem button key={shape.label} onClick={() => { setSelectedBuilding(key); props.setBuildingBeingViewed(key) }}>
+                                <ListItemText primary={shape.label} />
+                            </ListItem>
+                        )
+                    })}
+
+                </List>
+            </div>
+        );
+
+    }
+
+    function TabPanel(props) {
+        const { children, value, index, ...other } = props;
+
+        return (
+            <div
+                role="tabpanel"
+                hidden={value !== index}
+                id={`simple-tabpanel-${index}`}
+                aria-labelledby={`simple-tab-${index}`}
+                {...other}
+            >
+                {value === index && (
+                    <div>
+
+                        {children}
+
+                    </div>
+
+                )}
+            </div>
         );
     }
 
-    let listClassName = props.activeStep === 0 ? classes.drawerContainer + " " + classes.propertiesForm : classes.drawerContainer;
+    TabPanel.propTypes = {
+        children: PropTypes.node,
+        index: PropTypes.any.isRequired,
+        value: PropTypes.any.isRequired,
+    };
 
     return (
 
@@ -207,11 +263,37 @@ const CreateMapObjectPropertiesSidebar = (props) => {
             anchor="right"
         >
             <Toolbar />
-            <div className={listClassName}>
 
-                {props.activeStep === 0 ? activeStepIs0() : activeStepIs1()}
 
-            </div>
+            <Paper className={classes.paperTabs}>
+                <Tabs
+                    value={value}
+                    onChange={handleChange}
+                    indicatorColor="primary"
+                    textColor="primary"
+
+                // centered
+                >
+                    <Tab classes={{ root: classes.tab }} label="Properties" />
+                    <Tab classes={{ root: classes.tab }} disabled={props.activeStep === 0} label="Buildings" />
+                    <Tab classes={{ root: classes.tab }} disabled={props.activeStep === 0} label="Floors" />
+                </Tabs>
+                <SwipeableViews
+                    axis={'x-reverse'}
+                    index={value}
+                    onChangeIndex={handleChangeIndex}
+                >
+                    <TabPanel value={value} index={0} >
+                        {properties()}
+                    </TabPanel>
+                    <TabPanel value={value} index={1} >
+                        {buildings()}
+                    </TabPanel>
+                    <TabPanel value={value} index={2} >
+                        {floors()}
+                    </TabPanel>
+                </SwipeableViews>
+            </Paper>
 
         </Drawer >
 

@@ -61,6 +61,7 @@ const useStyles = makeStyles((theme) => ({
         left: '50%',
         transform: 'translate(-50%, -50%)'
     },
+    
     // Appbar styling
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
@@ -76,6 +77,12 @@ const useStyles = makeStyles((theme) => ({
         padding: 0,
         color: "white",
         cursor: "pointer",
+    },
+    paperTabs: {
+        flexGrow: 1
+    },
+    tab: {
+        minWidth: 90, // a number of your choice
     },
     // Sidebar Styling
     drawer: {
