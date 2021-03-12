@@ -91,7 +91,10 @@ const CreateMapPage = () => {
                     y + height
                 ],
                 collision: false,
-                internal: [[]]
+                internal: [[]],
+                lifts: [],
+                staircases: [],
+                entrance: null
 
                 // textRotation: 0,
             }
@@ -121,6 +124,116 @@ const CreateMapPage = () => {
                     x,
                     y + height
                 ]
+                // textRotation: 0,
+            }
+        }
+        else if (shapeType === "stairs") {
+            var width = 50;
+            var height = 50;
+            var floors = [];
+
+            for(var i = 0; i < savedShapes[buildingBeingViewed].internal.length; i++){
+                floors.push(false);
+            }
+
+            floors[floorBeingViewed] = true;
+
+            newShape = {
+                x: window.innerWidth / 8,
+                y: document.documentElement.clientWidth / 8,
+                width: 10,
+                height: 10,
+                selected: false,
+                label: "",
+                fontSize: 15,
+                name: "stairs",
+                selected: false,
+                textAlign: "center",
+                rotation: 0,
+                category: 1,
+                points: [x,
+                    y,
+                    x + width,
+                    y,
+                    x + width,
+                    y + height,
+                    x,
+                    y + height
+                ],
+                floors: floors
+                // textRotation: 0,
+            }
+        }
+        else if (shapeType === "lift") {
+            var width = 50;
+            var height = 50;
+            var floors = [];
+
+            for(var i = 0; i < savedShapes[buildingBeingViewed].internal.length; i++){
+                floors.push(false);
+            }
+
+            floors[floorBeingViewed] = true;
+
+            newShape = {
+                x: window.innerWidth / 8,
+                y: document.documentElement.clientWidth / 8,
+                width: 10,
+                height: 10,
+                selected: false,
+                label: "",
+                fontSize: 15,
+                name: "lift",
+                selected: false,
+                textAlign: "center",
+                rotation: 0,
+                category: 1,
+                points: [x,
+                    y,
+                    x + width,
+                    y,
+                    x + width,
+                    y + height,
+                    x,
+                    y + height
+                ],
+                floors: floors
+                // textRotation: 0,
+            }
+        }
+        else if (shapeType === "entrance") {
+            var width = 50;
+            var height = 50;
+            var floors = [];
+
+            for(var i = 0; i < savedShapes[buildingBeingViewed].internal.length; i++){
+                floors.push(false);
+            }
+
+            floors[floorBeingViewed] = true;
+
+            newShape = {
+                x: window.innerWidth / 8,
+                y: document.documentElement.clientWidth / 8,
+                width: 10,
+                height: 10,
+                selected: false,
+                label: "",
+                fontSize: 15,
+                name: "entrance",
+                selected: false,
+                textAlign: "center",
+                rotation: 0,
+                category: 1,
+                points: [x,
+                    y,
+                    x + width,
+                    y,
+                    x + width,
+                    y + height,
+                    x,
+                    y + height
+                ],
                 // textRotation: 0,
             }
         }
@@ -162,11 +275,43 @@ const CreateMapPage = () => {
         var allShapes = [...shapes];
         allShapes.push(newShape);
         
-
         if(activeStep === 1){
-            savedShapes[buildingBeingViewed].internal[floorBeingViewed].push(newShape);
+            if(shapeType === "lift"){
+                savedShapes[buildingBeingViewed].lifts.push(newShape);
+            }
+            else if(shapeType === "stairs"){
+                savedShapes[buildingBeingViewed].staircases.push(newShape);
+            }   
+            else if(shapeType === "entrance"){
+                savedShapes[buildingBeingViewed].entrance = newShape;
+            }
+            else{
+                savedShapes[buildingBeingViewed].internal[floorBeingViewed].push(newShape);
+            }
+
+            
         }
+        
         setShapes(allShapes);
+    }
+
+    function addFloor(){
+        savedShapes[buildingBeingViewed].internal.push([]);
+        
+        var lifts = savedShapes[buildingBeingViewed].lifts;
+
+        for(var i = 0; i < lifts.length; i++){
+            lifts[i].push(false);
+        }
+
+        var staircases = savedShapes[buildingBeingViewed].staircases
+
+        for(var i = 0; i < staircases.length; i++){
+            staircases[i].push(false);
+        }
+
+        savedShapes[buildingBeingViewed].lifts = lifts;
+        savedShapes[buildingBeingViewed].staircases = staircases;
     }
 
     function dragStart(e, index) {
@@ -443,6 +588,7 @@ const CreateMapPage = () => {
                     activeStep={activeStep}
                     clearShapes={clearShapes}
                     setFloorBeingViewed={setFloorBeingViewed}
+                    addFloor={addFloor}
                 />
             </div>
             {viewCategoryEditModal &&

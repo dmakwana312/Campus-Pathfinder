@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Stage, Layer, Line, Rect } from 'react-konva';
 import { useStyles } from '../style.js';
 import Shape from '../Shape';
@@ -33,7 +33,7 @@ const CreateMapCanvas = (props) => {
 
         setStageScale(newScale)
         setStageX(-(mousePointTo.x - stage.getPointerPosition().x / newScale) * newScale);
-        
+
         setStageY(-(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale);
 
     };
@@ -77,6 +77,8 @@ const CreateMapCanvas = (props) => {
                 props.buildingBeingViewed.x, props.buildingBeingViewed.y + props.buildingBeingViewed.height
             ];
 
+
+
             return (
                 <React.Fragment>
 
@@ -93,10 +95,16 @@ const CreateMapCanvas = (props) => {
                     />
 
                     {props.buildingBeingViewed.internal[props.floorBeingViewed].map((shape, key) => {
-                        if(shape.length > 0){
+
+                        if (shape !== null && shape.length > 0) {
+                            // if(shape.name === "lift" || shape.name === "staircase"){
+                            //     console.log(shape);
+                            // }
+
+
                             return (
                                 <React.Fragment>
-    
+
                                     <Shape
                                         key={key}
                                         index={key}
@@ -112,33 +120,72 @@ const CreateMapCanvas = (props) => {
                                         updatePoints={props.updatePoints}
                                     />
                                 </React.Fragment>
-    
+
                             )
+
+
                         }
-                        
+                        else {
+
+                        }
+
                     })}
 
+                    {/* {console.log(props.buildingBeingViewed)} */}
+
+
                     {props.shapes.map((shape, key) => {
-                        return (
-                            <React.Fragment>
 
-                                <Shape
-                                    key={key}
-                                    index={key}
-                                    shapeProps={shape}
-                                    dragStart={props.dragStart}
-                                    dragMove={props.dragMove}
-                                    dragEnd={props.dragEnd}
-                                    onSelect={props.onSelect}
-                                    updatePropertiesOfShape={props.updateProperty}
-                                    shapeColour={props.categories[shape.category].mainColour}
-                                    fontColour={props.categories[shape.category].fontColour}
-                                    // updatePoints={() => props.updatePoints(key)}
-                                    updatePoints={props.updatePoints}
-                                />
-                            </React.Fragment>
+                        if (shape !== null) {
+                            if (shape.name === "lift" || shape.name === "stairs") {
+                            
+                                if(shape.floors[props.floorBeingViewed]){
+                                    return (
+                                        <React.Fragment>
+    
+                                            <Shape
+                                                key={key}
+                                                index={key}
+                                                shapeProps={shape}
+                                                dragStart={props.dragStart}
+                                                dragMove={props.dragMove}
+                                                dragEnd={props.dragEnd}
+                                                onSelect={props.onSelect}
+                                                updatePropertiesOfShape={props.updateProperty}
+                                                shapeColour={props.categories[shape.category].mainColour}
+                                                fontColour={props.categories[shape.category].fontColour}
+                                                // updatePoints={() => props.updatePoints(key)}
+                                                updatePoints={props.updatePoints}
+                                            />
+                                        </React.Fragment>
+    
+                                    )
+                                }
+                            }
+                            else {
+                                return (
+                                    <React.Fragment>
 
-                        )
+                                        <Shape
+                                            key={key}
+                                            index={key}
+                                            shapeProps={shape}
+                                            dragStart={props.dragStart}
+                                            dragMove={props.dragMove}
+                                            dragEnd={props.dragEnd}
+                                            onSelect={props.onSelect}
+                                            updatePropertiesOfShape={props.updateProperty}
+                                            shapeColour={props.categories[shape.category].mainColour}
+                                            fontColour={props.categories[shape.category].fontColour}
+                                            // updatePoints={() => props.updatePoints(key)}
+                                            updatePoints={props.updatePoints}
+                                        />
+                                    </React.Fragment>
+
+                                )
+                            }
+                        }
+
                     })}
                 </React.Fragment>
 

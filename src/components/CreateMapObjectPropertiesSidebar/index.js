@@ -188,7 +188,7 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                     <h1 style={{ textAlign: "center" }}>Select Floor From Below</h1>
                     <List>
                         {props.buildingBeingViewed.internal.map((floor, key) => {
-                            // console.log("Floor " + key);
+
                             return (
                                 <ListItem button key={"floor" + key} onClick={() => { props.setFloorBeingViewed(key) }}>
                                     <ListItemText primary={"Floor " + key} />
@@ -196,108 +196,112 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                             )
                         })}
 
+                        <ListItem button key={"addFloor"} onClick={props.addFloor}>
+                            <ListItemText primary={"Add Floor"} />
+                        </ListItem>
                     </List>
-                </div>
+                </div >
             );
         }
 
     }
 
-    function buildings() {
-
-        return (
-            <div className={listClassName}>
-                <h1 style={{ textAlign: "center" }}>Select Building From Below</h1>
-                <List>
-                    {props.savedShapes.map((shape, key) => {
-                        return (
-                            <ListItem button key={shape.label} onClick={() => { setSelectedBuilding(key); props.setBuildingBeingViewed(key) }}>
-                                <ListItemText primary={shape.label} />
-                            </ListItem>
-                        )
-                    })}
-
-                </List>
-            </div>
-        );
-
-    }
-
-    function TabPanel(props) {
-        const { children, value, index, ...other } = props;
-
-        return (
-            <div
-                role="tabpanel"
-                hidden={value !== index}
-                id={`simple-tabpanel-${index}`}
-                aria-labelledby={`simple-tab-${index}`}
-                {...other}
-            >
-                {value === index && (
-                    <div>
-
-                        {children}
-
-                    </div>
-
-                )}
-            </div>
-        );
-    }
-
-    TabPanel.propTypes = {
-        children: PropTypes.node,
-        index: PropTypes.any.isRequired,
-        value: PropTypes.any.isRequired,
-    };
+function buildings() {
 
     return (
+        <div className={listClassName}>
+            <h1 style={{ textAlign: "center" }}>Select Building From Below</h1>
+            <List>
+                {props.savedShapes.map((shape, key) => {
+                    return (
+                        <ListItem selected={false} button key={shape.label} onClick={() => { setSelectedBuilding(key); props.setBuildingBeingViewed(key) }}>
+                            <ListItemText primary={shape.label} />
+                        </ListItem>
+                    )
+                })}
 
-        <Drawer
-            className={classes.drawer}
-            variant="permanent"
-            classes={{
-                paper: classes.drawerPaper,
-            }}
-            anchor="right"
-        >
-            <Toolbar />
-
-
-            <Paper className={classes.paperTabs}>
-                <Tabs
-                    value={value}
-                    onChange={handleChange}
-                    indicatorColor="primary"
-                    textColor="primary"
-
-                // centered
-                >
-                    <Tab classes={{ root: classes.tab }} label="Properties" />
-                    <Tab classes={{ root: classes.tab }} disabled={props.activeStep === 0} label="Buildings" />
-                    <Tab classes={{ root: classes.tab }} disabled={props.activeStep === 0} label="Floors" />
-                </Tabs>
-                <SwipeableViews
-                    axis={'x-reverse'}
-                    index={value}
-                    onChangeIndex={handleChangeIndex}
-                >
-                    <TabPanel value={value} index={0} >
-                        {properties()}
-                    </TabPanel>
-                    <TabPanel value={value} index={1} >
-                        {buildings()}
-                    </TabPanel>
-                    <TabPanel value={value} index={2} >
-                        {floors()}
-                    </TabPanel>
-                </SwipeableViews>
-            </Paper>
-
-        </Drawer >
-
+            </List>
+        </div>
     );
+
+}
+
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <div>
+
+                    {children}
+
+                </div>
+
+            )}
+        </div>
+    );
+}
+
+TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.any.isRequired,
+    value: PropTypes.any.isRequired,
+};
+
+return (
+
+    <Drawer
+        className={classes.drawer}
+        variant="permanent"
+        classes={{
+            paper: classes.drawerPaper,
+        }}
+        anchor="right"
+    >
+        <Toolbar />
+
+
+        <Paper className={classes.paperTabs}>
+            <Tabs
+                value={value}
+                onChange={handleChange}
+                indicatorColor="primary"
+                textColor="primary"
+                variant="scrollable"
+                scrollButtons="on"
+            // centered
+            >
+                <Tab classes={{ root: classes.tab }} label="Properties" />
+                <Tab classes={{ root: classes.tab }} disabled={props.activeStep === 0} label="Buildings" />
+                <Tab classes={{ root: classes.tab }} disabled={props.activeStep === 0} label="Floors" />
+            </Tabs>
+            <SwipeableViews
+                axis={'x-reverse'}
+                index={value}
+                onChangeIndex={handleChangeIndex}
+            >
+                <TabPanel value={value} index={0} >
+                    {properties()}
+                </TabPanel>
+                <TabPanel value={value} index={1} >
+                    {buildings()}
+                </TabPanel>
+                <TabPanel value={value} index={2} >
+                    {floors()}
+                </TabPanel>
+            </SwipeableViews>
+        </Paper>
+
+    </Drawer >
+
+);
 }
 
 export default CreateMapObjectPropertiesSidebar;
