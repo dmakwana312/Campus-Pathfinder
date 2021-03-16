@@ -94,10 +94,10 @@ const CreateMapCanvas = (props) => {
 
                     />
 
-                    {props.buildingBeingViewed.internal[props.floorBeingViewed].map((shape, key) => {
+                    {/* {props.buildingBeingViewed.internal[props.floorBeingViewed].map((shape, key) => {
 
                         if (shape !== null && shape.length > 0) {
-                            // if(shape.name === "lift" || shape.name === "staircase"){
+                            // if(shape.name === "lift" || shape.name === "stairs"){
                             //     console.log(shape);
                             // }
 
@@ -129,15 +129,15 @@ const CreateMapCanvas = (props) => {
 
                         }
 
-                    })}
+                    })} */}
 
-                    {/* {console.log(props.buildingBeingViewed)} */}
+                    
 
 
                     {props.shapes.map((shape, key) => {
 
                         if (shape !== null) {
-                            if (shape.name === "lift" || shape.name === "stairs") {
+                            if (shape.name === "lifts" || shape.name === "stairs") {
                             
                                 if(shape.floors[props.floorBeingViewed]){
                                     return (

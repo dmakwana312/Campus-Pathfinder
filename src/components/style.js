@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
         left: '50%',
         transform: 'translate(-50%, -50%)'
     },
-    
+
     // Appbar styling
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
@@ -92,6 +92,21 @@ const useStyles = makeStyles((theme) => ({
     drawerPaper: {
         width: drawerWidth,
     },
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: 120,
+        maxWidth: 300
+    },
+    chips: {
+        display: "flex",
+        flexWrap: "wrap"
+    },
+    chip: {
+        margin: 2
+    },
+    noLabel: {
+        marginTop: theme.spacing(3)
+    }
 }));
 
 export { useStyles }

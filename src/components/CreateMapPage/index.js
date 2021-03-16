@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import NavBar from '../NavBar';
 import CreateMapSidebar from '../CreateMapSidebar';
 import CreateMapObjectPropertiesSidebar from '../CreateMapObjectPropertiesSidebar';
@@ -93,7 +93,7 @@ const CreateMapPage = () => {
                 collision: false,
                 internal: [[]],
                 lifts: [],
-                staircases: [],
+                stairs: [],
                 entrance: null
 
                 // textRotation: 0,
@@ -141,6 +141,7 @@ const CreateMapPage = () => {
             newShape = {
                 x: window.innerWidth / 8,
                 y: document.documentElement.clientWidth / 8,
+                index: savedShapes[buildingBeingViewed].stairs.length,
                 width: 10,
                 height: 10,
                 selected: false,
@@ -178,12 +179,13 @@ const CreateMapPage = () => {
             newShape = {
                 x: window.innerWidth / 8,
                 y: document.documentElement.clientWidth / 8,
+                index: savedShapes[buildingBeingViewed].lifts.length,
                 width: 10,
                 height: 10,
                 selected: false,
                 label: "",
                 fontSize: 15,
-                name: "lift",
+                name: "lifts",
                 selected: false,
                 textAlign: "center",
                 rotation: 0,
@@ -204,13 +206,6 @@ const CreateMapPage = () => {
         else if (shapeType === "entrance") {
             var width = 50;
             var height = 50;
-            var floors = [];
-
-            for(var i = 0; i < savedShapes[buildingBeingViewed].internal.length; i++){
-                floors.push(false);
-            }
-
-            floors[floorBeingViewed] = true;
 
             newShape = {
                 x: window.innerWidth / 8,
@@ -280,7 +275,7 @@ const CreateMapPage = () => {
                 savedShapes[buildingBeingViewed].lifts.push(newShape);
             }
             else if(shapeType === "stairs"){
-                savedShapes[buildingBeingViewed].staircases.push(newShape);
+                savedShapes[buildingBeingViewed].stairs.push(newShape);
             }   
             else if(shapeType === "entrance"){
                 savedShapes[buildingBeingViewed].entrance = newShape;
@@ -299,19 +294,36 @@ const CreateMapPage = () => {
         savedShapes[buildingBeingViewed].internal.push([]);
         
         var lifts = savedShapes[buildingBeingViewed].lifts;
+        console.log(lifts)
 
         for(var i = 0; i < lifts.length; i++){
-            lifts[i].push(false);
+            lifts[i].floors.push(false);
         }
 
-        var staircases = savedShapes[buildingBeingViewed].staircases
+        var stairs = savedShapes[buildingBeingViewed].stairs
 
-        for(var i = 0; i < staircases.length; i++){
-            staircases[i].push(false);
+        for(var i = 0; i < stairs.length; i++){
+            stairs[i].floors.push(false);
         }
 
         savedShapes[buildingBeingViewed].lifts = lifts;
-        savedShapes[buildingBeingViewed].staircases = staircases;
+        savedShapes[buildingBeingViewed].stairs = stairs;
+
+        setSavedShapes([...savedShapes])
+    }
+
+    function updateFloors(name, floorIndexes, index){
+        
+        for(var i = 0; i < savedShapes[buildingBeingViewed][name][index].floors.length; i++){
+            if(floorIndexes.includes(i)){
+                savedShapes[buildingBeingViewed][name][index].floors[i] = true;
+            }
+            else{
+                savedShapes[buildingBeingViewed][name][index].floors[i] = false;
+            }
+        }    
+
+        setSavedShapes([...savedShapes])
     }
 
     function dragStart(e, index) {
@@ -589,6 +601,7 @@ const CreateMapPage = () => {
                     clearShapes={clearShapes}
                     setFloorBeingViewed={setFloorBeingViewed}
                     addFloor={addFloor}
+                    updateFloors={updateFloors}
                 />
             </div>
             {viewCategoryEditModal &&

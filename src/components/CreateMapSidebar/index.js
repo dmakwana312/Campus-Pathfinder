@@ -36,7 +36,7 @@ const CreateMapSidebar = (props) => {
                     <ListItemText primary={"Room"} />
                 </ListItem>
                 <ListItem button key={"stairs"} onClick={() => { props.buttonClick("stairs") }}>
-                    <ListItemText primary={"Staircase"} />
+                    <ListItemText primary={"stairs"} />
                 </ListItem>
                 <ListItem button key={"lift"} onClick={() => { props.buttonClick("lift") }}>
                     <ListItemText primary={"Lift"} />

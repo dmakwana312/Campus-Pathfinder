@@ -19,13 +19,37 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
+import Input from "@material-ui/core/Input";
+import MenuItem from "@material-ui/core/MenuItem";
+import Chip from "@material-ui/core/Chip";
 
 import { FormatAlignLeft, FormatAlignCenter, FormatAlignRight } from '@material-ui/icons';
 
 const CreateMapObjectPropertiesSidebar = (props) => {
     const classes = useStyles();
-    const [selectedBuilding, setSelectedBuilding] = useState(-1);
     const [value, setValue] = useState(0);
+    const [accessibleLiftstairsValues, setAccessibleLiftstairsValues] = useState([]);
+    const [shapeIndex, setShapeIndex] = useState("");
+
+
+    
+
+
+    if (props.properties && shapeIndex !== props.properties.index) {
+
+        setShapeIndex(props.properties.index);
+        if (props.properties.name === "lifts" || props.properties.name === "stairs") {
+            var accessible = [];
+            for (var i = 0; i < props.properties.floors.length; i++) {
+                console.log(props.properties.floors[i]);
+                if (props.properties.floors[i]) {
+                    accessible.push("Floor " + i);
+                }
+            }
+            setAccessibleLiftstairsValues([...accessible]);
+        }
+    }
+
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -43,6 +67,17 @@ const CreateMapObjectPropertiesSidebar = (props) => {
 
     }
 
+    function handleFloorSelect(e) {
+        setAccessibleLiftstairsValues(e.target.value);
+        var indexes = [];
+        for(var i = 0; i < e.target.value.length; i++){
+            indexes.push(parseInt(e.target.value[i].split(" ")[1]));
+        }
+
+        props.updateFloors(props.properties.name, indexes, props.properties.index);
+        
+    }
+
     let fieldEnabled = props.properties ? false : true;
     let propertiesClassName = props.properties ? "" : classes.propertiesFormDisabled;
 
@@ -51,7 +86,35 @@ const CreateMapObjectPropertiesSidebar = (props) => {
 
             <div className={classes.drawerContainer + " " + classes.propertiesForm}>
                 <List className={propertiesClassName}>
-
+                    {props.properties && (props.properties.name === "lifts" || props.properties.name === "stairs") &&
+                        <ListItem>
+                            <FormControl className={classes.formControl}>
+                                <InputLabel id="demo-mutiple-chip-label">Chip</InputLabel>
+                                <Select
+                                    labelId="demo-mutiple-chip-label"
+                                    id="demo-mutiple-chip"
+                                    multiple
+                                    value={accessibleLiftstairsValues}
+                                    onChange={handleFloorSelect}
+                                    input={<Input id="select-multiple-chip" />}
+                                    renderValue={(accessibleLiftstairsValues) => (
+                                        <div className={classes.chips}>
+                                            {accessibleLiftstairsValues.map((value) => (
+                                                <Chip key={value} label={value} className={classes.chip} />
+                                            ))}
+                                        </div>
+                                    )}
+                                // MenuProps={MenuProps}
+                                >
+                                    {props.properties.floors.map((floor, key) => (
+                                        <MenuItem key={key} value={"Floor " + key} name={key}>
+                                            {"Floor " + key}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </ListItem>
+                    }
                     <ListItem>
 
                         <Grid
@@ -206,102 +269,102 @@ const CreateMapObjectPropertiesSidebar = (props) => {
 
     }
 
-function buildings() {
+    function buildings() {
+
+        return (
+            <div className={listClassName}>
+                <h1 style={{ textAlign: "center" }}>Select Building From Below</h1>
+                <List>
+                    {props.savedShapes.map((shape, key) => {
+                        return (
+                            <ListItem selected={false} button key={shape.label} onClick={() => { props.setBuildingBeingViewed(key) }}>
+                                <ListItemText primary={shape.label} />
+                            </ListItem>
+                        )
+                    })}
+
+                </List>
+            </div>
+        );
+
+    }
+
+    function TabPanel(props) {
+        const { children, value, index, ...other } = props;
+
+        return (
+            <div
+                role="tabpanel"
+                hidden={value !== index}
+                id={`simple-tabpanel-${index}`}
+                aria-labelledby={`simple-tab-${index}`}
+                {...other}
+            >
+                {value === index && (
+                    <div>
+
+                        {children}
+
+                    </div>
+
+                )}
+            </div>
+        );
+    }
+
+    TabPanel.propTypes = {
+        children: PropTypes.node,
+        index: PropTypes.any.isRequired,
+        value: PropTypes.any.isRequired,
+    };
 
     return (
-        <div className={listClassName}>
-            <h1 style={{ textAlign: "center" }}>Select Building From Below</h1>
-            <List>
-                {props.savedShapes.map((shape, key) => {
-                    return (
-                        <ListItem selected={false} button key={shape.label} onClick={() => { setSelectedBuilding(key); props.setBuildingBeingViewed(key) }}>
-                            <ListItemText primary={shape.label} />
-                        </ListItem>
-                    )
-                })}
 
-            </List>
-        </div>
-    );
-
-}
-
-function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-
-    return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            {...other}
+        <Drawer
+            className={classes.drawer}
+            variant="permanent"
+            classes={{
+                paper: classes.drawerPaper,
+            }}
+            anchor="right"
         >
-            {value === index && (
-                <div>
+            <Toolbar />
 
-                    {children}
 
-                </div>
+            <Paper className={classes.paperTabs}>
+                <Tabs
+                    value={value}
+                    onChange={handleChange}
+                    indicatorColor="primary"
+                    textColor="primary"
+                    variant="scrollable"
+                    scrollButtons="on"
+                // centered
+                >
+                    <Tab classes={{ root: classes.tab }} label="Properties" />
+                    <Tab classes={{ root: classes.tab }} disabled={props.activeStep === 0} label="Buildings" />
+                    <Tab classes={{ root: classes.tab }} disabled={props.activeStep === 0} label="Floors" />
+                </Tabs>
+                <SwipeableViews
+                    axis={'x-reverse'}
+                    index={value}
+                    onChangeIndex={handleChangeIndex}
+                >
+                    <TabPanel value={value} index={0} >
+                        {properties()}
+                    </TabPanel>
+                    <TabPanel value={value} index={1} >
+                        {buildings()}
+                    </TabPanel>
+                    <TabPanel value={value} index={2} >
+                        {floors()}
+                    </TabPanel>
+                </SwipeableViews>
+            </Paper>
 
-            )}
-        </div>
+        </Drawer >
+
     );
-}
-
-TabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.any.isRequired,
-    value: PropTypes.any.isRequired,
-};
-
-return (
-
-    <Drawer
-        className={classes.drawer}
-        variant="permanent"
-        classes={{
-            paper: classes.drawerPaper,
-        }}
-        anchor="right"
-    >
-        <Toolbar />
-
-
-        <Paper className={classes.paperTabs}>
-            <Tabs
-                value={value}
-                onChange={handleChange}
-                indicatorColor="primary"
-                textColor="primary"
-                variant="scrollable"
-                scrollButtons="on"
-            // centered
-            >
-                <Tab classes={{ root: classes.tab }} label="Properties" />
-                <Tab classes={{ root: classes.tab }} disabled={props.activeStep === 0} label="Buildings" />
-                <Tab classes={{ root: classes.tab }} disabled={props.activeStep === 0} label="Floors" />
-            </Tabs>
-            <SwipeableViews
-                axis={'x-reverse'}
-                index={value}
-                onChangeIndex={handleChangeIndex}
-            >
-                <TabPanel value={value} index={0} >
-                    {properties()}
-                </TabPanel>
-                <TabPanel value={value} index={1} >
-                    {buildings()}
-                </TabPanel>
-                <TabPanel value={value} index={2} >
-                    {floors()}
-                </TabPanel>
-            </SwipeableViews>
-        </Paper>
-
-    </Drawer >
-
-);
 }
 
 export default CreateMapObjectPropertiesSidebar;
