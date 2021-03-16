@@ -77,8 +77,6 @@ const CreateMapCanvas = (props) => {
                 props.buildingBeingViewed.x, props.buildingBeingViewed.y + props.buildingBeingViewed.height
             ];
 
-
-
             return (
                 <React.Fragment>
 
@@ -94,7 +92,7 @@ const CreateMapCanvas = (props) => {
 
                     />
 
-                    {/* {props.buildingBeingViewed.internal[props.floorBeingViewed].map((shape, key) => {
+                    {props.buildingBeingViewed.internal[props.floorBeingViewed].map((shape, key) => {
 
                         if (shape !== null && shape.length > 0) {
                             // if(shape.name === "lift" || shape.name === "stairs"){
@@ -129,16 +127,13 @@ const CreateMapCanvas = (props) => {
 
                         }
 
-                    })} */}
-
-                    
-
+                    })}
 
                     {props.shapes.map((shape, key) => {
-
+                        
                         if (shape !== null) {
                             if (shape.name === "lifts" || shape.name === "stairs") {
-                            
+                                
                                 if(shape.floors[props.floorBeingViewed]){
                                     return (
                                         <React.Fragment>

@@ -128,8 +128,8 @@ const CreateMapPage = () => {
             }
         }
         else if (shapeType === "stairs") {
-            var width = 50;
-            var height = 50;
+            var width = 10;
+            var height = 10;
             var floors = [];
 
             for (var i = 0; i < savedShapes[buildingBeingViewed].internal.length; i++) {
@@ -166,8 +166,8 @@ const CreateMapPage = () => {
             }
         }
         else if (shapeType === "lift") {
-            var width = 50;
-            var height = 50;
+            var width = 10;
+            var height = 10;
             var floors = [];
 
             for (var i = 0; i < savedShapes[buildingBeingViewed].internal.length; i++) {
@@ -204,8 +204,8 @@ const CreateMapPage = () => {
             }
         }
         else if (shapeType === "entrance") {
-            var width = 50;
-            var height = 50;
+            var width = 10;
+            var height = 10;
 
             newShape = {
                 x: window.innerWidth / 8,
@@ -229,12 +229,13 @@ const CreateMapPage = () => {
                     x,
                     y + height
                 ],
+                floorNumber: floorBeingViewed
                 // textRotation: 0,
             }
         }
         else if (shapeType === "room") {
-            var width = 50;
-            var height = 50;
+            var width = 10;
+            var height = 10;
 
             var x = savedShapes[buildingBeingViewed].x + savedShapes[buildingBeingViewed].width / 2;
             var y = savedShapes[buildingBeingViewed].y + savedShapes[buildingBeingViewed].height / 2;
@@ -284,6 +285,8 @@ const CreateMapPage = () => {
                 savedShapes[buildingBeingViewed].internal[floorBeingViewed].push(newShape);
             }
 
+            
+
 
         }
 
@@ -294,7 +297,6 @@ const CreateMapPage = () => {
         savedShapes[buildingBeingViewed].internal.push([]);
 
         var lifts = savedShapes[buildingBeingViewed].lifts;
-        console.log(lifts)
 
         for (var i = 0; i < lifts.length; i++) {
             lifts[i].floors.push(false);
@@ -569,23 +571,26 @@ const CreateMapPage = () => {
 
             var pathwaysConnected = true;
 
-            for (var i = 0; i < pathways.length; i++) {
-                var collision = false;
-                for (var j = 0; j < pathways.length; j++) {
-                    if (i !== j) {
-                        if (isColliding(pathways[i], pathways[j])) {
-                            collision = true;
-                            break;
+            if (pathways.length > 1) {
+                for (var i = 0; i < pathways.length; i++) {
+                    var collision = false;
+                    for (var j = 0; j < pathways.length; j++) {
+                        if (i !== j) {
+                            if (isColliding(pathways[i], pathways[j])) {
+                                collision = true;
+                                break;
+                            }
                         }
                     }
-                }
 
-                if (!collision) {
-                    pathwaysConnected = false;
-                    break;
-                }
+                    if (!collision) {
+                        pathwaysConnected = false;
+                        break;
+                    }
 
+                }
             }
+
 
             if (nonCollisionShapes.length === 0 && pathwaysConnected) {
                 setSavedShapes([...shapes]);
@@ -616,13 +621,147 @@ const CreateMapPage = () => {
         else if (activeStep === 1) {
             console.log("Verifying Internal Structure");
 
+            var buildings = savedShapes.filter(function (shape) {
+                return shape.name === "building";
+            });
 
-            setSavedShapes([...shapes]);
-            setShapes([]);
-            setActiveStep(activeStep + 1);
+            var nonCollisionShapes = [];
+            var pathwaysConnected = true;
+            var liftsConnected = true;
+            var stairsConnected = true;
+
+            for (var i = 0; i < buildings.length; i++) {
+                var internal = buildings[i].internal;
+                var lifts = buildings[i].lifts;
+                var stairs = buildings[i].stairs;
+
+                for (var j = 0; j < internal.length; j++) {
+                    var floor = internal[j];
+
+                    for (var k = 0; k < floor.length; k++) {
+                        var rooms = floor.filter(function (shape) {
+                            return shape.name === "room";
+                        });
+
+                        var pathways = floor.filter(function (shape) {
+                            return shape.name === "path";
+                        });
+
+                        for (var l = 0; l < lifts.length; l++) {
+                            if (lifts[l].floors[j]) {
+                                
+                                var connected = false;
+                                for (var m = 0; m < pathways.length; m++) {
+                                    if (isColliding(lifts[l], pathways[m])) {
+                                        connected = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!connected) {
+                                    liftsConnected = false;
+                                }
+                            }
+
+                        }
+
+                        for (var l = 0; l < stairs.length; l++) {
+                            if (stairs[l].floors[j]) {
+                                var connected = false;
+                                for (var m = 0; m < pathways.length; m++) {
+                                    if (isColliding(stairs[l], pathways[m])) {
+                                        connected = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!connected) {
+                                    stairsConnected = false;
+                                }
+                            }
+
+                        }
+
+                        if (pathways.length > 1) {
+                            for (var l = 0; l < pathways.length; l++) {
+                                var collision = false;
+                                for (var m = 0; m < pathways.length; m++) {
+                                    if (l !== m) {
+                                        if (isColliding(pathways[l], pathways[m])) {
+                                            collision = true;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if (!collision) {
+                                    pathwaysConnected = false;
+                                    break;
+                                }
+
+                            }
+                        }
+
+                        for (var l = 0; l < rooms.length; l++) {
+                            var collision = false;
+                            for (var m = 0; m < pathways.length; m++) {
+                                if (isColliding(rooms[l], pathways[m])) {
+                                    collision = true;
+                                    break;
+                                }
+                            }
+
+                            if (!collision) {
+
+                                nonCollisionShapes.push(rooms[l]);
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            if (nonCollisionShapes.length === 0 && pathwaysConnected && liftsConnected && stairsConnected) {
+                console.log("valid");
+                // setSavedShapes([...shapes]);
+                // setShapes([]);
+                // setActiveStep(activeStep + 1);
+            }
+            else {
+                var message = "";
+                if (nonCollisionShapes.length !== 0) {
+                    message += "Ensure All Rooms Are Connected To Pathways";
+                }
+                if (!pathwaysConnected) {
+                    message += "\nEnsure All Pathways Are Connected With Each Other";
+                }
+                if (!liftsConnected) {
+                    message += "\nEnsure All Lifts Are Connected To Pathways";
+                }
+                if (!stairsConnected) {
+                    message += "\nEnsure All Staircases Are Connected To Pathways";
+                }
+                alert(message);
+            }
+
+
+
         }
 
     }
+
+    function viewFloor(floorNumber){
+        setFloorBeingViewed(floorNumber);
+        var floorShapes = [...savedShapes[buildingBeingViewed].internal[floorNumber]];
+        floorShapes = floorShapes.concat(floorShapes, savedShapes[buildingBeingViewed].lifts);
+        floorShapes = floorShapes.concat(floorShapes, savedShapes[buildingBeingViewed].stairs);
+        if(savedShapes[buildingBeingViewed].entrance.floorNumber === floorNumber){
+            floorShapes.push(savedShapes[buildingBeingViewed].entrance);
+        }
+
+        setShapes(floorShapes);
+    }
+
 
     function setBuildingBeingViewedHandler(buildingKey) {
         setBuildingBeingViewed(buildingKey);
@@ -677,7 +816,7 @@ const CreateMapPage = () => {
                     showCategoryModal={() => setViewCategoryEditModal(true)}
                     activeStep={activeStep}
                     clearShapes={clearShapes}
-                    setFloorBeingViewed={setFloorBeingViewed}
+                    setFloorBeingViewed={viewFloor}
                     addFloor={addFloor}
                     updateFloors={updateFloors}
                 />

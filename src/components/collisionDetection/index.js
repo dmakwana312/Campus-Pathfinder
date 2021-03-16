@@ -1,5 +1,4 @@
 export function isColliding(shape1, shape2) {
-
     var shape1Points = shape1.points;
     var shape2Points = shape2.points;
 
