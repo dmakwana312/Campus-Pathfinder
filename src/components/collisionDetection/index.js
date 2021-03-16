@@ -1,7 +1,7 @@
 export function isColliding(shape1, shape2) {
 
-    var shape1Points = shape1.attrs.shapePoints;
-    var shape2Points = shape2.attrs.shapePoints;
+    var shape1Points = shape1.points;
+    var shape2Points = shape2.points;
 
     // var shape1Points = shape1;
     // var shape2Points = shape2;
@@ -62,7 +62,7 @@ export function isColliding(shape1, shape2) {
 
        
 
-        if((aMin < bMax && aMin > bMin) || (bMin < aMax && bMin > aMin)){
+        if((aMin <= bMax && aMin >= bMin) || (bMin <= aMax && bMin >= aMin)){
             continue;
         }
         else{

@@ -132,7 +132,7 @@ const CreateMapPage = () => {
             var height = 50;
             var floors = [];
 
-            for(var i = 0; i < savedShapes[buildingBeingViewed].internal.length; i++){
+            for (var i = 0; i < savedShapes[buildingBeingViewed].internal.length; i++) {
                 floors.push(false);
             }
 
@@ -170,7 +170,7 @@ const CreateMapPage = () => {
             var height = 50;
             var floors = [];
 
-            for(var i = 0; i < savedShapes[buildingBeingViewed].internal.length; i++){
+            for (var i = 0; i < savedShapes[buildingBeingViewed].internal.length; i++) {
                 floors.push(false);
             }
 
@@ -232,15 +232,15 @@ const CreateMapPage = () => {
                 // textRotation: 0,
             }
         }
-        else if (shapeType === "room"){
+        else if (shapeType === "room") {
             var width = 50;
             var height = 50;
 
             var x = savedShapes[buildingBeingViewed].x + savedShapes[buildingBeingViewed].width / 2;
             var y = savedShapes[buildingBeingViewed].y + savedShapes[buildingBeingViewed].height / 2;
- 
+
             var newPoint = rotatePoint(x, y, savedShapes[buildingBeingViewed].x, savedShapes[buildingBeingViewed].y, savedShapes[buildingBeingViewed].rotation)
-            
+
             newShape = {
                 x: savedShapes[buildingBeingViewed].x + savedShapes[buildingBeingViewed].width / 2,
                 y: savedShapes[buildingBeingViewed].y + savedShapes[buildingBeingViewed].height / 2,
@@ -269,40 +269,40 @@ const CreateMapPage = () => {
 
         var allShapes = [...shapes];
         allShapes.push(newShape);
-        
-        if(activeStep === 1){
-            if(shapeType === "lift"){
+
+        if (activeStep === 1) {
+            if (shapeType === "lift") {
                 savedShapes[buildingBeingViewed].lifts.push(newShape);
             }
-            else if(shapeType === "stairs"){
+            else if (shapeType === "stairs") {
                 savedShapes[buildingBeingViewed].stairs.push(newShape);
-            }   
-            else if(shapeType === "entrance"){
+            }
+            else if (shapeType === "entrance") {
                 savedShapes[buildingBeingViewed].entrance = newShape;
             }
-            else{
+            else {
                 savedShapes[buildingBeingViewed].internal[floorBeingViewed].push(newShape);
             }
 
-            
+
         }
-        
+
         setShapes(allShapes);
     }
 
-    function addFloor(){
+    function addFloor() {
         savedShapes[buildingBeingViewed].internal.push([]);
-        
+
         var lifts = savedShapes[buildingBeingViewed].lifts;
         console.log(lifts)
 
-        for(var i = 0; i < lifts.length; i++){
+        for (var i = 0; i < lifts.length; i++) {
             lifts[i].floors.push(false);
         }
 
         var stairs = savedShapes[buildingBeingViewed].stairs
 
-        for(var i = 0; i < stairs.length; i++){
+        for (var i = 0; i < stairs.length; i++) {
             stairs[i].floors.push(false);
         }
 
@@ -312,16 +312,16 @@ const CreateMapPage = () => {
         setSavedShapes([...savedShapes])
     }
 
-    function updateFloors(name, floorIndexes, index){
-        
-        for(var i = 0; i < savedShapes[buildingBeingViewed][name][index].floors.length; i++){
-            if(floorIndexes.includes(i)){
+    function updateFloors(name, floorIndexes, index) {
+
+        for (var i = 0; i < savedShapes[buildingBeingViewed][name][index].floors.length; i++) {
+            if (floorIndexes.includes(i)) {
                 savedShapes[buildingBeingViewed][name][index].floors[i] = true;
             }
-            else{
+            else {
                 savedShapes[buildingBeingViewed][name][index].floors[i] = false;
             }
-        }    
+        }
 
         setSavedShapes([...savedShapes])
     }
@@ -440,21 +440,21 @@ const CreateMapPage = () => {
 
         setLineGuides([]);
 
-        if (e.target.getName() !== "path") {
-            var paths = layerRef.current.getChildren(function (node) {
-                return node.getName() === "path";
-            });
+        // if (e.target.getName() !== "path") {
+        //     var paths = layerRef.current.getChildren(function (node) {
+        //         return node.getName() === "path";
+        //     });
 
-            for (var i = 0; i < paths.length; i++) {
-                if (isColliding(e.target, paths[i])) {
-                    allShapes[index]["collision"] = true;
-                }
-                else {
-                    allShapes[index]["collision"] = false;
-                }
+        //     for (var i = 0; i < paths.length; i++) {
+        //         if (isColliding(e.target, paths[i])) {
+        //             allShapes[index]["collision"] = true;
+        //         }
+        //         else {
+        //             allShapes[index]["collision"] = false;
+        //         }
 
-            }
-        }
+        //     }
+        // }
 
         setShapes(allShapes);
 
@@ -541,22 +541,69 @@ const CreateMapPage = () => {
     }
 
     function incrementStep() {
-        setSavedShapes([...shapes]);
-        setShapes([]);
-        setActiveStep(activeStep + 1);
+        if (activeStep === 0) {
+            console.log("Verifying Buildings");
+            var buildings = shapes.filter(function (shape) {
+                return shape.name === "building";
+            });
+
+            var pathways = shapes.filter(function (shape) {
+                return shape.name === "path";
+            });
+
+            var nonCollisionShapes = [];
+
+            for (var i = 0; i < buildings.length; i++) {
+                var collision = false;
+                for (var j = 0; j < pathways.length; j++) {
+                    if (isColliding(buildings[i], pathways[j])) {
+                        collision = true;
+                        break;
+                    }
+                }
+
+                if (!collision) {
+                    nonCollisionShapes.push(buildings[i]);
+                }
+
+            }
+
+            
+
+            if (nonCollisionShapes.length === 0) {
+                setSavedShapes([...shapes]);
+                setShapes([]);
+                setActiveStep(activeStep + 1);
+            }
+            else {
+                var nonCollisionShapeLabels = "";
+
+                for (var i = 0; i < nonCollisionShapes.length; i++) {
+                    nonCollisionShapeLabels = nonCollisionShapeLabels + nonCollisionShapes[i].label + " ";
+                }
+                alert("Ensure Following Buildings Touch A Pathway: " + nonCollisionShapeLabels);
+            }
+        }
+        else if (activeStep === 1) {
+            console.log("Verifying Internal Structure");
+            setSavedShapes([...shapes]);
+            setShapes([]);
+            setActiveStep(activeStep + 1);
+        }
+
     }
 
-    function setBuildingBeingViewedHandler(buildingKey){
+    function setBuildingBeingViewedHandler(buildingKey) {
         setBuildingBeingViewed(buildingKey);
         setFloorBeingViewed(0);
     }
 
-    function clearShapes(){
+    function clearShapes() {
         setShapes([]);
         setBuildingBeingViewed(null);
 
     }
-    
+
     return (
         <React.Fragment>
             <div className={classes.root}>
