@@ -542,7 +542,6 @@ const CreateMapPage = () => {
 
     function incrementStep() {
         if (activeStep === 0) {
-            console.log("Verifying Buildings");
             var buildings = shapes.filter(function (shape) {
                 return shape.name === "building";
             });
@@ -568,24 +567,56 @@ const CreateMapPage = () => {
 
             }
 
-            
+            var pathwaysConnected = true;
 
-            if (nonCollisionShapes.length === 0) {
+            for (var i = 0; i < pathways.length; i++) {
+                var collision = false;
+                for (var j = 0; j < pathways.length; j++) {
+                    if (i !== j) {
+                        if (isColliding(pathways[i], pathways[j])) {
+                            collision = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!collision) {
+                    pathwaysConnected = false;
+                    break;
+                }
+
+            }
+
+            if (nonCollisionShapes.length === 0 && pathwaysConnected) {
                 setSavedShapes([...shapes]);
                 setShapes([]);
                 setActiveStep(activeStep + 1);
             }
             else {
-                var nonCollisionShapeLabels = "";
 
-                for (var i = 0; i < nonCollisionShapes.length; i++) {
-                    nonCollisionShapeLabels = nonCollisionShapeLabels + nonCollisionShapes[i].label + " ";
+
+                var message = "";
+
+                if (!pathwaysConnected) {
+                    message = "Ensure Pathways Are Connected To Each Other";
                 }
-                alert("Ensure Following Buildings Touch A Pathway: " + nonCollisionShapeLabels);
+
+                if (nonCollisionShapes.length !== 0) {
+                    var nonCollisionShapeLabels = "";
+
+                    for (var i = 0; i < nonCollisionShapes.length; i++) {
+                        nonCollisionShapeLabels = nonCollisionShapeLabels + nonCollisionShapes[i].label + " ";
+                    }
+
+                    message += "\nEnsure Following Buildings Touch A Pathway: " + nonCollisionShapeLabels
+                }
+                alert(message);
             }
         }
         else if (activeStep === 1) {
             console.log("Verifying Internal Structure");
+
+
             setSavedShapes([...shapes]);
             setShapes([]);
             setActiveStep(activeStep + 1);
