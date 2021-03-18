@@ -26,7 +26,6 @@ import { isColliding } from '../collisionDetection';
 const CreateMapPage = () => {
 
     const [objectCategories, setObjectCategories] = useState(categories);
-
     const classes = useStyles();
     const [shapes, setShapes] = useState([]);
     const [savedShapes, setSavedShapes] = useState([]);
@@ -61,218 +60,99 @@ const CreateMapPage = () => {
     //     console.log("Not Colliding")
     // }
 
+    // Create a new shape
     function createShape(shapeType) {
-        var newShape = null;
+
+        // General shared attributes
         var x = window.innerWidth / 8;
         var y = document.documentElement.clientWidth / 8;
+        var width = 0;
+        var height = 0;
+        var label = "";
+        var category = 1;
+        var fontSize = 15;
+    
+        // Assign updated values based on shapeType
         if (shapeType === "building") {
-            var width = 100;
-            var height = 100;
-            newShape = {
-                x: x,
-                y: y,
-                width: width,
-                height: height,
-                selected: false,
-                label: "Building",
-                fontSize: 15,
-                name: "building",
-                selected: false,
-                textAlign: "center",
-                rotation: 0,
-                category: 0,
-                points: [x,
-                    y,
-                    x + width,
-                    y,
-                    x + width,
-                    y + height,
-                    x,
-                    y + height
-                ],
-                collision: false,
-                internal: [[]],
-                lifts: [],
-                stairs: [],
-                entrance: null
-
-                // textRotation: 0,
-            }
-        }
-        else if (shapeType === "path") {
-            var width = 50;
-            var height = 50;
-            newShape = {
-                x: window.innerWidth / 8,
-                y: document.documentElement.clientWidth / 8,
-                width: 50,
-                height: 50,
-                selected: false,
-                label: "",
-                fontSize: 15,
-                name: "path",
-                selected: false,
-                textAlign: "center",
-                rotation: 0,
-                category: 1,
-                points: [x,
-                    y,
-                    x + width,
-                    y,
-                    x + width,
-                    y + height,
-                    x,
-                    y + height
-                ]
-                // textRotation: 0,
-            }
-        }
-        else if (shapeType === "stairs") {
-            var width = 10;
-            var height = 10;
-            var floors = [];
-
-            for (var i = 0; i < savedShapes[buildingBeingViewed].internal.length; i++) {
-                floors.push(false);
-            }
-
-            floors[floorBeingViewed] = true;
-
-            newShape = {
-                x: window.innerWidth / 8,
-                y: document.documentElement.clientWidth / 8,
-                index: savedShapes[buildingBeingViewed].stairs.length,
-                width: 10,
-                height: 10,
-                selected: false,
-                label: "",
-                fontSize: 15,
-                name: "stairs",
-                selected: false,
-                textAlign: "center",
-                rotation: 0,
-                category: 1,
-                points: [x,
-                    y,
-                    x + width,
-                    y,
-                    x + width,
-                    y + height,
-                    x,
-                    y + height
-                ],
-                floors: floors
-                // textRotation: 0,
-            }
-        }
-        else if (shapeType === "lift") {
-            var width = 10;
-            var height = 10;
-            var floors = [];
-
-            for (var i = 0; i < savedShapes[buildingBeingViewed].internal.length; i++) {
-                floors.push(false);
-            }
-
-            floors[floorBeingViewed] = true;
-
-            newShape = {
-                x: window.innerWidth / 8,
-                y: document.documentElement.clientWidth / 8,
-                index: savedShapes[buildingBeingViewed].lifts.length,
-                width: 10,
-                height: 10,
-                selected: false,
-                label: "",
-                fontSize: 15,
-                name: "lifts",
-                selected: false,
-                textAlign: "center",
-                rotation: 0,
-                category: 1,
-                points: [x,
-                    y,
-                    x + width,
-                    y,
-                    x + width,
-                    y + height,
-                    x,
-                    y + height
-                ],
-                floors: floors
-                // textRotation: 0,
-            }
-        }
-        else if (shapeType === "entrance") {
-            var width = 10;
-            var height = 10;
-
-            newShape = {
-                x: window.innerWidth / 8,
-                y: document.documentElement.clientWidth / 8,
-                width: 10,
-                height: 10,
-                selected: false,
-                label: "",
-                fontSize: 15,
-                name: "entrance",
-                selected: false,
-                textAlign: "center",
-                rotation: 0,
-                category: 1,
-                points: [x,
-                    y,
-                    x + width,
-                    y,
-                    x + width,
-                    y + height,
-                    x,
-                    y + height
-                ],
-                floorNumber: floorBeingViewed
-                // textRotation: 0,
-            }
+            width = 100;
+            height = 100;
+            label = "Building";
+            category = 0;
         }
         else if (shapeType === "room") {
-            var width = 10;
-            var height = 10;
-
-            var x = savedShapes[buildingBeingViewed].x + savedShapes[buildingBeingViewed].width / 2;
-            var y = savedShapes[buildingBeingViewed].y + savedShapes[buildingBeingViewed].height / 2;
-
-            var newPoint = rotatePoint(x, y, savedShapes[buildingBeingViewed].x, savedShapes[buildingBeingViewed].y, savedShapes[buildingBeingViewed].rotation)
-
-            newShape = {
-                x: savedShapes[buildingBeingViewed].x + savedShapes[buildingBeingViewed].width / 2,
-                y: savedShapes[buildingBeingViewed].y + savedShapes[buildingBeingViewed].height / 2,
-                width: 10,
-                height: 10,
-                selected: false,
-                label: "Room",
-                fontSize: 4,
-                name: "room",
-                selected: false,
-                textAlign: "center",
-                rotation: savedShapes[buildingBeingViewed].rotation,
-                category: 1,
-                points: [x,
-                    y,
-                    x + width,
-                    y,
-                    x + width,
-                    y + height,
-                    x,
-                    y + height
-                ]
-                // textRotation: 0,
-            }
+            width = 10;
+            height = 10;
+            label = "Room";
+            fontSize = 4;
+    
+            x = savedShapes[buildingBeingViewed].x + savedShapes[buildingBeingViewed].width / 2;
+            y = savedShapes[buildingBeingViewed].y + savedShapes[buildingBeingViewed].height / 2;
+    
         }
-
+        else if (shapeType === "path") {
+            width = 50;
+            height = 50;
+    
+        }
+        else {
+            width = 10;
+            height = 10;
+        }
+    
+        // Create basic new shape
+        var newShape = {
+            x: x,
+            y: y,
+            width: width,
+            height: height,
+            selected: false,
+            label: label,
+            fontSize: fontSize,
+            name: shapeType,
+            selected: false,
+            textAlign: "center",
+            rotation: 0,
+            category: category,
+            points: [x,
+                y,
+                x + width,
+                y,
+                x + width,
+                y + height,
+                x,
+                y + height
+            ]
+        }
+        
+        // Add additional parameters based on shapeType
+        if (shapeType === "building") {
+            newShape.internal = [[]];
+            newShape.lifts = [];
+            newShape.stairs = [];
+            newShape.entrance = null;
+        }
+        else if (shapeType === "lifts" || shapeType === "stairs") {
+            var floors = [];
+    
+            for (var i = 0; i < savedShapes[buildingBeingViewed].internal.length; i++) {
+                floors.push(false);
+            }
+    
+            floors[floorBeingViewed] = true;
+            newShape.floors = floors;
+            newShape.index = savedShapes[buildingBeingViewed][shapeType].length;
+        }
+        else if (shapeType === "entrance") {
+            newShape.floorNumber = floorBeingViewed;
+        }
+    
+        // Add shape to list
         var allShapes = [...shapes];
         allShapes.push(newShape);
-
+    
+        // Assign new shape as attribute if activeStep is 1 and based on shapeType
         if (activeStep === 1) {
-            if (shapeType === "lift") {
+            if (shapeType === "lifts") {
                 savedShapes[buildingBeingViewed].lifts.push(newShape);
             }
             else if (shapeType === "stairs") {
@@ -284,18 +164,20 @@ const CreateMapPage = () => {
             else {
                 savedShapes[buildingBeingViewed].internal[floorBeingViewed].push(newShape);
             }
-
-            
-
-
+    
         }
-
+        
+        // Update shapes
         setShapes(allShapes);
     }
 
+    // Add new floor to buildings
     function addFloor() {
+
+        // Push empty array to internal attribute for building
         savedShapes[buildingBeingViewed].internal.push([]);
 
+        // Update lifts and stairs to account for the new floor
         var lifts = savedShapes[buildingBeingViewed].lifts;
 
         for (var i = 0; i < lifts.length; i++) {
@@ -308,15 +190,19 @@ const CreateMapPage = () => {
             stairs[i].floors.push(false);
         }
 
+        // Update shapes state
         savedShapes[buildingBeingViewed].lifts = lifts;
         savedShapes[buildingBeingViewed].stairs = stairs;
-
         setSavedShapes([...savedShapes])
     }
 
-    function updateFloors(name, floorIndexes, index) {
+    // Update accessibility of lift/staircase
+    function updateLiftStaircaseAccessibility(name, floorIndexes, index) {
 
+        // Loop through the floors in the lift/staircase
         for (var i = 0; i < savedShapes[buildingBeingViewed][name][index].floors.length; i++) {
+
+            // If index i is contained within the new indexes, mark it as accessible
             if (floorIndexes.includes(i)) {
                 savedShapes[buildingBeingViewed][name][index].floors[i] = true;
             }
@@ -325,44 +211,21 @@ const CreateMapPage = () => {
             }
         }
 
+        // Update saved shapes
         setSavedShapes([...savedShapes])
     }
 
+    // When dragging starts, update the selected index
     function dragStart(e, index) {
         var allShapes = [...shapes];
         setShapes(allShapes);
         setSelectedIndex(index);
     }
 
-    function updatePoints(index) {
-        var allShapes = [...shapes];
-        var shapeToUpdate = allShapes[selectedIndex];
-
-        var points = [shapeToUpdate.x,
-        shapeToUpdate.y,
-        shapeToUpdate.x + shapeToUpdate.width,
-        shapeToUpdate.y,
-        shapeToUpdate.x + shapeToUpdate.width,
-        shapeToUpdate.y - shapeToUpdate.height,
-        shapeToUpdate.x,
-        shapeToUpdate.y - shapeToUpdate.height
-        ];
-
-
-        for (var i = 0; i < 8; i += 2) {
-
-            var newPoint = rotatePoint(points[i], points[i + 1], shapeToUpdate.x, shapeToUpdate.y, shapeToUpdate.rotation);
-            points[i] = newPoint.x;
-            points[i + 1] = newPoint.y;
-        }
-
-        shapeToUpdate.points = points;
-
-        allShapes[index] = shapeToUpdate;
-        setShapes(allShapes);
-    }
-
+    // Event handler for moving a shape
     function dragMove(e, index) {
+
+        // Get shapesthat are currently on the canvas
         var shapesOnCanvas = layerRef.current.getChildren(function (node) {
             return node.getClassName() === 'Group';
         });
@@ -373,14 +236,18 @@ const CreateMapPage = () => {
         //     }
         // }
 
+        // Generate guidelines for snapping
         var guides = getGuides(e.target, shapesOnCanvas, stageRef);
 
+        // If no guides created, return
         if (!guides.length) {
             return;
         }
 
+        // Retrieve absolute position of shape being being moved
         var absolutePosition = e.target.absolutePosition();
 
+        // Generate absolute position for each created guidelines and set it
         guides.forEach((lg) => {
             switch (lg.snap) {
                 case 'start': {
@@ -425,21 +292,26 @@ const CreateMapPage = () => {
             }
         });
 
+        // Update absolute position of shape and set line guides
         e.target.absolutePosition(absolutePosition)
 
         setLineGuides(guides);
     }
 
+    // Event handler for end of dragging
     function dragEnd(e, index) {
+        // Retrieve shapes
         var allShapes = [...shapes];
         var shape = e.target;
 
+        // Update x and y positions for shape
         allShapes[index]["x"] = Math.floor(shape.x());
         allShapes[index]["y"] = Math.floor(shape.y());
 
+        // Update points
         updatePoints(index);
 
-
+        // Reset line guides
         setLineGuides([]);
 
         // if (e.target.getName() !== "path") {
@@ -458,10 +330,44 @@ const CreateMapPage = () => {
         //     }
         // }
 
+        // Update shapes
         setShapes(allShapes);
 
     }
 
+    // Update the points attribute of a shape based on rotation
+    function updatePoints(index) {
+
+        // Get shape to update
+        var allShapes = [...shapes];
+        var shapeToUpdate = allShapes[selectedIndex];
+
+        // Calculate the new points without rotation
+        var points = [shapeToUpdate.x,
+        shapeToUpdate.y,
+        shapeToUpdate.x + shapeToUpdate.width,
+        shapeToUpdate.y,
+        shapeToUpdate.x + shapeToUpdate.width,
+        shapeToUpdate.y - shapeToUpdate.height,
+        shapeToUpdate.x,
+        shapeToUpdate.y - shapeToUpdate.height
+        ];
+
+        // Apply rotation
+        for (var i = 0; i < 8; i += 2) {
+
+            var newPoint = rotatePoint(points[i], points[i + 1], shapeToUpdate.x, shapeToUpdate.y, shapeToUpdate.rotation);
+            points[i] = newPoint.x;
+            points[i + 1] = newPoint.y;
+        }
+
+        // Update property
+        shapeToUpdate.points = points;
+        allShapes[index] = shapeToUpdate;
+        setShapes(allShapes);
+    }
+
+    // Rotate a point
     function rotatePoint(pointX, pointY, originX, originY, rotation) {
         var angle = rotation * (-Math.PI / 180);
 
@@ -472,6 +378,7 @@ const CreateMapPage = () => {
         return { x: rotatedX, y: rotatedY };
     }
 
+    // Update a property for a shape
     function updatePropertiesOfShape(propertyName, propertyValue) {
 
         var allShapes = [...shapes];
@@ -480,6 +387,7 @@ const CreateMapPage = () => {
 
     }
 
+    // Set a shape as selected
     function onSelect(index) {
         var allShapes = [...shapes];
 
@@ -496,6 +404,7 @@ const CreateMapPage = () => {
         setSelectedIndex(index);
     }
 
+    // Check if a shape is deselected
     function checkDeselect(e) {
         var clickedOnEmpty = e.target === e.target.getStage();
 
@@ -509,12 +418,14 @@ const CreateMapPage = () => {
         }
     }
 
+    // Edit a category
     function editCategory(index, fieldName, fieldValue) {
         var allCategories = objectCategories;
         allCategories[index][fieldName] = fieldValue;
         setObjectCategories(allCategories);
     }
 
+    // Show category modal
     function showAddCategoryModal() {
 
         setNewCategoryName("");
@@ -524,254 +435,304 @@ const CreateMapPage = () => {
 
     }
 
+    // Add new category
     function addCategory() {
+        // Validation to ensure all fields are filled out
         if (newCategoryName === "" || newCategoryMainColour === "" || newCategoryFontColour === "") {
             alert("Ensure All Fields Are Filled Out");
         }
         else {
+
+            // Create object for new category
             var newCategory = {
                 categoryName: newCategoryName,
                 mainColour: newCategoryMainColour,
                 fontColour: newCategoryFontColour
             }
 
+            // Update categories
             var allCategories = [...objectCategories];
             allCategories.push(newCategory);
             setObjectCategories(allCategories);
+
+            // Hide category modal
             setViewAddCategoryModal(false);
         }
     }
 
-    function incrementStep() {
-        if (activeStep === 0) {
-            var buildings = shapes.filter(function (shape) {
-                return shape.name === "building";
-            });
+    // Validation for active step 1
+    function step0Validation(){
 
-            var pathways = shapes.filter(function (shape) {
-                return shape.name === "path";
-            });
+        // Retrieve buildings and pathways
+        var buildings = shapes.filter(function (shape) {
+            return shape.name === "building";
+        });
 
-            var nonCollisionShapes = [];
+        var pathways = shapes.filter(function (shape) {
+            return shape.name === "path";
+        });
 
-            for (var i = 0; i < buildings.length; i++) {
+        // Array to hold shapes that are not colliding
+        var nonCollisionShapes = [];
+
+        // Check if all buildings connect with at least one pathway
+        for (var i = 0; i < buildings.length; i++) {
+            var collision = false;
+            for (var j = 0; j < pathways.length; j++) {
+                if (isColliding(buildings[i], pathways[j])) {
+                    collision = true;
+                    break;
+                }
+            }
+
+            if (!collision) {
+                nonCollisionShapes.push(buildings[i]);
+            }
+
+        }
+
+        // Create initial value to assume all pathways are connected
+        var pathwaysConnected = true;
+
+        // If there is more than one pathway
+        if (pathways.length > 1) {
+
+            // Check if all pathways collide with another pathway
+            for (var i = 0; i < pathways.length; i++) {
                 var collision = false;
                 for (var j = 0; j < pathways.length; j++) {
-                    if (isColliding(buildings[i], pathways[j])) {
-                        collision = true;
-                        break;
-                    }
-                }
-
-                if (!collision) {
-                    nonCollisionShapes.push(buildings[i]);
-                }
-
-            }
-
-            var pathwaysConnected = true;
-
-            if (pathways.length > 1) {
-                for (var i = 0; i < pathways.length; i++) {
-                    var collision = false;
-                    for (var j = 0; j < pathways.length; j++) {
-                        if (i !== j) {
-                            if (isColliding(pathways[i], pathways[j])) {
-                                collision = true;
-                                break;
-                            }
+                    if (i !== j) {
+                        if (isColliding(pathways[i], pathways[j])) {
+                            collision = true;
+                            break;
                         }
                     }
-
-                    if (!collision) {
-                        pathwaysConnected = false;
-                        break;
-                    }
-
-                }
-            }
-
-
-            if (nonCollisionShapes.length === 0 && pathwaysConnected) {
-                setSavedShapes([...shapes]);
-                setShapes([]);
-                setActiveStep(activeStep + 1);
-            }
-            else {
-
-
-                var message = "";
-
-                if (!pathwaysConnected) {
-                    message = "Ensure Pathways Are Connected To Each Other";
                 }
 
-                if (nonCollisionShapes.length !== 0) {
-                    var nonCollisionShapeLabels = "";
-
-                    for (var i = 0; i < nonCollisionShapes.length; i++) {
-                        nonCollisionShapeLabels = nonCollisionShapeLabels + nonCollisionShapes[i].label + " ";
-                    }
-
-                    message += "\nEnsure Following Buildings Touch A Pathway: " + nonCollisionShapeLabels
+                // If collision is false, set pathways connected to false and break from loop
+                if (!collision) {
+                    pathwaysConnected = false;
+                    break;
                 }
-                alert(message);
+
             }
         }
-        else if (activeStep === 1) {
-            console.log("Verifying Internal Structure");
 
-            var buildings = savedShapes.filter(function (shape) {
-                return shape.name === "building";
-            });
+        // If valid, move to next step.
+        if (nonCollisionShapes.length === 0 && pathwaysConnected) {
+            setSavedShapes([...shapes]);
+            setShapes([]);
+            setActiveStep(activeStep + 1);
+        }
+        else {
 
-            var nonCollisionShapes = [];
-            var pathwaysConnected = true;
-            var liftsConnected = true;
-            var stairsConnected = true;
+            // Generate error messages
+            var message = "";
 
-            for (var i = 0; i < buildings.length; i++) {
-                var internal = buildings[i].internal;
-                var lifts = buildings[i].lifts;
-                var stairs = buildings[i].stairs;
+            if (!pathwaysConnected) {
+                message = "Ensure Pathways Are Connected To Each Other";
+            }
 
-                for (var j = 0; j < internal.length; j++) {
-                    var floor = internal[j];
+            if (nonCollisionShapes.length !== 0) {
+                var nonCollisionShapeLabels = "";
 
-                    for (var k = 0; k < floor.length; k++) {
-                        var rooms = floor.filter(function (shape) {
-                            return shape.name === "room";
-                        });
+                for (var i = 0; i < nonCollisionShapes.length; i++) {
+                    nonCollisionShapeLabels = nonCollisionShapeLabels + nonCollisionShapes[i].label + " ";
+                }
 
-                        var pathways = floor.filter(function (shape) {
-                            return shape.name === "path";
-                        });
+                message += "\nEnsure Following Buildings Touch A Pathway: " + nonCollisionShapeLabels
+            }
 
-                        for (var l = 0; l < lifts.length; l++) {
-                            if (lifts[l].floors[j]) {
-                                
-                                var connected = false;
-                                for (var m = 0; m < pathways.length; m++) {
-                                    if (isColliding(lifts[l], pathways[m])) {
-                                        connected = true;
-                                        break;
-                                    }
-                                }
+            // Display error message
+            alert(message);
+        }
+    }
 
-                                if (!connected) {
-                                    liftsConnected = false;
-                                }
-                            }
+    // Validation for when active step is 1
+    function step1Validation() {
 
-                        }
+        // Retrieve building shapes
+        var buildings = savedShapes.filter(function (shape) {
+            return shape.name === "building";
+        });
 
-                        for (var l = 0; l < stairs.length; l++) {
-                            if (stairs[l].floors[j]) {
-                                var connected = false;
-                                for (var m = 0; m < pathways.length; m++) {
-                                    if (isColliding(stairs[l], pathways[m])) {
-                                        connected = true;
-                                        break;
-                                    }
-                                }
+        // Initial values
+        var nonCollisionShapes = [];
+        var pathwaysConnected = true;
+        var liftsConnected = true;
+        var stairsConnected = true;
 
-                                if (!connected) {
-                                    stairsConnected = false;
-                                }
-                            }
+        // Loop through buildings that were retrieved
+        for (var i = 0; i < buildings.length; i++) {
 
-                        }
+            // Get internal structure, lifts and stairs
+            var internal = buildings[i].internal;
+            var lifts = buildings[i].lifts;
+            var stairs = buildings[i].stairs;
 
-                        if (pathways.length > 1) {
-                            for (var l = 0; l < pathways.length; l++) {
-                                var collision = false;
-                                for (var m = 0; m < pathways.length; m++) {
-                                    if (l !== m) {
-                                        if (isColliding(pathways[l], pathways[m])) {
-                                            collision = true;
-                                            break;
-                                        }
-                                    }
-                                }
+            // Loop through internal structure
+            for (var j = 0; j < internal.length; j++) {
+                var floor = internal[j];
 
-                                if (!collision) {
-                                    pathwaysConnected = false;
+                // Loop through floors
+                for (var k = 0; k < floor.length; k++) {
+
+                    // Get rooms and pathways
+                    var rooms = floor.filter(function (shape) {
+                        return shape.name === "room";
+                    });
+
+                    var pathways = floor.filter(function (shape) {
+                        return shape.name === "path";
+                    });
+
+                    // Check if lifts are connected to at least one pathway
+                    for (var l = 0; l < lifts.length; l++) {
+                        if (lifts[l].floors[j]) {
+
+                            var connected = false;
+                            for (var m = 0; m < pathways.length; m++) {
+                                if (isColliding(lifts[l], pathways[m])) {
+                                    connected = true;
                                     break;
                                 }
+                            }
 
+                            if (!connected) {
+                                liftsConnected = false;
                             }
                         }
 
-                        for (var l = 0; l < rooms.length; l++) {
+                    }
+
+                    // Check if staircases are connected to at least one pathway
+                    for (var l = 0; l < stairs.length; l++) {
+                        if (stairs[l].floors[j]) {
+                            var connected = false;
+                            for (var m = 0; m < pathways.length; m++) {
+                                if (isColliding(stairs[l], pathways[m])) {
+                                    connected = true;
+                                    break;
+                                }
+                            }
+
+                            if (!connected) {
+                                stairsConnected = false;
+                            }
+                        }
+
+                    }
+
+                    // Check if pathways are connected to each other
+                    if (pathways.length > 1) {
+                        for (var l = 0; l < pathways.length; l++) {
                             var collision = false;
                             for (var m = 0; m < pathways.length; m++) {
-                                if (isColliding(rooms[l], pathways[m])) {
-                                    collision = true;
-                                    break;
+                                if (l !== m) {
+                                    if (isColliding(pathways[l], pathways[m])) {
+                                        collision = true;
+                                        break;
+                                    }
                                 }
                             }
 
                             if (!collision) {
-
-                                nonCollisionShapes.push(rooms[l]);
+                                pathwaysConnected = false;
+                                break;
                             }
 
                         }
                     }
+
+                    // Check if rooms are connected to a pathway
+                    for (var l = 0; l < rooms.length; l++) {
+                        var collision = false;
+                        for (var m = 0; m < pathways.length; m++) {
+                            if (isColliding(rooms[l], pathways[m])) {
+                                collision = true;
+                                break;
+                            }
+                        }
+
+                        if (!collision) {
+
+                            nonCollisionShapes.push(rooms[l]);
+                        }
+
+                    }
                 }
             }
+        }
 
-            if (nonCollisionShapes.length === 0 && pathwaysConnected && liftsConnected && stairsConnected) {
-                console.log("valid");
-                // setSavedShapes([...shapes]);
-                // setShapes([]);
-                // setActiveStep(activeStep + 1);
+        // If valid move to next step
+        if (nonCollisionShapes.length === 0 && pathwaysConnected && liftsConnected && stairsConnected) {
+            console.log("valid");
+            // setSavedShapes([...shapes]);
+            // setShapes([]);
+            // setActiveStep(activeStep + 1);
+        }
+        else {
+            // Generate error message
+            var message = "";
+            if (nonCollisionShapes.length !== 0) {
+                message += "Ensure All Rooms Are Connected To Pathways";
             }
-            else {
-                var message = "";
-                if (nonCollisionShapes.length !== 0) {
-                    message += "Ensure All Rooms Are Connected To Pathways";
-                }
-                if (!pathwaysConnected) {
-                    message += "\nEnsure All Pathways Are Connected With Each Other";
-                }
-                if (!liftsConnected) {
-                    message += "\nEnsure All Lifts Are Connected To Pathways";
-                }
-                if (!stairsConnected) {
-                    message += "\nEnsure All Staircases Are Connected To Pathways";
-                }
-                alert(message);
+            if (!pathwaysConnected) {
+                message += "\nEnsure All Pathways Are Connected With Each Other";
+            }
+            if (!liftsConnected) {
+                message += "\nEnsure All lifts Are Connected To Pathways";
+            }
+            if (!stairsConnected) {
+                message += "\nEnsure All Staircases Are Connected To Pathways";
             }
 
-
-
+            // Display error message
+            alert(message);
+        }
+    }
+    
+    // Increment step
+    function incrementStep() {
+        if (activeStep === 0) {
+            step0Validation()
+        }
+        else if (activeStep === 1) {
+            step1Validation();
         }
 
     }
 
-    function viewFloor(floorNumber){
+    // Function to view floors when a floor is selected 
+    function viewFloor(floorNumber) {
+
+        // Update floor number
         setFloorBeingViewed(floorNumber);
+
+        // Generate array of internal structure of floor with lifts and stairs
         var floorShapes = [...savedShapes[buildingBeingViewed].internal[floorNumber]];
         floorShapes = floorShapes.concat(floorShapes, savedShapes[buildingBeingViewed].lifts);
         floorShapes = floorShapes.concat(floorShapes, savedShapes[buildingBeingViewed].stairs);
-        if(savedShapes[buildingBeingViewed].entrance.floorNumber === floorNumber){
+
+        // Add entrance to floorShapes if it is on the same floor
+        if (savedShapes[buildingBeingViewed].entrance.floorNumber === floorNumber) {
             floorShapes.push(savedShapes[buildingBeingViewed].entrance);
         }
 
+        // Update shapes state
         setShapes(floorShapes);
     }
 
-
+    // Set building being viewed
     function setBuildingBeingViewedHandler(buildingKey) {
         setBuildingBeingViewed(buildingKey);
         setFloorBeingViewed(0);
     }
 
+    // Clear shapes
     function clearShapes() {
         setShapes([]);
         setBuildingBeingViewed(null);
-
     }
 
     return (
@@ -818,7 +779,7 @@ const CreateMapPage = () => {
                     clearShapes={clearShapes}
                     setFloorBeingViewed={viewFloor}
                     addFloor={addFloor}
-                    updateFloors={updateFloors}
+                    updateLiftStaircaseAccessibility={updateLiftStaircaseAccessibility}
                 />
             </div>
             {viewCategoryEditModal &&

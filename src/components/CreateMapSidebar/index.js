@@ -10,7 +10,8 @@ import { useStyles } from '../style.js';
 const CreateMapSidebar = (props) => {
     const classes = useStyles();
 
-    function activeStepIs0() {
+    // Options for when active step is 0
+    function exteriorMapOptions() {
         return (
             <List>
 
@@ -25,7 +26,8 @@ const CreateMapSidebar = (props) => {
         );
     }
 
-    function activeStepIs1() {
+    // Options for when active step is 1
+    function internalMapOptions() {
         
         return (
             <List>
@@ -36,9 +38,9 @@ const CreateMapSidebar = (props) => {
                     <ListItemText primary={"Room"} />
                 </ListItem>
                 <ListItem button key={"stairs"} onClick={() => { props.buttonClick("stairs") }}>
-                    <ListItemText primary={"stairs"} />
+                    <ListItemText primary={"Staircase"} />
                 </ListItem>
-                <ListItem button key={"lift"} onClick={() => { props.buttonClick("lift") }}>
+                <ListItem button key={"lift"} onClick={() => { props.buttonClick("lifts") }}>
                     <ListItemText primary={"Lift"} />
                 </ListItem>
                 <ListItem button key={"path"} onClick={() => { props.buttonClick("path") }}>
@@ -61,16 +63,8 @@ const CreateMapSidebar = (props) => {
         >
             <Toolbar />
             <div className={classes.drawerContainer}>
-                {props.activeStep === 0 ? activeStepIs0() : activeStepIs1() }
+                {props.activeStep === 0 ? exteriorMapOptions() : internalMapOptions() }
                 <Divider />
-                {/* <List>
-                    {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                        <ListItem button key={text} onClick={() => { props.buttonClick(text) }}>
-                            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItem>
-                    ))}
-                </List> */}
             </div>
         </Drawer>
 

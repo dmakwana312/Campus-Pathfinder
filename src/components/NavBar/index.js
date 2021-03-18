@@ -11,16 +11,19 @@ import { useStyles } from '../style.js';
 const NavBar = (props) => {
 
     const theme = useTheme();
+
+    // Check if device is a mobile device
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const classes = useStyles();
 
+    // State to track if drawer is open (responsive)
     const [drawerOpen, setDrawerOpen] = useState(false);
-    
 
-    //Small Screens
+    // Create a drawer for mobile devices
     const createDrawer = () => {
         return (
             <div>
+                {/* Navbar */}
                 <AppBar className={classes.appBar}>
                     <Toolbar>
                         <Grid container direction="row" justify="space-between" alignItems="center">
@@ -33,6 +36,7 @@ const NavBar = (props) => {
                     </Toolbar>
                 </AppBar>
 
+                {/* Sidebar for options */}
                 <SwipeableDrawer
                     open={drawerOpen}
                     onClose={() => { setDrawerOpen(false) }}
@@ -49,7 +53,7 @@ const NavBar = (props) => {
                             <ListItem key={2} button divider> Option 2 </ListItem>
                             <ListItem key={3} button divider> Option 3 </ListItem>
                         </List>
-                        
+
 
                     </div>
                 </SwipeableDrawer>
@@ -58,7 +62,7 @@ const NavBar = (props) => {
         );
     }
 
-    //Larger Screens
+    // Only create navbar for non-mobile devices
     const destroyDrawer = () => {
         return (
             <AppBar className={classes.appBar}>

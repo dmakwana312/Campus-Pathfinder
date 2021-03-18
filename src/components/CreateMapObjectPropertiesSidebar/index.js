@@ -27,65 +27,77 @@ import { FormatAlignLeft, FormatAlignCenter, FormatAlignRight } from '@material-
 
 const CreateMapObjectPropertiesSidebar = (props) => {
     const classes = useStyles();
-    const [value, setValue] = useState(0);
+    const [tabValue, setTabValue] = useState(0);
     const [accessibleLiftstairsValues, setAccessibleLiftstairsValues] = useState([]);
     const [shapeIndex, setShapeIndex] = useState("");
 
+    // Determine class name of the list based on active step
+    let listClassName = props.activeStep === 0 ? classes.drawerContainer + " " + classes.propertiesForm : classes.drawerContainer;
 
-    
+    // If properties of a shape are provided, have the fields enabled
+    let fieldsDisabled = props.properties ? false : true;
 
-
+    // Determine class name of properties tab
+    let propertiesClassName = props.properties ? "" : classes.propertiesFormDisabled;
+    console.log(props.properties);
+    // If properties of a shape are provided and the shape index is 
+    // not equal to the shape index already stored, set shape index
     if (props.properties && shapeIndex !== props.properties.index) {
 
+        // Set the shape index
         setShapeIndex(props.properties.index);
+
+        // If the properties are for a lift or straicase, add the floors to a list,
+        // for the floor selection
         if (props.properties.name === "lifts" || props.properties.name === "stairs") {
             var accessible = [];
             for (var i = 0; i < props.properties.floors.length; i++) {
-                console.log(props.properties.floors[i]);
                 if (props.properties.floors[i]) {
                     accessible.push("Floor " + i);
                 }
             }
+            // Set the array of floors
             setAccessibleLiftstairsValues([...accessible]);
         }
     }
 
-
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
+    // Set tab value when a tab is clicked
+    const handleTabChange = (event, newValue) => {
+        setTabValue(newValue);
     };
 
-    const handleChangeIndex = (index) => {
-        setValue(index);
+    // Set tab value when slided with mouse
+    const handleTabChangeIndex = (index) => {
+        setTabValue(index);
     };
 
-    let listClassName = props.activeStep === 0 ? classes.drawerContainer + " " + classes.propertiesForm : classes.drawerContainer;
 
+    // Update the property when a field value is changed
     function fieldEdit(e, propertyName) {
-
         props.updateProperty(propertyName, e.target.value);
-
     }
 
+    // Handle a floor being selected from the menu
     function handleFloorSelect(e) {
+        // Update the values of the floor selection field
         setAccessibleLiftstairsValues(e.target.value);
         var indexes = [];
-        for(var i = 0; i < e.target.value.length; i++){
+        for (var i = 0; i < e.target.value.length; i++) {
             indexes.push(parseInt(e.target.value[i].split(" ")[1]));
         }
 
-        props.updateFloors(props.properties.name, indexes, props.properties.index);
-        
+        // Update the accessibility of lift/staircase
+        props.updateLiftStaircaseAccessibility(props.properties.name, indexes, props.properties.index);
+
     }
 
-    let fieldEnabled = props.properties ? false : true;
-    let propertiesClassName = props.properties ? "" : classes.propertiesFormDisabled;
-
+    // Properties tab
     function properties() {
         return (
 
             <div className={classes.drawerContainer + " " + classes.propertiesForm}>
                 <List className={propertiesClassName}>
+                    {/* If properties of a shape are for a lift or staircase show the floor selection field */}
                     {props.properties && (props.properties.name === "lifts" || props.properties.name === "stairs") &&
                         <ListItem>
                             <FormControl className={classes.formControl}>
@@ -124,7 +136,7 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                         >
 
                             <Grid item>
-
+                                {/* X position text field */}
                                 <TextField
                                     className={classes.textField + ' ' + classes.positionTextField}
                                     disabled
@@ -134,6 +146,7 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                                 />
                             </Grid>
                             <Grid item>
+                                {/* Y position text field */}
                                 <TextField
                                     className={classes.textField + ' ' + classes.positionTextField}
                                     disabled
@@ -146,19 +159,10 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                         </Grid>
 
                     </ListItem>
+
+
                     <ListItem>
-
-                        <TextField
-                            className={classes.textField}
-
-                            variant="outlined"
-                            label="Connected"
-                            disabled
-                            value={props.properties ? props.properties.collision : ""}
-                        />
-
-                    </ListItem>
-                    <ListItem>
+                        {/* Rotation text field */}
                         <TextField
                             className={classes.textField}
                             disabled
@@ -172,9 +176,10 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                     <Divider />
 
                     <ListItem>
+                        {/* Label of shape text field */}
                         <TextField
                             className={classes.textField}
-                            disabled={fieldEnabled}
+                            disabled={fieldsDisabled}
                             variant="outlined"
                             label="Label"
                             onChange={(e) => fieldEdit(e, "label")}
@@ -182,9 +187,10 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                         />
                     </ListItem>
                     <ListItem>
+                        {/* Font size of label text field */}
                         <TextField
                             label="Font Size"
-                            disabled={fieldEnabled}
+                            disabled={fieldsDisabled}
                             className={classes.textField}
                             type="number"
                             InputLabelProps={{
@@ -201,6 +207,7 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                     </ListItem>
 
                     <ListItem>
+                        {/* Text allignment buttons */}
                         <ToggleButtonGroup value={props.properties ? props.properties.textAlign : ""} exclusive className={classes.textField} aria-label="outlined primary button group">
                             <ToggleButton value="left" onClick={() => props.updateProperty("textAlign", "left")}><FormatAlignLeft /></ToggleButton>
                             <ToggleButton value="center" onClick={() => props.updateProperty("textAlign", "center")}><FormatAlignCenter /></ToggleButton>
@@ -210,16 +217,17 @@ const CreateMapObjectPropertiesSidebar = (props) => {
 
                     <Divider />
                     <ListItem>
+                        {/* Category selection of shape */}
                         <FormControl variant="outlined" className={classes.textField}>
-                            <InputLabel htmlFor="outlined-age-native-simple">Colour</InputLabel>
+                            <InputLabel htmlFor="outlined-age-native-simple">Category</InputLabel>
                             <Select
-                                disabled={fieldEnabled}
+                                disabled={fieldsDisabled}
                                 native
                                 value={props.properties ? props.properties.category : ""}
                                 onChange={(e) => fieldEdit(e, "category")}
-                                label="Colour"
+                                label="Category"
                                 inputProps={{
-                                    name: 'Colour',
+                                    name: 'Category',
                                 }}
                             >
                                 <option aria-label="None" value="" />
@@ -228,23 +236,26 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                                         <option key={key} value={key}>{category["categoryName"]}</option>
                                     )
                                 })}
-
                             </Select>
-
                         </FormControl>
+                        {/* Button to edit categories */}
                         <span><Button onClick={props.showCategoryModal} variant="contained"><EditIcon /></Button></span>
 
                     </ListItem>
 
                 </List>
-                {fieldEnabled ? <h2 className={classes.propertiesFormDisabledText}>Select Shape to View Properties</h2> : ""}
+
+                {/* If fields are diabled display message */}
+                {fieldsDisabled ? <h2 className={classes.propertiesFormDisabledText}>Select Shape to View Properties</h2> : ""}
 
             </div>
         );
     }
 
+    // Floors tab
     function floors() {
 
+        // If building being viewed property is provided create and display list as buttons
         if (props.buildingBeingViewed) {
             return (
                 <div className={listClassName}>
@@ -269,8 +280,9 @@ const CreateMapObjectPropertiesSidebar = (props) => {
 
     }
 
+    // Buildings tab
     function buildings() {
-
+        // Create and display list of buildings' name
         return (
             <div className={listClassName}>
                 <h1 style={{ textAlign: "center" }}>Select Building From Below</h1>
@@ -289,6 +301,7 @@ const CreateMapObjectPropertiesSidebar = (props) => {
 
     }
 
+    // Tab panel
     function TabPanel(props) {
         const { children, value, index, ...other } = props;
 
@@ -312,6 +325,7 @@ const CreateMapObjectPropertiesSidebar = (props) => {
         );
     }
 
+    // Prop types of tab panel component 
     TabPanel.propTypes = {
         children: PropTypes.node,
         index: PropTypes.any.isRequired,
@@ -319,7 +333,6 @@ const CreateMapObjectPropertiesSidebar = (props) => {
     };
 
     return (
-
         <Drawer
             className={classes.drawer}
             variant="permanent"
@@ -330,33 +343,34 @@ const CreateMapObjectPropertiesSidebar = (props) => {
         >
             <Toolbar />
 
-
             <Paper className={classes.paperTabs}>
+                {/* Tab buttons */}
                 <Tabs
-                    value={value}
-                    onChange={handleChange}
+                    value={tabValue}
+                    onChange={handleTabChange}
                     indicatorColor="primary"
                     textColor="primary"
                     variant="scrollable"
                     scrollButtons="on"
-                // centered
                 >
                     <Tab classes={{ root: classes.tab }} label="Properties" />
                     <Tab classes={{ root: classes.tab }} disabled={props.activeStep === 0} label="Buildings" />
                     <Tab classes={{ root: classes.tab }} disabled={props.activeStep === 0} label="Floors" />
                 </Tabs>
+
+                {/* Tab panel content */}
                 <SwipeableViews
                     axis={'x-reverse'}
-                    index={value}
-                    onChangeIndex={handleChangeIndex}
+                    index={tabValue}
+                    onChangeIndex={handleTabChangeIndex}
                 >
-                    <TabPanel value={value} index={0} >
+                    <TabPanel value={tabValue} index={0} >
                         {properties()}
                     </TabPanel>
-                    <TabPanel value={value} index={1} >
+                    <TabPanel value={tabValue} index={1} >
                         {buildings()}
                     </TabPanel>
-                    <TabPanel value={value} index={2} >
+                    <TabPanel value={tabValue} index={2} >
                         {floors()}
                     </TabPanel>
                 </SwipeableViews>

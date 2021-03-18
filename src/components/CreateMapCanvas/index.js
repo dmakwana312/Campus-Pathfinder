@@ -18,56 +18,64 @@ const CreateMapCanvas = (props) => {
     function handleWheel(e) {
         e.evt.preventDefault();
 
+        // Initial scale of stage
         const scaleBy = 1.01;
+
+        // Stage in current form
         const stage = e.target.getStage();
+
+        // Previous Scale
         const oldScale = stage.scaleX();
+
+        // Find where mouse is pointing
         const mousePointTo = {
             x: stage.getPointerPosition().x / oldScale - stage.x() / oldScale,
             y: stage.getPointerPosition().y / oldScale - stage.y() / oldScale
         };
 
+        // Calculate and set new scale of stage
         const newScale = e.evt.deltaY < 0 ? oldScale * scaleBy : oldScale / scaleBy;
-
         stage.scale({ x: newScale, y: newScale });
 
-
+        // Set properties with calculated values
         setStageScale(newScale)
         setStageX(-(mousePointTo.x - stage.getPointerPosition().x / newScale) * newScale);
-
         setStageY(-(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale);
 
     };
 
-    function activeStepIs0() {
+    // Display building shapes (with paths) for when active step is 1
+    function displayBuildings() {
         return (
+            // Map shapes from props and display
             props.shapes.map((shape, key) => {
 
                 return (
-                    <React.Fragment>
 
-                        <Shape
-                            key={key}
-                            index={key}
-                            shapeProps={shape}
-                            dragStart={props.dragStart}
-                            dragMove={props.dragMove}
-                            dragEnd={props.dragEnd}
-                            onSelect={props.onSelect}
-                            updatePropertiesOfShape={props.updateProperty}
-                            shapeColour={props.categories[shape.category].mainColour}
-                            fontColour={props.categories[shape.category].fontColour}
-                            // updatePoints={() => props.updatePoints(key)}
-                            updatePoints={props.updatePoints}
-                        />
-                    </React.Fragment>
+                    <Shape
+                        key={key}
+                        index={key}
+                        shapeProps={shape}
+                        dragStart={props.dragStart}
+                        dragMove={props.dragMove}
+                        dragEnd={props.dragEnd}
+                        onSelect={props.onSelect}
+                        updatePropertiesOfShape={props.updateProperty}
+                        shapeColour={props.categories[shape.category].mainColour}
+                        fontColour={props.categories[shape.category].fontColour}
+                        // updatePoints={() => props.updatePoints(key)}
+                        updatePoints={props.updatePoints}
+                    />
 
                 )
             })
         );
     }
 
-    function activeStepIs1() {
+    // Display internal structure of selected building, when active step is 1
+    function displayInternalStructure() {
 
+        // If a building has been selected
         if (props.buildingBeingViewed) {
 
             points = [
@@ -92,12 +100,9 @@ const CreateMapCanvas = (props) => {
 
                     />
 
-                    {props.buildingBeingViewed.internal[props.floorBeingViewed].map((shape, key) => {
+                    {/* {props.buildingBeingViewed.internal[props.floorBeingViewed].map((shape, key) => {
 
                         if (shape !== null && shape.length > 0) {
-                            // if(shape.name === "lift" || shape.name === "stairs"){
-                            //     console.log(shape);
-                            // }
 
 
                             return (
@@ -127,39 +132,20 @@ const CreateMapCanvas = (props) => {
 
                         }
 
-                    })}
+                    })} */}
 
+                    {/* Map all shapes from given props and display */}
                     {props.shapes.map((shape, key) => {
-                        
+
+                        // If shape is not null
                         if (shape !== null) {
+
+                            // If the shape represents a lift or staircase 
                             if (shape.name === "lifts" || shape.name === "stairs") {
-                                
-                                if(shape.floors[props.floorBeingViewed]){
+
+                                // If it is accessible by the floor being viewed, display it
+                                if (shape.floors[props.floorBeingViewed]) {
                                     return (
-                                        <React.Fragment>
-    
-                                            <Shape
-                                                key={key}
-                                                index={key}
-                                                shapeProps={shape}
-                                                dragStart={props.dragStart}
-                                                dragMove={props.dragMove}
-                                                dragEnd={props.dragEnd}
-                                                onSelect={props.onSelect}
-                                                updatePropertiesOfShape={props.updateProperty}
-                                                shapeColour={props.categories[shape.category].mainColour}
-                                                fontColour={props.categories[shape.category].fontColour}
-                                                // updatePoints={() => props.updatePoints(key)}
-                                                updatePoints={props.updatePoints}
-                                            />
-                                        </React.Fragment>
-    
-                                    )
-                                }
-                            }
-                            else {
-                                return (
-                                    <React.Fragment>
 
                                         <Shape
                                             key={key}
@@ -175,7 +161,30 @@ const CreateMapCanvas = (props) => {
                                             // updatePoints={() => props.updatePoints(key)}
                                             updatePoints={props.updatePoints}
                                         />
-                                    </React.Fragment>
+
+                                    )
+                                }
+                            }
+                            // If shape is not a lift or staircase, display it
+                            else {
+                                return (
+
+
+                                    <Shape
+                                        key={key}
+                                        index={key}
+                                        shapeProps={shape}
+                                        dragStart={props.dragStart}
+                                        dragMove={props.dragMove}
+                                        dragEnd={props.dragEnd}
+                                        onSelect={props.onSelect}
+                                        updatePropertiesOfShape={props.updateProperty}
+                                        shapeColour={props.categories[shape.category].mainColour}
+                                        fontColour={props.categories[shape.category].fontColour}
+                                        // updatePoints={() => props.updatePoints(key)}
+                                        updatePoints={props.updatePoints}
+                                    />
+
 
                                 )
                             }
@@ -209,8 +218,10 @@ const CreateMapCanvas = (props) => {
                 ref={props.layerRef}
             >
 
-                {props.activeStep === 0 ? activeStepIs0() : activeStepIs1()}
+                {/* Display shapes based on what the current active step is */}
+                {props.activeStep === 0 ? displayBuildings() : displayInternalStructure()}
 
+                {/* Map snap guidelines properties to shapes to display them */}
                 {props.guides.map((guide, key) => {
                     if (guide['orientation'] === 'V') {
                         return (
