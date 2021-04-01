@@ -288,11 +288,14 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                 <h1 style={{ textAlign: "center" }}>Select Building From Below</h1>
                 <List>
                     {props.savedShapes.map((shape, key) => {
-                        return (
-                            <ListItem selected={false} button key={shape.label} onClick={() => { props.setBuildingBeingViewed(key) }}>
-                                <ListItemText primary={shape.label} />
-                            </ListItem>
-                        )
+                        if(shape.name != "path"){
+                            return (
+                                <ListItem selected={false} button key={shape.label} onClick={() => { props.setBuildingBeingViewed(key) }}>
+                                    <ListItemText primary={shape.label} />
+                                </ListItem>
+                            )
+                        }
+                        
                     })}
 
                 </List>

@@ -27,7 +27,7 @@ const CreateMapPage = () => {
 
     const [objectCategories, setObjectCategories] = useState(categories);
     const classes = useStyles();
-    const [shapes, setShapes] = useState([]);
+    const [shapes, setShapes] = useState(JSON.parse(localStorage.getItem("Shapes")));
     const [savedShapes, setSavedShapes] = useState([]);
     const [lineGuides, setLineGuides] = useState([]);
     const [selectedIndex, setSelectedIndex] = useState(-1);
