@@ -17,6 +17,8 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
+import firebase from '../firebase';
+
 import { getGuides } from '../snapGuidesGeneration.js';
 
 import { categories } from '../categories.js';
@@ -27,7 +29,7 @@ const CreateMapPage = () => {
 
     const [objectCategories, setObjectCategories] = useState(categories);
     const classes = useStyles();
-    const [shapes, setShapes] = useState(JSON.parse(localStorage.getItem("Shapes")));
+    const [shapes, setShapes] = useState([]);
     const [savedShapes, setSavedShapes] = useState([]);
     const [lineGuides, setLineGuides] = useState([]);
     const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -756,14 +758,30 @@ const CreateMapPage = () => {
         setBuildingBeingViewed(null);
     }
 
+    // Function to save map to firebase
     function saveMap(){
+
+        // Combine map name, categories and mapdata in to single object
         var mapData = {
             mapName: mapName,
-            buildings: savedShapes,
-            categories: objectCategories
+            categories: objectCategories,
+            mapData: savedShapes
+            
         }
 
-        console.log(mapData);
+        // Push data to database
+        var db = firebase.database();
+        var ref = db.ref("MapData");
+        var key = ref.push(mapData);
+
+        // var data = db.ref("MapData/" + key.key);
+
+        // data.on('value', (snapshot) => {
+        //     const data = snapshot.val();
+        //     console.log(data.mapName);
+        //     setSavedShapes([...data.mapData]);
+        // });
+        
     }
 
     return (
