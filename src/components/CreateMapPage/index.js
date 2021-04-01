@@ -42,6 +42,8 @@ const CreateMapPage = () => {
     const layerRef = useRef();
     const stageRef = useRef();
 
+    const [mapName, setMapName] = useState("");
+
     // var collisionTest = false;
 
     // collisionTest = isColliding([13, 10, 13, 3, 6, 3, 6, 10], [14, 18, 15, 11, 10, 13]);
@@ -71,7 +73,7 @@ const CreateMapPage = () => {
         var label = "";
         var category = 1;
         var fontSize = 15;
-    
+
         // Assign updated values based on shapeType
         if (shapeType === "building") {
             width = 100;
@@ -84,21 +86,21 @@ const CreateMapPage = () => {
             height = 10;
             label = "Room";
             fontSize = 4;
-    
+
             x = savedShapes[buildingBeingViewed].x + savedShapes[buildingBeingViewed].width / 2;
             y = savedShapes[buildingBeingViewed].y + savedShapes[buildingBeingViewed].height / 2;
-    
+
         }
         else if (shapeType === "path") {
             width = 50;
             height = 50;
-    
+
         }
         else {
             width = 10;
             height = 10;
         }
-    
+
         // Create basic new shape
         var newShape = {
             x: x,
@@ -123,7 +125,7 @@ const CreateMapPage = () => {
                 y + height
             ]
         }
-        
+
         // Add additional parameters based on shapeType
         if (shapeType === "building") {
             newShape.internal = [[]];
@@ -133,11 +135,11 @@ const CreateMapPage = () => {
         }
         else if (shapeType === "lifts" || shapeType === "stairs") {
             var floors = [];
-    
+
             for (var i = 0; i < savedShapes[buildingBeingViewed].internal.length; i++) {
                 floors.push(false);
             }
-    
+
             floors[floorBeingViewed] = true;
             newShape.floors = floors;
             newShape.index = savedShapes[buildingBeingViewed][shapeType].length;
@@ -145,11 +147,11 @@ const CreateMapPage = () => {
         else if (shapeType === "entrance") {
             newShape.floorNumber = floorBeingViewed;
         }
-    
+
         // Add shape to list
         var allShapes = [...shapes];
         allShapes.push(newShape);
-    
+
         // Assign new shape as attribute if activeStep is 1 and based on shapeType
         if (activeStep === 1) {
             if (shapeType === "lifts") {
@@ -164,9 +166,9 @@ const CreateMapPage = () => {
             else {
                 savedShapes[buildingBeingViewed].internal[floorBeingViewed].push(newShape);
             }
-    
+
         }
-        
+
         // Update shapes
         setShapes(allShapes);
     }
@@ -461,7 +463,7 @@ const CreateMapPage = () => {
     }
 
     // Validation for active step 1
-    function step0Validation(){
+    function step0Validation() {
 
         // Retrieve buildings and pathways
         var buildings = shapes.filter(function (shape) {
@@ -520,9 +522,7 @@ const CreateMapPage = () => {
 
         // If valid, move to next step.
         if (nonCollisionShapes.length === 0 && pathwaysConnected) {
-            setSavedShapes([...shapes]);
-            setShapes([]);
-            setActiveStep(activeStep + 1);
+            return true;
         }
         else {
 
@@ -545,6 +545,7 @@ const CreateMapPage = () => {
 
             // Display error message
             alert(message);
+            return false;
         }
     }
 
@@ -666,10 +667,10 @@ const CreateMapPage = () => {
 
         // If valid move to next step
         if (nonCollisionShapes.length === 0 && pathwaysConnected && liftsConnected && stairsConnected) {
-            console.log("valid");
-            // setSavedShapes([...shapes]);
-            // setShapes([]);
-            // setActiveStep(activeStep + 1);
+            // console.log("valid");
+            // // setSavedShapes([...shapes]);
+            // // setShapes([]);
+            return true;
         }
         else {
             // Generate error message
@@ -689,27 +690,38 @@ const CreateMapPage = () => {
 
             // Display error message
             alert(message);
+
+            return false;
         }
     }
-    
+
     // Increment step
     function incrementStep() {
+
         if (activeStep === 0) {
-            step0Validation()
+            if (step0Validation()) {
+                setSavedShapes([...shapes]);
+                setShapes([]);
+                setActiveStep(activeStep + 1);
+
+            }
         }
         else if (activeStep === 1) {
-            step1Validation();
+            if (step1Validation()) {
+                setActiveStep(activeStep + 1);
+                console.log("Final");
+            }
         }
 
     }
 
     // Decrement Step
-    function decrementStep(){
-        if(activeStep != 0){
+    function decrementStep() {
+        if (activeStep != 0) {
             setShapes([...savedShapes]);
             setActiveStep(activeStep - 1);
         }
-        
+
     }
 
     // Function to view floors when a floor is selected 
@@ -744,10 +756,20 @@ const CreateMapPage = () => {
         setBuildingBeingViewed(null);
     }
 
+    function saveMap(){
+        var mapData = {
+            mapName: mapName,
+            buildings: savedShapes,
+            categories: objectCategories
+        }
+
+        console.log(mapData);
+    }
+
     return (
         <React.Fragment>
             <div className={classes.root}>
-                <NavBar incrementStep={incrementStep} decrementStep={decrementStep}/>
+                <NavBar incrementStep={incrementStep} decrementStep={decrementStep} />
                 <CreateMapSidebar activeStep={activeStep} buttonClick={createShape} />
                 <main className={classes.content}>
                     <Toolbar />
@@ -799,7 +821,9 @@ const CreateMapPage = () => {
                     aria-describedby="simple-modal-description"
                 >
                     <div className={classes.modalContent}>
+                    <h2>View Categories</h2>
                         <TableContainer component={Paper}>
+                            
                             <Table className={classes.table} aria-label="simple table">
                                 <TableHead>
                                     <TableRow>
@@ -850,6 +874,7 @@ const CreateMapPage = () => {
                     aria-describedby="simple-modal-description"
                 >
                     <div className={classes.modalContent}>
+                        <h2>Add Categories</h2>
                         <TextField
                             className={classes.textField}
                             variant="outlined"
@@ -868,10 +893,28 @@ const CreateMapPage = () => {
                             label="Font Colour"
                             onChange={(e) => setNewCategoryFontColour(e.target.value)}
                         />
-                        <Button className={classes.modalButton} variant="contained" color="primary" onClick={addCategory}>Save</Button>
+                        <Button className={classes.modalButton} variant="contained" color="primary" onClick={addCategory} style={{ float: "right" }}>Save</Button>
 
                     </div>
                 </Modal>}
+
+            <Modal
+                open={activeStep === 2}
+                onClose={() => setActiveStep(activeStep - 1)}
+                aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+            >
+                <div className={classes.modalContent}>
+                    <h2>Save Map</h2>
+                    <TextField
+                        className={classes.textField}
+                        variant="outlined"
+                        label="Map Name"
+                        onChange={(e) => setMapName(e.target.value)}
+                    />
+                    <Button className={classes.modalButton} variant="contained" color="primary" onClick={saveMap} style={{ float: "right" }}>Save</Button>
+                </div>
+            </Modal>
         </React.Fragment>
 
     );
