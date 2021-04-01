@@ -49,8 +49,8 @@ const NavBar = (props) => {
                         onKeyDown={() => { setDrawerOpen(false) }}>
 
                         <List className={classes.list}>
-                            <ListItem key={1} onClick={props.incrementStep} button divider> Next Step </ListItem>
-                            <ListItem key={2} button divider> Option 2 </ListItem>
+                            <ListItem key={1} onClick={props.decrementStep} button divider> Previous Step </ListItem>
+                            <ListItem key={2} onClick={props.incrementStep} button divider> Next Step </ListItem>
                             <ListItem key={3} button divider> Option 3 </ListItem>
                         </List>
 
@@ -68,8 +68,8 @@ const NavBar = (props) => {
             <AppBar className={classes.appBar}>
                 <Toolbar>
                     <Typography style={{ flexGrow: 1 }} color="inherit" >Title</Typography>
+                    <Button onClick={props.decrementStep} className={classes.button} color="inherit">Previous Step</Button>
                     <Button onClick={props.incrementStep} className={classes.button} color="inherit">Next Step</Button>
-                    <Button className={classes.button} color="inherit">OPTION 2</Button>
                     <Button className={classes.button} color="inherit">OPTION 3</Button>
                 </Toolbar>
             </AppBar>

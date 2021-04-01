@@ -703,6 +703,15 @@ const CreateMapPage = () => {
 
     }
 
+    // Decrement Step
+    function decrementStep(){
+        if(activeStep != 0){
+            setShapes([...savedShapes]);
+            setActiveStep(activeStep - 1);
+        }
+        
+    }
+
     // Function to view floors when a floor is selected 
     function viewFloor(floorNumber) {
 
@@ -738,7 +747,7 @@ const CreateMapPage = () => {
     return (
         <React.Fragment>
             <div className={classes.root}>
-                <NavBar incrementStep={incrementStep} />
+                <NavBar incrementStep={incrementStep} decrementStep={decrementStep}/>
                 <CreateMapSidebar activeStep={activeStep} buttonClick={createShape} />
                 <main className={classes.content}>
                     <Toolbar />

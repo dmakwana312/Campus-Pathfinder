@@ -39,7 +39,7 @@ const CreateMapObjectPropertiesSidebar = (props) => {
 
     // Determine class name of properties tab
     let propertiesClassName = props.properties ? "" : classes.propertiesFormDisabled;
-    console.log(props.properties);
+    
     // If properties of a shape are provided and the shape index is 
     // not equal to the shape index already stored, set shape index
     if (props.properties && shapeIndex !== props.properties.index) {
