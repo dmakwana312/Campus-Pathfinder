@@ -65,7 +65,15 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: "#e6e5e3",
         overflow: "hidden"
     },
-
+    paper: {
+        zIndex: 1000,
+        position: 'absolute',
+        margin: theme.spacing(1),
+        padding: theme.spacing(2),
+    },
+    paperButton: {
+        margin: theme.spacing(1),
+    },
     // Appbar styling
     appBar: {
         zIndex: theme.zIndex.drawer + 1,

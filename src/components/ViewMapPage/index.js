@@ -1,12 +1,23 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import Fab from '@material-ui/core/Fab';
+import NavigationIcon from '@material-ui/icons/Navigation';
+import Paper from '@material-ui/core/Paper';
+import SearchIcon from '@material-ui/icons/Search';
 
 import ViewMapCanvas from '../ViewMapCanvas';
 import firebase from '../firebase';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faRoute } from '@fortawesome/free-solid-svg-icons'
+
+import { useStyles } from '../style.js';
+
 const ViewMapPage = () => {
 
+    const classes = useStyles();
     const [mapData, setMapData] = useState(null);
     const [categories, setCategories] = useState(null);
 
@@ -20,7 +31,6 @@ const ViewMapPage = () => {
             setCategories([...data.categories]);
         });
     }, [])
-
 
     return (
         <React.Fragment>
@@ -37,7 +47,7 @@ const ViewMapPage = () => {
                     )}
                     renderInput={(params) => (
                         <TextField
-                          {...params}
+                            {...params}
                             label="Search For A Building"
                             variant="outlined"
                             inputProps={{
@@ -48,7 +58,28 @@ const ViewMapPage = () => {
                     )}
                 />
             }
+            
+            {/* <Paper elevation={3} className={classes.paper}> */}
+            <div className={classes.paper}>
+            <Fab color="primary" variant="extended" className={classes.paperButton}>
+                    <SearchIcon style={{ marginRight: 1 }} />
+                    Search
+                </Fab>
+
+                <br />
+
+                <Fab color="primary" variant="extended" className={classes.paperButton}>
+                <FontAwesomeIcon icon={faRoute} style={{ fontSize: 17, marginRight: 5}}/>
+                    {/* <NavigationIcon style={{ marginRight: 1 }} /> */}
+                    Find Route
+                </Fab>
+                </div>
+                
+                
+            {/* </Paper> */}
+
             <ViewMapCanvas shapes={mapData} categories={categories} />
+            
         </React.Fragment>
 
     );

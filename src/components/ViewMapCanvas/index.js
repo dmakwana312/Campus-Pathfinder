@@ -49,6 +49,7 @@ const ViewMapCanvas = (props) => {
             onWheel={handleWheel}
             scaleX={stageScale}
             scaleY={stageScale}
+            draggable
             x={stageX}
             y={stageY}
     
