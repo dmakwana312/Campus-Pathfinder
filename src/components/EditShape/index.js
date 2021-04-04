@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { Rect, Group, Text, Transformer, Line, Tag } from 'react-konva';
 
-const Shape = (props) => {
+const EditShape = (props) => {
 
     // References 
     const transformRef = useRef();
@@ -41,6 +41,7 @@ const Shape = (props) => {
                 width={props.shapeProps.width}
                 height={props.shapeProps.height}
                 name={props.shapeProps.name}
+                zIndex={props.shapeProps.name === "building" ? 1000 : -1}
 
                 // On completion of transformation
                 onTransformEnd={(e) => {
@@ -126,4 +127,4 @@ const Shape = (props) => {
 
 }
 
-export default Shape;
+export default EditShape;

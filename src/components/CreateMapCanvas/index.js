@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Stage, Layer, Line, Rect } from 'react-konva';
 import { useStyles } from '../style.js';
-import Shape from '../Shape';
+import EditShape from '../EditShape';
 import { categories } from '../categories';
 
 
@@ -52,7 +52,7 @@ const CreateMapCanvas = (props) => {
 
                 return (
 
-                    <Shape
+                    <EditShape
                         key={key}
                         index={key}
                         shapeProps={shape}
@@ -147,7 +147,7 @@ const CreateMapCanvas = (props) => {
                                 if (shape.floors[props.floorBeingViewed]) {
                                     return (
 
-                                        <Shape
+                                        <EditShape
                                             key={key}
                                             index={key}
                                             shapeProps={shape}
@@ -170,7 +170,7 @@ const CreateMapCanvas = (props) => {
                                 return (
 
 
-                                    <Shape
+                                    <EditShape
                                         key={key}
                                         index={key}
                                         shapeProps={shape}

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import NavBar from '../NavBar';
+import NavBar from '../CreateMapPageNavBar';
 import CreateMapSidebar from '../CreateMapSidebar';
 import CreateMapObjectPropertiesSidebar from '../CreateMapObjectPropertiesSidebar';
 import CreateMapCanvas from '../CreateMapCanvas';

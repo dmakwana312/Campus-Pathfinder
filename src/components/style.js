@@ -60,6 +60,11 @@ const useStyles = makeStyles((theme) => ({
         left: '50%',
         transform: 'translate(-50%, -50%)'
     },
+    //View Map Page Styling
+    viewMapCanvas: {
+        backgroundColor: "#e6e5e3",
+        overflow: "hidden"
+    },
 
     // Appbar styling
     appBar: {
