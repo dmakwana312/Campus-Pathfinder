@@ -87,11 +87,7 @@ const ViewMapPage = () => {
         
         var data = [...mapData];
         for(var i = 0; i < data.length; i++){
-            if(search.label === mapData[i].label && 
-                (search.points.length == mapData[i].points.length) && search.points.every(function(element, index) {
-                    return element === mapData[i].points[index]; 
-                })
-            ){
+            if(search.index === mapData[i].index){
                 data[i].search = true;
                 break;
             }
@@ -117,24 +113,14 @@ const ViewMapPage = () => {
         for(var i = 0; i < data.length; i++){
 
             // If label and points of origin shape are equal, set origin field to true
-            if(!originFound && origin.label === mapData[i].label && 
-                (origin.points.length == mapData[i].points.length) && 
-                origin.points.every(function(element, index) {
-                    return element === mapData[i].points[index]; 
-                })
-            ){
+            if(!originFound && origin.index === mapData[i].index){
                 data[i].origin = true; 
                 originFound = true;         
             }
 
 
             // If label and points of destination shape are equal, set destination field to true
-            if(!destinationFound && destination.label === mapData[i].label && 
-                (destination.points.length == mapData[i].points.length) && 
-                destination.points.every(function(element, index) {
-                    return element === mapData[i].points[index]; 
-                })
-            ){
+            if(!destinationFound && destination.index === mapData[i].index){
                 data[i].destination = true; 
                 destinationFound = true;         
             }
@@ -147,9 +133,6 @@ const ViewMapPage = () => {
 
         var visited = dijkstra(mapData, origin, destination);
         var path = getNodesInPathOrder(visited[visited.length - 1]);
-
-        console.log(visited);
-        console.log(path);
 
         for(var i = 0; i < path.length; i++){
             for(var j = 0; j < data.length; j++){

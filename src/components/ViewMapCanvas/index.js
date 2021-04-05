@@ -94,6 +94,7 @@ const ViewMapCanvas = (props) => {
                                     shapeColour={shapeFill}
                                     fontColour={props.categories[shape.category].fontColour}
                                     opacity={opacity}
+                                    clickHandler={() => console.log(shape.label + " Clicked")}
                                 />
                             );
                         })

@@ -1,7 +1,28 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Rect, Group, Text, Transformer, Line, Tag } from 'react-konva';
 
-const ViewShape = (props) => {  
+const ViewShape = (props) => {
+
+    function mouseEnter(e){
+        const container = e.target.getStage().container();
+        container.style.cursor = "pointer";
+    }
+
+    function mouseLeave(e){
+        const container = e.target.getStage().container();
+        container.style.cursor = "default";
+    }
+
+    var mouseHandlerProps = {};
+
+    if(props.shapeProps.name === "building"){
+        mouseHandlerProps = {
+            onClick: props.clickHandler,
+            onMouseEnter: mouseEnter,
+            onMouseLeave: mouseLeave
+
+        }
+    }
 
     return (
 
@@ -19,6 +40,10 @@ const ViewShape = (props) => {
             height={props.shapeProps.height}
             name={props.shapeProps.name}
             opacity={props.opacity}
+            onClick={props.clickHandler}
+            {...mouseHandlerProps}
+
+            
 
         >
 
