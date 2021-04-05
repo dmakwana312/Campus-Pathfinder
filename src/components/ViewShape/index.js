@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Rect, Group, Text, Transformer, Line, Tag } from 'react-konva';
 
-const ViewShape = (props) => {
+const ViewShape = (props) => {  
+
 
     return (
 
@@ -19,7 +20,6 @@ const ViewShape = (props) => {
             width={props.shapeProps.width}
             height={props.shapeProps.height}
             name={props.shapeProps.name}
-
 
         >
 

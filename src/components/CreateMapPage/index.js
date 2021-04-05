@@ -152,8 +152,9 @@ const CreateMapPage = () => {
 
         // Add shape to list
         var allShapes = [...shapes];
-        allShapes.push(newShape);
 
+        allShapes.push(newShape);
+        
         // Assign new shape as attribute if activeStep is 1 and based on shapeType
         if (activeStep === 1) {
             if (shapeType === "lifts") {

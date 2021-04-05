@@ -61,14 +61,17 @@ const ViewMapCanvas = (props) => {
 
                             var shapeFill = null;
 
-                            if (shape.search) {
+                            if(shape.search) {
                                 shapeFill = '#03b1fc';
                             }
-                            else if (shape.origin) {
+                            else if(shape.origin) {
                                 shapeFill = '#03fc0f';
                             }
-                            else if (shape.destination) {
+                            else if(shape.destination) {
                                 shapeFill = '#fc03ce';
+                            }
+                            else if(shape.pathwayShape) {
+                                shapeFill = '#0000FF';
                             }
                             else {
                                 shapeFill = props.categories[shape.category].mainColour;

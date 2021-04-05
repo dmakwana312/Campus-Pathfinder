@@ -7,6 +7,7 @@ import SearchIcon from '@material-ui/icons/Search';
 
 import ViewMapCanvas from '../ViewMapCanvas';
 import firebase from '../firebase';
+import { dijkstra, getNodesInPathOrder } from '../dijkstra';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRoute } from '@fortawesome/free-solid-svg-icons'
@@ -28,11 +29,29 @@ const ViewMapPage = () => {
 
     useEffect(() => {
         var db = firebase.database();
-        var data = db.ref("MapData/-MXCqzQ3DNVYTzfiFqxr");
+        var data = db.ref("MapData/-MXXdiX7s5I61bcQRqNl");
 
         data.on('value', (snapshot) => {
-            const data = snapshot.val();
-            setMapData([...data.mapData]);
+            const data = snapshot.val();          
+
+            var shapes = [];
+
+            for(var i = 0; i < data.mapData.length; i++){
+                data.mapData[i].index = i;
+                if(data.mapData[i].name === "path"){
+                    shapes.unshift(data.mapData[i]);
+                }
+                else{
+                    shapes.push(data.mapData[i]);
+                }
+
+            }
+
+            
+
+
+
+            setMapData([...shapes]);
             setCategories([...data.categories]);
         });
     }, [])
@@ -47,6 +66,7 @@ const ViewMapPage = () => {
                 data[i].search = false;
                 data[i].origin = false;
                 data[i].destination = false;
+                data[i].pathwayShape = false;
             }
         }
 
@@ -99,6 +119,11 @@ const ViewMapPage = () => {
         var destinationFound = false;
         
         var data = [...mapData];
+
+        for(var i = 0; i < data.length; i++){
+            data[i].pathwayShape = false;
+        }
+
         for(var i = 0; i < data.length; i++){
 
             // If label and points of origin shape are equal, set origin field to true
@@ -128,6 +153,21 @@ const ViewMapPage = () => {
             if(originFound && destinationFound) {
                 break;
             }
+        }
+
+        var visited = dijkstra(mapData, origin, destination);
+        var path = getNodesInPathOrder(visited[visited.length - 1]);
+
+        console.log(visited);
+        console.log(path);
+
+        for(var i = 0; i < path.length; i++){
+            for(var j = 0; j < data.length; j++){
+                if(path[i] === data[j].index){
+                    data[path[i]].pathwayShape = true;
+                }
+            }
+            
         }
 
         setMapData([...data]);
