@@ -60,22 +60,32 @@ const ViewMapCanvas = (props) => {
                         props.shapes.map((shape, key) => {
 
                             var shapeFill = null;
+                            var opacity = 1;
 
-                            if(shape.search) {
-                                shapeFill = '#03b1fc';
-                            }
-                            else if(shape.origin) {
-                                shapeFill = '#03fc0f';
-                            }
-                            else if(shape.destination) {
-                                shapeFill = '#fc03ce';
-                            }
-                            else if(shape.pathwayShape) {
-                                shapeFill = '#0000FF';
+                            if(props.showingResult){
+                                if(shape.search) {
+                                    shapeFill = '#03b1fc';
+                                }
+                                else if(shape.origin) {
+                                    shapeFill = '#03fc0f';
+                                }
+                                else if(shape.destination) {
+                                    shapeFill = '#fc03ce';
+                                }
+                                else if(shape.pathwayShape) {
+                                    shapeFill = '#0000FF';
+                                }
+                                else{ 
+                                    shapeFill = props.categories[shape.category].mainColour;
+                                    opacity = 0.5;
+                                }
+                                
                             }
                             else {
                                 shapeFill = props.categories[shape.category].mainColour;
                             }
+
+                            
 
                             return (
                                 <ViewShape
@@ -83,6 +93,7 @@ const ViewMapCanvas = (props) => {
                                     shapeProps={shape}
                                     shapeColour={shapeFill}
                                     fontColour={props.categories[shape.category].fontColour}
+                                    opacity={opacity}
                                 />
                             );
                         })

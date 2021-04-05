@@ -3,9 +3,7 @@ import { Rect, Group, Text, Transformer, Line, Tag } from 'react-konva';
 
 const ViewShape = (props) => {  
 
-
     return (
-
 
         <Group
             shapePoints={props.shapeProps.points}
@@ -20,6 +18,7 @@ const ViewShape = (props) => {
             width={props.shapeProps.width}
             height={props.shapeProps.height}
             name={props.shapeProps.name}
+            opacity={props.opacity}
 
         >
 

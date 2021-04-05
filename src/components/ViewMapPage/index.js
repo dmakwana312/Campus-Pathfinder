@@ -26,6 +26,7 @@ const ViewMapPage = () => {
     const [search, setSearch] = useState(null);
     const [origin, setOrigin] = useState(null);
     const [destination, setDestination] = useState(null);
+    const [showingResult, setShowingResult] = useState(false);
 
     useEffect(() => {
         var db = firebase.database();
@@ -34,24 +35,12 @@ const ViewMapPage = () => {
         data.on('value', (snapshot) => {
             const data = snapshot.val();          
 
-            var shapes = [];
-
             for(var i = 0; i < data.mapData.length; i++){
                 data.mapData[i].index = i;
-                if(data.mapData[i].name === "path"){
-                    shapes.unshift(data.mapData[i]);
-                }
-                else{
-                    shapes.push(data.mapData[i]);
-                }
 
             }
 
-            
-
-
-
-            setMapData([...shapes]);
+            setMapData([...data.mapData]);
             setCategories([...data.categories]);
         });
     }, [])
@@ -109,6 +98,7 @@ const ViewMapPage = () => {
         }
 
         setMapData([...data]);
+        setShowingResult(true);
     }
 
     // Get directions
@@ -171,7 +161,14 @@ const ViewMapPage = () => {
         }
 
         setMapData([...data]);
+        setShowingResult(true);
 
+    }
+
+    function backButtonHandler(){
+        textfieldShowHandler(0); 
+        resetShapes();
+        setShowingResult(false);
     }
 
     return (
@@ -197,7 +194,7 @@ const ViewMapPage = () => {
                 {showTextFields && showSearchTextField &&
 
                     <React.Fragment>
-                        <Fab color="secondary" variant="extended" className={classes.paperComponent} onClick={() => textfieldShowHandler(0)}>
+                        <Fab color="secondary" variant="extended" className={classes.paperComponent} onClick={backButtonHandler}>
                             <FontAwesomeIcon icon={faChevronCircleLeft} style={{ fontSize: 17, marginRight: 5 }} />
                             Back
                         </Fab>
@@ -246,7 +243,7 @@ const ViewMapPage = () => {
                 {showTextFields && showDirectionTextFields &&
 
                     <React.Fragment>
-                        <Fab color="secondary" variant="extended" className={classes.paperComponent} onClick={() => textfieldShowHandler(0)}>
+                        <Fab color="secondary" variant="extended" className={classes.paperComponent} onClick={backButtonHandler}>
                             <FontAwesomeIcon icon={faChevronCircleLeft} style={{ fontSize: 17, marginRight: 5 }} />
                             Back
                         </Fab>
@@ -326,7 +323,7 @@ const ViewMapPage = () => {
                 }
             </div>
 
-            <ViewMapCanvas shapes={mapData} categories={categories} />
+            <ViewMapCanvas showingResult={showingResult} shapes={mapData} categories={categories} />
 
         </React.Fragment>
 
