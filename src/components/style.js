@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(1),
         padding: theme.spacing(2),
     },
-    paperButton: {
+    paperComponent: {
         margin: theme.spacing(1),
     },
     // Appbar styling
