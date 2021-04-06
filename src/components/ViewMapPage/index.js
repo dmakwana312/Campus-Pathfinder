@@ -9,6 +9,7 @@ import ViewMapCanvas from '../ViewMapCanvas';
 import firebase from '../firebase';
 import { dijkstra, getNodesInPathOrder } from '../dijkstra';
 import ViewBuildingModal from '../ViewBuildingModal';
+import CategoryLegend from '../CategoryLegend';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRoute } from '@fortawesome/free-solid-svg-icons'
@@ -36,22 +37,22 @@ const ViewMapPage = () => {
         var data = db.ref("MapData/-MXabwvzdl1pdWImFfNa");
 
         data.on('value', (snapshot) => {
-            const data = snapshot.val();          
+            const data = snapshot.val();
 
-            for(var i = 0; i < data.mapData.length; i++){
+            for (var i = 0; i < data.mapData.length; i++) {
                 data.mapData[i].index = i;
-                if(data.mapData[i].name === "building"){
-                    for(var j = 0; j < data.mapData[i].internal.length; j++){
-                        if(data.mapData[i].internal[j][0] === "empty"){
+                if (data.mapData[i].name === "building") {
+                    for (var j = 0; j < data.mapData[i].internal.length; j++) {
+                        if (data.mapData[i].internal[j][0] === "empty") {
                             data.mapData[i].internal[j][0] = [];
                         }
                     }
-    
-                    if(data.mapData[i].lifts[0] === "empty"){
+
+                    if (data.mapData[i].lifts[0] === "empty") {
                         data.mapData[i].lifts = [];
                     }
-    
-                    if(data.mapData[i].stairs[0] === "empty"){
+
+                    if (data.mapData[i].stairs[0] === "empty") {
                         data.mapData[i].stairs = [];
                     }
                 }
@@ -63,12 +64,12 @@ const ViewMapPage = () => {
     }, [])
 
     // Reset search, origin and destination attibutes for all buildings
-    function resetShapes(){
+    function resetShapes() {
 
         var data = mapData;
 
-        for(var i = 0; i < data.length; i++){
-            if(data[i].name === "building"){
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].name === "building") {
                 data[i].search = false;
                 data[i].origin = false;
                 data[i].destination = false;
@@ -99,12 +100,12 @@ const ViewMapPage = () => {
     }
 
     // Search for building
-    function searchFunction(){
+    function searchFunction() {
         resetShapes();
-        
+
         var data = [...mapData];
-        for(var i = 0; i < data.length; i++){
-            if(search.index === mapData[i].index){
+        for (var i = 0; i < data.length; i++) {
+            if (search.index === mapData[i].index) {
                 data[i].search = true;
                 break;
             }
@@ -115,35 +116,35 @@ const ViewMapPage = () => {
     }
 
     // Get directions
-    function getDirectionsFunction(){
+    function getDirectionsFunction() {
         resetShapes();
 
         var originFound = false;
         var destinationFound = false;
-        
+
         var data = [...mapData];
 
-        for(var i = 0; i < data.length; i++){
+        for (var i = 0; i < data.length; i++) {
             data[i].pathwayShape = false;
         }
 
-        for(var i = 0; i < data.length; i++){
+        for (var i = 0; i < data.length; i++) {
 
             // If label and points of origin shape are equal, set origin field to true
-            if(!originFound && origin.index === mapData[i].index){
-                data[i].origin = true; 
-                originFound = true;         
+            if (!originFound && origin.index === mapData[i].index) {
+                data[i].origin = true;
+                originFound = true;
             }
 
 
             // If label and points of destination shape are equal, set destination field to true
-            if(!destinationFound && destination.index === mapData[i].index){
-                data[i].destination = true; 
-                destinationFound = true;         
+            if (!destinationFound && destination.index === mapData[i].index) {
+                data[i].destination = true;
+                destinationFound = true;
             }
 
             // If origin and destination found, break from loop
-            if(originFound && destinationFound) {
+            if (originFound && destinationFound) {
                 break;
             }
         }
@@ -151,13 +152,13 @@ const ViewMapPage = () => {
         var visited = dijkstra(mapData, origin, destination);
         var path = getNodesInPathOrder(visited[visited.length - 1]);
 
-        for(var i = 0; i < path.length; i++){
-            for(var j = 0; j < data.length; j++){
-                if(path[i] === data[j].index){
+        for (var i = 0; i < path.length; i++) {
+            for (var j = 0; j < data.length; j++) {
+                if (path[i] === data[j].index) {
                     data[path[i]].pathwayShape = true;
                 }
             }
-            
+
         }
 
         setMapData([...data]);
@@ -165,14 +166,14 @@ const ViewMapPage = () => {
 
     }
 
-    function backButtonHandler(){
-        textfieldShowHandler(0); 
+    function backButtonHandler() {
+        textfieldShowHandler(0);
         resetShapes();
         setShowingResult(false);
     }
-    
+
     function buildingClickHandler(buildingIndex) {
-        
+
         setBuildingClicked(buildingIndex);
         setShowBuildingModal(true);
     }
@@ -225,7 +226,7 @@ const ViewMapPage = () => {
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
-                                        style={{padding: 0, margin: 0}}
+                                        style={{ padding: 0, margin: 0 }}
                                         label="Search For A Building"
                                         variant="outlined"
                                         inputProps={{
@@ -285,7 +286,7 @@ const ViewMapPage = () => {
                             />
                         }
 
-                        
+
 
                         {mapData &&
                             <Autocomplete
@@ -295,7 +296,7 @@ const ViewMapPage = () => {
                                     return shape.name === "building";
                                 })}
                                 autoHighlight
-                                
+
                                 getOptionLabel={(option) => option.label}
                                 renderOption={(option) => (
                                     option.label
@@ -318,7 +319,7 @@ const ViewMapPage = () => {
                             />
                         }
 
-                        
+
 
                         <Fab color="primary" variant="extended" className={classes.paperComponent} onClick={getDirectionsFunction}>
                             <FontAwesomeIcon icon={faRoute} style={{ fontSize: 17, marginRight: 5 }} />
@@ -330,10 +331,12 @@ const ViewMapPage = () => {
             </div>
 
             <ViewMapCanvas clickHandler={buildingClickHandler} showingResult={showingResult} shapes={mapData} categories={categories} />
-            
+
             {showBuildingModal &&
-                <ViewBuildingModal handleClose={() => {setShowBuildingModal(false)}} building={mapData[buildingClicked]} categories={categories}/>
+                <ViewBuildingModal handleClose={() => { setShowBuildingModal(false) }} building={mapData[buildingClicked]} categories={categories} />
             }
+
+            {categories !== null && <CategoryLegend categories={categories} />}
 
         </React.Fragment>
 
