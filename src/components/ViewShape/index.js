@@ -17,7 +17,7 @@ const ViewShape = (props) => {
 
     if(props.shapeProps.name === "building"){
         mouseHandlerProps = {
-            onClick: props.clickHandler,
+            onClick: () => props.clickHandler(props.shapeProps.index),
             onMouseEnter: mouseEnter,
             onMouseLeave: mouseLeave
 
@@ -40,7 +40,6 @@ const ViewShape = (props) => {
             height={props.shapeProps.height}
             name={props.shapeProps.name}
             opacity={props.opacity}
-            onClick={props.clickHandler}
             {...mouseHandlerProps}
 
             

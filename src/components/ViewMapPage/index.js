@@ -8,6 +8,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import ViewMapCanvas from '../ViewMapCanvas';
 import firebase from '../firebase';
 import { dijkstra, getNodesInPathOrder } from '../dijkstra';
+import ViewBuildingModal from '../ViewBuildingModal';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRoute } from '@fortawesome/free-solid-svg-icons'
@@ -27,17 +28,33 @@ const ViewMapPage = () => {
     const [origin, setOrigin] = useState(null);
     const [destination, setDestination] = useState(null);
     const [showingResult, setShowingResult] = useState(false);
+    const [showBuildingModal, setShowBuildingModal] = useState(false);
+    const [buildingClicked, setBuildingClicked] = useState(null);
 
     useEffect(() => {
         var db = firebase.database();
-        var data = db.ref("MapData/-MXXdiX7s5I61bcQRqNl");
+        var data = db.ref("MapData/-MXabwvzdl1pdWImFfNa");
 
         data.on('value', (snapshot) => {
             const data = snapshot.val();          
 
             for(var i = 0; i < data.mapData.length; i++){
                 data.mapData[i].index = i;
-
+                if(data.mapData[i].name === "building"){
+                    for(var j = 0; j < data.mapData[i].internal.length; j++){
+                        if(data.mapData[i].internal[j][0] === "empty"){
+                            data.mapData[i].internal[j][0] = [];
+                        }
+                    }
+    
+                    if(data.mapData[i].lifts[0] === "empty"){
+                        data.mapData[i].lifts = [];
+                    }
+    
+                    if(data.mapData[i].stairs[0] === "empty"){
+                        data.mapData[i].stairs = [];
+                    }
+                }
             }
 
             setMapData([...data.mapData]);
@@ -152,6 +169,12 @@ const ViewMapPage = () => {
         textfieldShowHandler(0); 
         resetShapes();
         setShowingResult(false);
+    }
+    
+    function buildingClickHandler(buildingIndex) {
+        
+        setBuildingClicked(buildingIndex);
+        setShowBuildingModal(true);
     }
 
     return (
@@ -306,7 +329,11 @@ const ViewMapPage = () => {
                 }
             </div>
 
-            <ViewMapCanvas showingResult={showingResult} shapes={mapData} categories={categories} />
+            <ViewMapCanvas clickHandler={buildingClickHandler} showingResult={showingResult} shapes={mapData} categories={categories} />
+            
+            {showBuildingModal &&
+                <ViewBuildingModal handleClose={() => {setShowBuildingModal(false)}} building={mapData[buildingClicked]} categories={categories}/>
+            }
 
         </React.Fragment>
 

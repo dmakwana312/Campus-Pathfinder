@@ -154,7 +154,7 @@ const CreateMapPage = () => {
         var allShapes = [...shapes];
 
         allShapes.push(newShape);
-        
+
         // Assign new shape as attribute if activeStep is 1 and based on shapeType
         if (activeStep === 1) {
             if (shapeType === "lifts") {
@@ -738,10 +738,13 @@ const CreateMapPage = () => {
         floorShapes = floorShapes.concat(floorShapes, savedShapes[buildingBeingViewed].lifts);
         floorShapes = floorShapes.concat(floorShapes, savedShapes[buildingBeingViewed].stairs);
 
-        // Add entrance to floorShapes if it is on the same floor
-        if (savedShapes[buildingBeingViewed].entrance.floorNumber === floorNumber) {
-            floorShapes.push(savedShapes[buildingBeingViewed].entrance);
+        if (savedShapes[buildingBeingViewed].entrance !== null) {
+            // Add entrance to floorShapes if it is on the same floor
+            if (savedShapes[buildingBeingViewed].entrance.floorNumber === floorNumber) {
+                floorShapes.push(savedShapes[buildingBeingViewed].entrance);
+            }
         }
+
 
         // Update shapes state
         setShapes(floorShapes);
@@ -760,14 +763,45 @@ const CreateMapPage = () => {
     }
 
     // Function to save map to firebase
-    function saveMap(){
+    function saveMap() {
+
+        for (var i = 0; i < savedShapes.length; i++) {
+            if (savedShapes[i].name === "building") {
+                for (var j = 0; j < savedShapes[i].internal.length; j++) {
+                    if (savedShapes[i].internal[j].length === 0) {
+                        savedShapes[i].internal[j].push("empty");
+                    }
+                }
+
+                if (savedShapes[i].lifts.length === 0) {
+                    savedShapes[i].lifts.push("empty");
+                }
+                if (savedShapes[i].stairs.length === 0) {
+                    savedShapes[i].stairs.push("empty");
+                }
+
+                console.log(savedShapes[i].internal);
+                console.log(savedShapes[i].lifts);
+                console.log(savedShapes[i].stairs);
+                console.log("kdsjnk");
+
+            }
+
+
+            // if(savedShapes[i].internal.length === 0){
+            //     savedShapes[i].internal.push(null);
+            // }
+
+
+
+        }
 
         // Combine map name, categories and mapdata in to single object
         var mapData = {
             mapName: mapName,
             categories: objectCategories,
             mapData: savedShapes
-            
+
         }
 
         // Push data to database
@@ -775,14 +809,14 @@ const CreateMapPage = () => {
         var ref = db.ref("MapData");
         var key = ref.push(mapData);
 
-        // var data = db.ref("MapData/" + key.key);
+        var data = db.ref("MapData/-MXaS0e6J5M7xETEaft6");
+        // console.log(savedShapes)
+        data.on('value', (snapshot) => {
+            const data = snapshot.val();
+            // console.log(data.mapData);
+            // setSavedShapes([...data.mapData]);
+        });
 
-        // data.on('value', (snapshot) => {
-        //     const data = snapshot.val();
-        //     console.log(data.mapName);
-        //     setSavedShapes([...data.mapData]);
-        // });
-        
     }
 
     return (
@@ -840,9 +874,9 @@ const CreateMapPage = () => {
                     aria-describedby="simple-modal-description"
                 >
                     <div className={classes.modalContent}>
-                    <h2>View Categories</h2>
+                        <h2>View Categories</h2>
                         <TableContainer component={Paper}>
-                            
+
                             <Table className={classes.table} aria-label="simple table">
                                 <TableHead>
                                     <TableRow>
