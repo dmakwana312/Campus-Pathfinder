@@ -31,6 +31,16 @@ const ViewMapPage = () => {
     const [showingResult, setShowingResult] = useState(false);
     const [showBuildingModal, setShowBuildingModal] = useState(false);
     const [buildingClicked, setBuildingClicked] = useState(null);
+    const [options, setOptions] = useState([]);
+
+
+    useEffect(() => {
+        if(!showBuildingModal && mapData != null){
+            setShowingResult(false);
+            resetShapes();
+        }
+        
+    }, [showBuildingModal])
 
     useEffect(() => {
         var db = firebase.database();
@@ -39,12 +49,24 @@ const ViewMapPage = () => {
         data.on('value', (snapshot) => {
             const data = snapshot.val();
 
+            var index = 0;
+
+            var searchOptions = [];
+
             for (var i = 0; i < data.mapData.length; i++) {
-                data.mapData[i].index = i;
+
                 if (data.mapData[i].name === "building") {
+                    searchOptions.push(data.mapData[i]);
                     for (var j = 0; j < data.mapData[i].internal.length; j++) {
                         if (data.mapData[i].internal[j][0] === "empty") {
                             data.mapData[i].internal[j][0] = [];
+                        }
+                        else {
+                            for (var k = 0; k < data.mapData[i].internal[j].length; k++) {
+                                if (data.mapData[i].internal[j][k].name === "room") {
+                                    searchOptions.push(data.mapData[i].internal[j][k]);
+                                }
+                            }
                         }
                     }
 
@@ -58,10 +80,36 @@ const ViewMapPage = () => {
                 }
             }
 
+            for (var i = 0; i < data.mapData.length; i++) {
+                data.mapData[i].index = index++;
+                if (data.mapData[i].name === "building") {
+                    if (data.mapData[i].entrance !== null) {
+                        data.mapData[i].entrance.index = index++;
+                    }
+
+                    for (var j = 0; j < data.mapData[i].internal.length; j++) {
+                        for (var k = 0; k < data.mapData[i].internal[j].length; k++) {
+                            data.mapData[i].internal[j][k].index = index++;
+                        }
+                    }
+
+                    for (var j = 0; j < data.mapData[i].lifts.length; j++) {
+                        data.mapData[i].lifts[j].index = index++;
+                    }
+
+                    for (var j = 0; j < data.mapData[i].stairs.length; j++) {
+                        data.mapData[i].stairs[j].index = index++;
+                    }
+                }
+
+            }
+
             setMapData([...data.mapData]);
             setCategories([...data.categories]);
+            setOptions([...searchOptions]);
         });
     }, [])
+    
 
     // Reset search, origin and destination attibutes for all buildings
     function resetShapes() {
@@ -75,6 +123,18 @@ const ViewMapPage = () => {
                 data[i].destination = false;
                 data[i].pathwayShape = false;
             }
+
+            for(var j = 0; j < data[i].internal.length; j++){
+                for(var k = 0; data[i].internal[j].length; j++){
+                    if(data[i].internal[j][k].name === "room"){
+                        data[i].internal[j][k].search = false;
+                        data[i].internal[j][k].origin = false;
+                        data[i].internal[j][k].destination = false;
+                        data[i].internal[j][k].pathwayShape = false;
+                    }
+                }
+            }
+            
         }
 
         setMapData([...data]);
@@ -104,15 +164,39 @@ const ViewMapPage = () => {
         resetShapes();
 
         var data = [...mapData];
-        for (var i = 0; i < data.length; i++) {
-            if (search.index === mapData[i].index) {
-                data[i].search = true;
-                break;
+        if (search.name === "building") {
+            for (var i = 0; i < data.length; i++) {
+                if (search.index === mapData[i].index) {
+                    data[i].search = true;
+                    break;
+                }
             }
         }
 
+        if (search.name === "room") {
+
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].name === "building") {
+                    for (var j = 0; j < data[i].internal.length; j++) {
+                        for (var k = 0; k < data[i].internal[j].length; k++) {
+                            if (data[i].internal[j][k].index === search.index) {
+                                console.log("found");
+                                data[i].internal[j][k].search = true;
+                                setBuildingClicked(data[i].index);
+                                setShowBuildingModal(true);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            
+        }
+
+
         setMapData([...data]);
         setShowingResult(true);
+
     }
 
     // Get directions
@@ -212,9 +296,7 @@ const ViewMapPage = () => {
                             <Autocomplete
                                 className={classes.paperComponent}
                                 style={{ width: 300, backgroundColor: "white" }}
-                                options={mapData.filter(function (shape) {
-                                    return shape.name === "building";
-                                })}
+                                options={options}
                                 autoHighlight
                                 getOptionLabel={(option) => option.label}
                                 renderOption={(option) => (
@@ -261,9 +343,7 @@ const ViewMapPage = () => {
                             <Autocomplete
                                 className={classes.paperComponent}
                                 style={{ width: 300, backgroundColor: "white" }}
-                                options={mapData.filter(function (shape) {
-                                    return shape.name === "building";
-                                })}
+                                options={options}
                                 autoHighlight
                                 getOptionLabel={(option) => option.label}
                                 renderOption={(option) => (
@@ -292,9 +372,7 @@ const ViewMapPage = () => {
                             <Autocomplete
                                 className={classes.paperComponent}
                                 style={{ width: 300, backgroundColor: "white" }}
-                                options={mapData.filter(function (shape) {
-                                    return shape.name === "building";
-                                })}
+                                options={options}
                                 autoHighlight
 
                                 getOptionLabel={(option) => option.label}
@@ -333,7 +411,7 @@ const ViewMapPage = () => {
             <ViewMapCanvas clickHandler={buildingClickHandler} showingResult={showingResult} shapes={mapData} categories={categories} />
 
             {showBuildingModal &&
-                <ViewBuildingModal handleClose={() => { setShowBuildingModal(false) }} building={mapData[buildingClicked]} categories={categories} />
+                <ViewBuildingModal handleClose={() => { setShowBuildingModal(false) }} building={mapData[buildingClicked]} categories={categories} showingResult={showingResult} />
             }
 
             {categories !== null && <CategoryLegend categories={categories} />}

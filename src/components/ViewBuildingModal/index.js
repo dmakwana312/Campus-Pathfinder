@@ -85,6 +85,8 @@ const ViewBuildingModal = (props) => {
                             colNumber += 1;
                             floorNumber++;
 
+
+
                             return (
                                 <React.Fragment>
                                     <Text
@@ -105,6 +107,38 @@ const ViewBuildingModal = (props) => {
 
 
                                     {props.building.internal[floorNumber - 1].map((shape, key) => {
+
+                                        var shapeFill = null;
+                                        var opacity = 1;
+
+
+
+                                        if (props.showingResult) {
+                                            console.log(shape);
+                                            if (shape.search) {
+                                                shapeFill = '#03b1fc';
+                                            }
+                                            else if (shape.origin) {
+                                                shapeFill = '#03fc0f';
+                                            }
+                                            else if (shape.destination) {
+                                                shapeFill = '#fc03ce';
+                                            }
+                                            else if (shape.pathwayShape) {
+                                                shapeFill = '#0000FF';
+                                            }
+                                            else {
+                                                shapeFill = props.categories[shape.category].mainColour;
+                                                opacity = 0.6;
+                                            }
+
+                                        }
+                                        else {
+                                            shapeFill = props.categories[shape.category].mainColour;
+                                        }
+
+                                        console.log(shapeFill)
+
                                         return (
                                             <React.Fragment>
                                                 <Rect
@@ -112,7 +146,8 @@ const ViewBuildingModal = (props) => {
                                                     y={shape.y - props.building.y + y}
                                                     width={shape.width}
                                                     height={shape.height}
-                                                    fill={props.categories[shape.category].mainColour}
+                                                    fill={shapeFill}
+                                                    opacity={opacity}
 
                                                 />
                                                 <Text
@@ -126,6 +161,7 @@ const ViewBuildingModal = (props) => {
                                                     fill={props.categories[shape.category].fontColour}
                                                     verticalAlign="middle"
                                                     align={shape.textAlign}
+                                                    opacity={opacity}
                                                 />
 
                                             </React.Fragment>
