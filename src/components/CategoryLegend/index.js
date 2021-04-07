@@ -5,20 +5,11 @@ import { useStyles } from '../style.js';
 
 const CategoryLegend = (props) => {
     const classes = useStyles();
-   
+
     return (
         <Paper className={classes.paper} style={{ width: 150, top: 0, right: 0 }} elevation={10}>
             <div>
-                {props.categories.map((category, key) => {
-                    return (
-                        <React.Fragment>
-                            <div style={{ margin: 10, float: "left", border: "1px solid black", height: "10px", width: "10px", backgroundColor: category.mainColour }} />
-                            <p style={{ paddingTop: 5 }}> {category.categoryName}</p>
-                        </React.Fragment>
 
-                    );
-
-                })}
                 <div style={{ margin: 10, float: "left", border: "1px solid black", height: "10px", width: "10px", backgroundColor: "#03b1fc" }} />
                 <p style={{ paddingTop: 5 }}> Search Result</p>
 
@@ -30,6 +21,18 @@ const CategoryLegend = (props) => {
 
                 <div style={{ margin: 10, float: "left", border: "1px solid black", height: "10px", width: "10px", backgroundColor: "#0000FF" }} />
                 <p style={{ paddingTop: 5 }}> Route</p>
+
+                {props.categories.map((category, key) => {
+                    return (
+                        <React.Fragment>
+                            <div style={{ margin: 10, float: "left", border: "1px solid black", height: "10px", width: "10px", backgroundColor: category.mainColour }} />
+                            <p style={{ paddingTop: 5 }}> {category.categoryName}</p>
+                        </React.Fragment>
+
+                    );
+
+                })}
+
 
             </div>
         </Paper>
