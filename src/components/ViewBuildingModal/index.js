@@ -137,8 +137,6 @@ const ViewBuildingModal = (props) => {
                                             shapeFill = props.categories[shape.category].mainColour;
                                         }
 
-                                        console.log(shapeFill)
-
                                         return (
                                             <React.Fragment>
                                                 <Rect
@@ -179,6 +177,7 @@ const ViewBuildingModal = (props) => {
                                                     width={shape.width}
                                                     height={shape.height}
                                                     fill={props.categories[shape.category].mainColour}
+                                                    opacity={props.showingResult ? 0.6 : 1}
 
                                                 />
                                             );
@@ -195,6 +194,7 @@ const ViewBuildingModal = (props) => {
                                                     width={shape.width}
                                                     height={shape.height}
                                                     fill={props.categories[shape.category].mainColour}
+                                                    opacity={props.showingResult ? 0.6 : 1}
 
                                                 />
                                             );
@@ -210,6 +210,7 @@ const ViewBuildingModal = (props) => {
                                             width={props.building.entrance.width}
                                             height={props.building.entrance.height}
                                             fill={props.categories[props.building.entrance.category].mainColour}
+                                            opacity={props.showingResult ? 0.6 : 1}
 
                                         />
 
