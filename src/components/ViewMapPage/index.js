@@ -10,6 +10,7 @@ import firebase from '../firebase';
 import { dijkstra_buildingToBuilding, dijkstra_roomToEntrance, getNodesInPathOrder } from '../dijkstra';
 import ViewBuildingModal from '../ViewBuildingModal';
 import CategoryLegend from '../CategoryLegend';
+import RouteFinderCarousel from '../RouteFinderCarousel';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRoute } from '@fortawesome/free-solid-svg-icons'
@@ -32,6 +33,8 @@ const ViewMapPage = () => {
     const [showBuildingModal, setShowBuildingModal] = useState(false);
     const [buildingClicked, setBuildingClicked] = useState(null);
     const [options, setOptions] = useState([]);
+    const [showRouteFinderCarousel, setShowRouteFinderCarousel] = useState(false);
+    const [pathwayShapes, setPathwayShapes] = useState([]);
 
 
     useEffect(() => {
@@ -40,7 +43,7 @@ const ViewMapPage = () => {
             resetShapes();
         }
 
-    }, [showBuildingModal])
+    }, [showBuildingModal, showRouteFinderCarousel])
 
     useEffect(() => {
         var db = firebase.database();
@@ -239,8 +242,8 @@ const ViewMapPage = () => {
 
             for (var i = 0; i < path.length; i++) {
                 for (var j = 0; j < data.length; j++) {
-                    if (path[i] === data[j].index) {
-                        data[path[i]].pathwayShape = true;
+                    if (path[i][0].index === data[j].index && path[i][0].name === data[j].name) {
+                        data[j].pathwayShape = true;
                     }
                 }
 
@@ -248,19 +251,14 @@ const ViewMapPage = () => {
 
             setMapData([...data]);
             setShowingResult(true);
+            return;
+
         }
+        else {
+            var nodesInPathwayOrder = [];
+            var originBuilding = null;
+            var destinationBuilding = null;
 
-        var nodesInPathwayOrder = [];
-        var originBuilding = null;
-        var destinationBuilding = null;
-
-        if(origin.name === "room")
-        {
-            var nodes = dijkstra_roomToEntrance(mapData, origin);
-            nodesInPathwayOrder.push(getNodesInPathOrder(nodes[nodes.length - 1]));
-    
-            
-    
             for (var i = 0; i < mapData.length; i++) {
                 if (mapData[i].name === "building") {
                     for (var j = 0; j < mapData[i].internal.length; j++) {
@@ -278,18 +276,44 @@ const ViewMapPage = () => {
                     }
                 }
             }
-    
-        }
 
-        if(destination.name === "building"){
-            var nodes = dijkstra_buildingToBuilding(mapData, originBuilding, destination);
-            nodesInPathwayOrder.push(getNodesInPathOrder(nodes[nodes.length - 1]));
-        }
+            if (origin.name === "room" && destination.name === "room") {
+                var nodes = dijkstra_roomToEntrance(mapData, origin);
+                nodesInPathwayOrder.push(getNodesInPathOrder(nodes[nodes.length - 1]));
 
-        else if(destination.name === "room"){
-            var nodes = dijkstra_roomToEntrance(mapData, destination);
-            nodesInPathwayOrder.push(getNodesInPathOrder(nodes[nodes.length - 1]));
-        }    
+                nodes = dijkstra_buildingToBuilding(mapData, originBuilding, destinationBuilding);
+                nodesInPathwayOrder.push(getNodesInPathOrder(nodes[nodes.length - 1]));
+
+                nodes = dijkstra_roomToEntrance(mapData, destination);
+                nodesInPathwayOrder.push(getNodesInPathOrder(nodes[nodes.length - 1]));
+
+
+
+            }
+            else if (origin.name === "room" && destination.name === "building") {
+                var nodes = dijkstra_roomToEntrance(mapData, origin);
+                nodesInPathwayOrder.push(getNodesInPathOrder(nodes[nodes.length - 1]));
+
+                nodes = dijkstra_buildingToBuilding(mapData, originBuilding, destination);
+                nodesInPathwayOrder.push(getNodesInPathOrder(nodes[nodes.length - 1]));
+
+            }
+            else if (origin.name === "building" && destination.name === "room") {
+                nodes = dijkstra_buildingToBuilding(mapData, origin, destinationBuilding);
+                nodesInPathwayOrder.push(getNodesInPathOrder(nodes[nodes.length - 1]));
+
+                nodes = dijkstra_roomToEntrance(mapData, destination);
+                nodesInPathwayOrder.push(getNodesInPathOrder(nodes[nodes.length - 1]));
+
+            }
+
+            setShowingResult(true);
+            setShowRouteFinderCarousel(true);
+
+            setPathwayShapes([...nodesInPathwayOrder]);
+
+
+        }
 
     }
 
@@ -300,7 +324,6 @@ const ViewMapPage = () => {
     }
 
     function buildingClickHandler(buildingIndex) {
-        console.log(mapData[buildingIndex]);
         for (var i = 0; i < mapData.length; i++) {
             if (mapData[i].index === buildingIndex) {
                 setBuildingClicked(i);
@@ -463,6 +486,10 @@ const ViewMapPage = () => {
 
             {showBuildingModal &&
                 <ViewBuildingModal handleClose={() => { setShowBuildingModal(false) }} building={mapData[buildingClicked]} categories={categories} showingResult={showingResult} />
+            }
+
+            {showRouteFinderCarousel &&
+                <RouteFinderCarousel pathway={pathwayShapes} origin={origin} destination={destination} mapData={mapData} categories={categories} handleClose={() => { setShowRouteFinderCarousel(false) }} />
             }
 
             {categories !== null && <CategoryLegend categories={categories} />}

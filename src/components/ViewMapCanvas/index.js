@@ -44,8 +44,8 @@ const ViewMapCanvas = (props) => {
     return (
         <Stage
             className={classes.viewMapCanvas}
-            width={document.documentElement.clientWidth}
-            height={document.documentElement.clientHeight}
+            width={props.width === undefined ? document.documentElement.clientWidth : props.width}
+            height={props.height === undefined ? document.documentElement.clientHeight : props.height}
             onWheel={handleWheel}
             scaleX={stageScale}
             scaleY={stageScale}

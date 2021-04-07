@@ -83,8 +83,6 @@ export function dijkstra_roomToEntrance(mapData, start) {
         updateUnvisitedNeighbours(unvisitedNodes[currentFloor], closestNode);
     }
 
-    
-   
     return visitedNodesInOrder;
 
 }
@@ -97,11 +95,6 @@ export function getNodesInPathOrder(finish) {
         nodeInPathOrder.unshift(currentNode);
         currentNode = currentNode[3];
     }
-
-    for (var i = 0; i < nodeInPathOrder.length; i++) {
-        nodeInPathOrder[i] = nodeInPathOrder[i][0].index;
-    }
-
 
     return nodeInPathOrder;
 }
