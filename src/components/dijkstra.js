@@ -5,11 +5,11 @@ import { isColliding } from './collisionDetection';
 // visited
 // previousShape
 
-export function dijkstra(shapes, start, finish) {
+export function dijkstra_buildingToBuilding(shapes, start, finish) {
 
     var visitedNodesInOrder = [];
     var unvisitedNodes = getAllNodes(shapes, start);
-
+    
     while (unvisitedNodes.length) {
 
         sortNodesByDistance(unvisitedNodes);
@@ -28,6 +28,67 @@ export function dijkstra(shapes, start, finish) {
     return visitedNodesInOrder;
 }
 
+export function dijkstra_roomToEntrance(mapData, start) {
+    var visitedNodesInOrder = [];
+    var unvisitedNodes = getBuildingNodes(mapData, start);
+
+    var floorWithEntrance = -1;
+    var floorWithNode = -1;
+    var currentFloor = -1;
+    
+    for (var i = 0; i < unvisitedNodes.length; i++) {
+        for (var j = 0; j < unvisitedNodes[i].length; j++) {
+            if (unvisitedNodes[i][j][0].name === "entrance") {
+                floorWithEntrance = i;
+            }
+            else if (start.index === unvisitedNodes[i][j][0].index) {
+                floorWithNode = i
+                unvisitedNodes[i][j][1] = 0;
+            }
+        }
+    }
+
+    currentFloor = floorWithNode;
+
+    var lift = null;
+
+    while (unvisitedNodes[currentFloor].length) {
+        sortNodesByDistance(unvisitedNodes[currentFloor]);
+        var closestNode = unvisitedNodes[currentFloor].shift();
+        closestNode[2] = true;
+        visitedNodesInOrder.push(closestNode);
+
+        if (closestNode[0].name === "lifts" && closestNode[0].floors[floorWithEntrance]) {
+            lift = closestNode[0];
+            break;
+        }
+
+        updateUnvisitedNeighbours(unvisitedNodes[currentFloor], closestNode);
+    }
+
+    currentFloor = floorWithEntrance;
+
+    updateUnvisitedNeighbours(unvisitedNodes[currentFloor], visitedNodesInOrder[visitedNodesInOrder.length - 1])
+
+    while (unvisitedNodes[currentFloor].length) {
+        sortNodesByDistance(unvisitedNodes[currentFloor]);
+        var closestNode = unvisitedNodes[currentFloor].shift();
+        closestNode[2] = true;
+        visitedNodesInOrder.push(closestNode);
+
+        if (closestNode[0].name === "entrance") {
+            break;
+        }
+
+        updateUnvisitedNeighbours(unvisitedNodes[currentFloor], closestNode);
+    }
+
+    
+   
+    return visitedNodesInOrder;
+
+}
+
 export function getNodesInPathOrder(finish) {
 
     var nodeInPathOrder = [];
@@ -37,7 +98,7 @@ export function getNodesInPathOrder(finish) {
         currentNode = currentNode[3];
     }
 
-    for(var i = 0; i < nodeInPathOrder.length; i++){
+    for (var i = 0; i < nodeInPathOrder.length; i++) {
         nodeInPathOrder[i] = nodeInPathOrder[i][0].index;
     }
 
@@ -49,7 +110,6 @@ function updateUnvisitedNeighbours(shapes, node) {
     var unvisitedNeighbours = getClosestShapes(shapes, node);
 
     for (var neighbour of unvisitedNeighbours) {
-
         neighbour[1] = node[1] + 1;
         neighbour[3] = node;
 
@@ -68,9 +128,61 @@ function getAllNodes(shapes, start) {
     return allNodes;
 }
 
+function getBuildingNodes(mapData, start) {
+    var allNodes = [];
+    var building = getBuildingOfNode(mapData, start);
+
+    for (var i = 0; i < building.internal.length; i++) {
+        allNodes.push(floorToNodes(building.internal[i]))
+        
+        if (building.entrance !== undefined && building.entrance.floorNumber === i) {
+            allNodes[i].push([building.entrance, Infinity, false, null]);
+            
+        }
+
+        for (var j = 0; j < building.lifts.length; j++) {
+            if (building.lifts[j].floors[i]) {
+                allNodes[i].push([building.lifts[j], Infinity, false, null]);
+            }
+        }
+        for (var j = 0; j < building.stairs.length; j++) {
+            if (building.stairs[j].floors[i]) {
+                allNodes[i].push([building.stairs[j], Infinity, false, null]);
+            }
+        }
+        
+    }
+
+    
+
+    return allNodes;
+}
+
+function floorToNodes(floor) {
+    var nodes = [];
+    for (var i = 0; i < floor.length; i++) {
+
+        nodes.push([floor[i], Infinity, false, null]);
+    }
+    return nodes;
+}
+
+function getBuildingOfNode(mapData, node) {
+    for (var i = 0; i < mapData.length; i++) {
+        if (mapData[i].name === "building") {
+            for (var j = 0; j < mapData[i].internal.length; j++) {
+                for (var k = 0; k < mapData[i].internal[j].length; k++) {
+                    if (mapData[i].internal[j][k].index === node.index) {
+                        return mapData[i];
+                    }
+                }
+            }
+        }
+
+    }
+}
 
 function sortNodesByDistance(nodes) {
-
     nodes.sort(distanceComparator);
 
 }
@@ -82,14 +194,17 @@ function distanceComparator(nodeA, nodeB) {
 
 function getClosestShapes(shapes, start) {
     var closestShapes = [];
+
     for (var i = 0; i < shapes.length; i++) {
 
-        if (!areEqual(start[0], shapes[i][0]) && isColliding(start[0], shapes[i][0])) {
+
+        if (start[0].index !== shapes[i][0].index && isColliding(start[0], shapes[i][0])) {
             closestShapes.push(shapes[i]);
 
         }
 
-    }
+    }  
+
     return closestShapes;
 }
 
@@ -101,12 +216,9 @@ function findIndex(shapesArray, shape) {
             return i;
         }
     }
-
     return -1;
 }
 
 function areEqual(shape1, shape2) {
-    return shape1.label === shape2.label && (shape1.points.length == shape2.points.length) && shape1.points.every(function (element, index) {
-        return element === shape2.points[index];
-    });
+    return shape1.index === shape2.index;
 }

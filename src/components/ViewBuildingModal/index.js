@@ -168,32 +168,52 @@ const ViewBuildingModal = (props) => {
 
                                         );
                                     })}
-
+                                    {console.log(props.building.lifts)}
                                     {props.building.lifts.map((shape, key) => {
-                                        if (shape.floors[floorNumber - 1]) {
-                                            <Rect
-                                                x={shape.x - props.building.x + x}
-                                                y={shape.y - props.building.y + y}
-                                                width={shape.width}
-                                                height={shape.height}
-                                                fill={props.categories[shape.category].mainColour}
 
-                                            />
+                                        if (shape.floors[floorNumber - 1]) {
+                                            return (
+                                                <Rect
+                                                    x={shape.x - props.building.x + x}
+                                                    y={shape.y - props.building.y + y}
+                                                    width={shape.width}
+                                                    height={shape.height}
+                                                    fill={props.categories[shape.category].mainColour}
+
+                                                />
+                                            );
+
                                         }
                                     })}
 
                                     {props.building.stairs.map((shape, key) => {
                                         if (shape.floors[floorNumber - 1]) {
-                                            <Rect
-                                                x={shape.x - props.building.x + x}
-                                                y={shape.y - props.building.y + y}
-                                                width={shape.width}
-                                                height={shape.height}
-                                                fill={props.categories[shape.category].mainColour}
+                                            return (
+                                                <Rect
+                                                    x={shape.x - props.building.x + x}
+                                                    y={shape.y - props.building.y + y}
+                                                    width={shape.width}
+                                                    height={shape.height}
+                                                    fill={props.categories[shape.category].mainColour}
 
-                                            />
+                                                />
+                                            );
+
                                         }
                                     })}
+
+                                    {props.building.entrance !== undefined &&
+                                        props.building.entrance.floorNumber === floorNumber - 1 &&
+                                        <Rect
+                                            x={props.building.entrance.x - props.building.x + x}
+                                            y={props.building.entrance.y - props.building.y + y}
+                                            width={props.building.entrance.width}
+                                            height={props.building.entrance.height}
+                                            fill={props.categories[props.building.entrance.category].mainColour}
+
+                                        />
+
+                                    }
                                 </React.Fragment>
                             );
                         })}

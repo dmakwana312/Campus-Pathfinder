@@ -7,7 +7,7 @@ import SearchIcon from '@material-ui/icons/Search';
 
 import ViewMapCanvas from '../ViewMapCanvas';
 import firebase from '../firebase';
-import { dijkstra, getNodesInPathOrder } from '../dijkstra';
+import { dijkstra_buildingToBuilding, dijkstra_roomToEntrance, getNodesInPathOrder } from '../dijkstra';
 import ViewBuildingModal from '../ViewBuildingModal';
 import CategoryLegend from '../CategoryLegend';
 
@@ -35,16 +35,16 @@ const ViewMapPage = () => {
 
 
     useEffect(() => {
-        if(!showBuildingModal && mapData != null){
+        if (!showBuildingModal && mapData !== null) {
             setShowingResult(false);
             resetShapes();
         }
-        
+
     }, [showBuildingModal])
 
     useEffect(() => {
         var db = firebase.database();
-        var data = db.ref("MapData/-MXabwvzdl1pdWImFfNa");
+        var data = db.ref("MapData/-MXbYvL2Ui3HV2y6z6dn");
 
         data.on('value', (snapshot) => {
             const data = snapshot.val();
@@ -83,7 +83,7 @@ const ViewMapPage = () => {
             for (var i = 0; i < data.mapData.length; i++) {
                 data.mapData[i].index = index++;
                 if (data.mapData[i].name === "building") {
-                    if (data.mapData[i].entrance !== null) {
+                    if (data.mapData[i].entrance !== undefined) {
                         data.mapData[i].entrance.index = index++;
                     }
 
@@ -109,7 +109,7 @@ const ViewMapPage = () => {
             setOptions([...searchOptions]);
         });
     }, [])
-    
+
 
     // Reset search, origin and destination attibutes for all buildings
     function resetShapes() {
@@ -122,19 +122,18 @@ const ViewMapPage = () => {
                 data[i].origin = false;
                 data[i].destination = false;
                 data[i].pathwayShape = false;
-            }
 
-            for(var j = 0; j < data[i].internal.length; j++){
-                for(var k = 0; data[i].internal[j].length; j++){
-                    if(data[i].internal[j][k].name === "room"){
-                        data[i].internal[j][k].search = false;
-                        data[i].internal[j][k].origin = false;
-                        data[i].internal[j][k].destination = false;
-                        data[i].internal[j][k].pathwayShape = false;
+                for (var j = 0; j < data[i].internal.length; j++) {
+                    for (var k = 0; k < data[i].internal[j].length; k++) {
+                        if (data[i].internal[j][k].name === "room") {
+                            data[i].internal[j][k].search = false;
+                            data[i].internal[j][k].origin = false;
+                            data[i].internal[j][k].destination = false;
+                            data[i].internal[j][k].pathwayShape = false;
+                        }
                     }
                 }
             }
-            
         }
 
         setMapData([...data]);
@@ -190,7 +189,7 @@ const ViewMapPage = () => {
                     }
                 }
             }
-            
+
         }
 
 
@@ -203,50 +202,94 @@ const ViewMapPage = () => {
     function getDirectionsFunction() {
         resetShapes();
 
-        var originFound = false;
-        var destinationFound = false;
+        if (origin.name === "building" && destination.name === "building") {
 
-        var data = [...mapData];
+            var originFound = false;
+            var destinationFound = false;
 
-        for (var i = 0; i < data.length; i++) {
-            data[i].pathwayShape = false;
-        }
+            var data = [...mapData];
 
-        for (var i = 0; i < data.length; i++) {
-
-            // If label and points of origin shape are equal, set origin field to true
-            if (!originFound && origin.index === mapData[i].index) {
-                data[i].origin = true;
-                originFound = true;
+            for (var i = 0; i < data.length; i++) {
+                data[i].pathwayShape = false;
             }
 
+            for (var i = 0; i < data.length; i++) {
 
-            // If label and points of destination shape are equal, set destination field to true
-            if (!destinationFound && destination.index === mapData[i].index) {
-                data[i].destination = true;
-                destinationFound = true;
-            }
+                // If label and points of origin shape are equal, set origin field to true
+                if (!originFound && origin.index === mapData[i].index) {
+                    data[i].origin = true;
+                    originFound = true;
+                }
 
-            // If origin and destination found, break from loop
-            if (originFound && destinationFound) {
-                break;
-            }
-        }
 
-        var visited = dijkstra(mapData, origin, destination);
-        var path = getNodesInPathOrder(visited[visited.length - 1]);
+                // If label and points of destination shape are equal, set destination field to true
+                if (!destinationFound && destination.index === mapData[i].index) {
+                    data[i].destination = true;
+                    destinationFound = true;
+                }
 
-        for (var i = 0; i < path.length; i++) {
-            for (var j = 0; j < data.length; j++) {
-                if (path[i] === data[j].index) {
-                    data[path[i]].pathwayShape = true;
+                // If origin and destination found, break from loop
+                if (originFound && destinationFound) {
+                    break;
                 }
             }
 
+            var visited = dijkstra_buildingToBuilding(mapData, origin, destination);
+            var path = getNodesInPathOrder(visited[visited.length - 1]);
+
+            for (var i = 0; i < path.length; i++) {
+                for (var j = 0; j < data.length; j++) {
+                    if (path[i] === data[j].index) {
+                        data[path[i]].pathwayShape = true;
+                    }
+                }
+
+            }
+
+            setMapData([...data]);
+            setShowingResult(true);
         }
 
-        setMapData([...data]);
-        setShowingResult(true);
+        var nodesInPathwayOrder = [];
+        var originBuilding = null;
+        var destinationBuilding = null;
+
+        if(origin.name === "room")
+        {
+            var nodes = dijkstra_roomToEntrance(mapData, origin);
+            nodesInPathwayOrder.push(getNodesInPathOrder(nodes[nodes.length - 1]));
+    
+            
+    
+            for (var i = 0; i < mapData.length; i++) {
+                if (mapData[i].name === "building") {
+                    for (var j = 0; j < mapData[i].internal.length; j++) {
+                        for (var k = 0; k < mapData[i].internal[j].length; k++) {
+                            if (originBuilding !== null && destinationBuilding !== null) {
+                                break;
+                            }
+                            if (originBuilding === null && origin.index === mapData[i].internal[j][k].index) {
+                                originBuilding = mapData[i];
+                            }
+                            else if (destinationBuilding === null && destination.index === mapData[i].internal[j][k].index) {
+                                destinationBuilding = mapData[i];
+                            }
+                        }
+                    }
+                }
+            }
+    
+        }
+
+        if(destination.name === "building"){
+            var nodes = dijkstra_buildingToBuilding(mapData, originBuilding, destination);
+            nodesInPathwayOrder.push(getNodesInPathOrder(nodes[nodes.length - 1]));
+        }
+
+        else if(destination.name === "room"){
+            var nodes = dijkstra_roomToEntrance(mapData, destination);
+            nodesInPathwayOrder.push(getNodesInPathOrder(nodes[nodes.length - 1]));
+        }    
 
     }
 
@@ -257,9 +300,17 @@ const ViewMapPage = () => {
     }
 
     function buildingClickHandler(buildingIndex) {
+        console.log(mapData[buildingIndex]);
+        for (var i = 0; i < mapData.length; i++) {
+            if (mapData[i].index === buildingIndex) {
+                setBuildingClicked(i);
+                setShowBuildingModal(true);
+                break;
+            }
 
-        setBuildingClicked(buildingIndex);
-        setShowBuildingModal(true);
+        }
+
+
     }
 
     return (

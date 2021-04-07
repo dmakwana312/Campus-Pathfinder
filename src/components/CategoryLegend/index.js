@@ -6,7 +6,7 @@ import { useStyles } from '../style.js';
 const CategoryLegend = (props) => {
     const classes = useStyles();
     return (
-        <Paper className={classes.paper} style={{ width: 150, top: 0, right: 0 }}>
+        <Paper className={classes.paper} style={{ width: 150, top: 0, right: 0 }} elevation={10}>
             {props.categories.map((category, key) => {
                 return (
                     <div>

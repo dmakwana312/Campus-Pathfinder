@@ -754,6 +754,7 @@ const CreateMapPage = () => {
     function setBuildingBeingViewedHandler(buildingKey) {
         setBuildingBeingViewed(buildingKey);
         setFloorBeingViewed(0);
+        setShapes([]);
     }
 
     // Clear shapes
@@ -803,6 +804,8 @@ const CreateMapPage = () => {
             mapData: savedShapes
 
         }
+
+        console.log(savedShapes);
 
         // Push data to database
         var db = firebase.database();
