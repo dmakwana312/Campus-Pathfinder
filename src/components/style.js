@@ -96,7 +96,7 @@ const useStyles = makeStyles((theme) => ({
     tab: {
         minWidth: 90, // a number of your choice
     },
-    
+
     // Sidebar Styling
     drawer: {
         width: drawerWidth,
@@ -119,7 +119,38 @@ const useStyles = makeStyles((theme) => ({
     },
     noLabel: {
         marginTop: theme.spacing(3)
+    },
+
+    // Homepage styling
+    loginPaper: {
+        position: "absolute",
+        top: "50%",
+        right: "50%",
+        transform: "translate(50%,-50%)",
+        margin: theme.spacing(1),
+        padding: theme.spacing(2),
+    },
+    form: {
+        width: '30ch',
+        margin: theme.spacing(1),
+        marginRight: theme.spacing(3),
+        
+    },
+    formTextfield: {
+        width: '30ch',
+        margin: theme.spacing(1),
+
+    },
+
+    registerText: {
+        display: "block",
+        marginLeft: "auto",
+        marginRight: "auto",
+        width: "80%",
+        marginBottom: 10
+        
     }
+
 }));
 
 export { useStyles }
