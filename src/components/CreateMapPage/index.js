@@ -787,6 +787,33 @@ const CreateMapPage = () => {
 
         }
 
+        var index = 0;
+
+        // Add index to each shape
+        for (var i = 0; i < savedShapes.length; i++) {
+            savedShapes[i].index = index++;
+            if (savedShapes[i].name === "building") {
+                if (savedShapes[i].entrance !== undefined) {
+                    savedShapes[i].entrance.index = index++;
+                }
+
+                for (var j = 0; j < savedShapes[i].internal.length; j++) {
+                    for (var k = 0; k < savedShapes[i].internal[j].length; k++) {
+                        savedShapes[i].internal[j][k].index = index++;
+                    }
+                }
+
+                for (var j = 0; j < savedShapes[i].lifts.length; j++) {
+                    savedShapes[i].lifts[j].index = index++;
+                }
+
+                for (var j = 0; j < savedShapes[i].stairs.length; j++) {
+                    savedShapes[i].stairs[j].index = index++;
+                }
+            }
+
+        }
+
         // Combine map name, categories and mapdata in to single object
         var mapData = {
             mapName: mapName,
