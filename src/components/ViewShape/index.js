@@ -3,11 +3,13 @@ import { Rect, Group, Text, Transformer, Line, Tag } from 'react-konva';
 
 const ViewShape = (props) => {
 
+    // Change cursor on mouse enter
     function mouseEnter(e){
         const container = e.target.getStage().container();
         container.style.cursor = "pointer";
     }
 
+    // Change cursor on mouse leave
     function mouseLeave(e){
         const container = e.target.getStage().container();
         container.style.cursor = "default";
@@ -16,6 +18,7 @@ const ViewShape = (props) => {
     var mouseHandlerProps = {};
 
     if(props.shapeProps.name === "building"){
+        // Create mouse handler props
         mouseHandlerProps = {
             onClick: () => props.clickHandler(props.shapeProps.index),
             onMouseEnter: mouseEnter,
@@ -41,9 +44,6 @@ const ViewShape = (props) => {
             name={props.shapeProps.name}
             opacity={props.opacity}
             {...mouseHandlerProps}
-
-            
-
         >
 
             {/* Rectangle to represent building */}

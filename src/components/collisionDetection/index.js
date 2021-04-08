@@ -70,7 +70,7 @@ export function isColliding(shape1, shape2) {
 
        
         // Determine if there is an overlap. If there is no overlap
-        // there is no collision
+        // there is no collision, and collision detection can return false
         if((aMin <= bMax && aMin >= bMin) || (bMin <= aMax && bMin >= aMin)){
             continue;
         }

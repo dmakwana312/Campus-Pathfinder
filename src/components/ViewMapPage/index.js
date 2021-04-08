@@ -114,18 +114,19 @@ const ViewMapPage = () => {
     }, [])
 
 
-    // Reset search, origin and destination attibutes for all buildings
+    // Reset search, origin and destination attibutes 
+    // for all buildings and internal rooms
     function resetShapes() {
 
         var data = mapData;
 
         for (var i = 0; i < data.length; i++) {
-            if (data[i].name === "building") {
-                data[i].search = false;
-                data[i].origin = false;
-                data[i].destination = false;
-                data[i].pathwayShape = false;
+            data[i].search = false;
+            data[i].origin = false;
+            data[i].destination = false;
+            data[i].pathwayShape = false;
 
+            if (data[i].name === "building") {
                 for (var j = 0; j < data[i].internal.length; j++) {
                     for (var k = 0; k < data[i].internal[j].length; k++) {
                         if (data[i].internal[j][k].name === "room") {
@@ -166,6 +167,8 @@ const ViewMapPage = () => {
         resetShapes();
 
         var data = [...mapData];
+
+        // If searched value is building, find value and set search field to true
         if (search.name === "building") {
             for (var i = 0; i < data.length; i++) {
                 if (search.index === mapData[i].index) {
@@ -175,16 +178,27 @@ const ViewMapPage = () => {
             }
         }
 
+        // If searched value is room
         if (search.name === "room") {
-
+            // Loop through nodes
             for (var i = 0; i < data.length; i++) {
+                // Check if node is building
                 if (data[i].name === "building") {
+
+                    // Loop through internal structure
                     for (var j = 0; j < data[i].internal.length; j++) {
+
+                        // Loop through floors
                         for (var k = 0; k < data[i].internal[j].length; k++) {
+
+                            // If found, set search field to true
                             if (data[i].internal[j][k].index === search.index) {
-                                console.log("found");
                                 data[i].internal[j][k].search = true;
+
+                                // Set building clicked to index
                                 setBuildingClicked(data[i].index);
+
+                                // Show building modal
                                 setShowBuildingModal(true);
                                 break;
                             }
@@ -195,9 +209,12 @@ const ViewMapPage = () => {
 
         }
 
-
+        // Update map data
         setMapData([...data]);
+
+        // Set showing result to true
         setShowingResult(true);
+        
 
     }
 
@@ -205,6 +222,7 @@ const ViewMapPage = () => {
     function getDirectionsFunction() {
         resetShapes();
 
+        // If origin and destination are buildings
         if (origin.name === "building" && destination.name === "building") {
 
             var originFound = false;
@@ -236,10 +254,12 @@ const ViewMapPage = () => {
                     break;
                 }
             }
-
+            
+            // Run dijktra and determine path
             var visited = dijkstra_buildingToBuilding(mapData, origin, destination);
             var path = getNodesInPathOrder(visited[visited.length - 1]);
 
+            // Loop through buildings and set pathway shapes to true
             for (var i = 0; i < path.length; i++) {
                 for (var j = 0; j < data.length; j++) {
                     if (path[i][0].index === data[j].index && path[i][0].name === data[j].name) {
@@ -249,20 +269,31 @@ const ViewMapPage = () => {
 
             }
 
+            // Update map data and set showing result to true
             setMapData([...data]);
             setShowingResult(true);
             return;
 
         }
         else {
+
             var nodesInPathwayOrder = [];
             var originBuilding = null;
             var destinationBuilding = null;
 
+            // Loop through map data
             for (var i = 0; i < mapData.length; i++) {
+
+                // If shape is building
                 if (mapData[i].name === "building") {
+
+                    // Loop through internal structure of building
                     for (var j = 0; j < mapData[i].internal.length; j++) {
+                        
+                        // Loop through floor
                         for (var k = 0; k < mapData[i].internal[j].length; k++) {
+
+                            // Find building for shape
                             if (originBuilding !== null && destinationBuilding !== null) {
                                 break;
                             }
@@ -277,31 +308,44 @@ const ViewMapPage = () => {
                 }
             }
 
+            // If origin and destination are both rooms
             if (origin.name === "room" && destination.name === "room") {
+
+                // Get path from origin to entrance of building
                 var nodes = dijkstra_roomToEntrance(mapData, origin);
                 nodesInPathwayOrder.push(getNodesInPathOrder(nodes[nodes.length - 1]));
 
+                // Get path from origin building to destination building
                 nodes = dijkstra_buildingToBuilding(mapData, originBuilding, destinationBuilding);
                 nodesInPathwayOrder.push(getNodesInPathOrder(nodes[nodes.length - 1]));
 
+                // Get path from entrance of destination building entrance to destination
                 nodes = dijkstra_roomToEntrance(mapData, destination);
                 nodesInPathwayOrder.push(getNodesInPathOrder(nodes[nodes.length - 1]));
 
 
 
             }
+
+            // If origin is room and destination is building
             else if (origin.name === "room" && destination.name === "building") {
+
+                // Get path from origin to entrance of building
                 var nodes = dijkstra_roomToEntrance(mapData, origin);
                 nodesInPathwayOrder.push(getNodesInPathOrder(nodes[nodes.length - 1]));
 
+                // Get path from origin building to destination
                 nodes = dijkstra_buildingToBuilding(mapData, originBuilding, destination);
                 nodesInPathwayOrder.push(getNodesInPathOrder(nodes[nodes.length - 1]));
 
             }
             else if (origin.name === "building" && destination.name === "room") {
+
+                // Get path from origin to destination building
                 nodes = dijkstra_buildingToBuilding(mapData, origin, destinationBuilding);
                 nodesInPathwayOrder.push(getNodesInPathOrder(nodes[nodes.length - 1]));
 
+                // Get path from destination building entrance to destination
                 nodes = dijkstra_roomToEntrance(mapData, destination);
                 nodesInPathwayOrder.push(getNodesInPathOrder(nodes[nodes.length - 1]));
 
@@ -312,17 +356,18 @@ const ViewMapPage = () => {
 
             setPathwayShapes([...nodesInPathwayOrder]);
 
-
         }
 
     }
 
+    // Handler for back button
     function backButtonHandler() {
         textfieldShowHandler(0);
         resetShapes();
         setShowingResult(false);
     }
 
+    // Handler for clicking on building
     function buildingClickHandler(buildingIndex) {
         for (var i = 0; i < mapData.length; i++) {
             if (mapData[i].index === buildingIndex) {
@@ -332,7 +377,6 @@ const ViewMapPage = () => {
             }
 
         }
-
 
     }
 

@@ -766,6 +766,8 @@ const CreateMapPage = () => {
     // Function to save map to firebase
     function saveMap() {
 
+        // Loop through savedShapes and insert placeholder into 
+        // empty arrays in order to save it into Firebase
         for (var i = 0; i < savedShapes.length; i++) {
             if (savedShapes[i].name === "building") {
                 for (var j = 0; j < savedShapes[i].internal.length; j++) {
@@ -781,19 +783,7 @@ const CreateMapPage = () => {
                     savedShapes[i].stairs.push("empty");
                 }
 
-                console.log(savedShapes[i].internal);
-                console.log(savedShapes[i].lifts);
-                console.log(savedShapes[i].stairs);
-                console.log("kdsjnk");
-
             }
-
-
-            // if(savedShapes[i].internal.length === 0){
-            //     savedShapes[i].internal.push(null);
-            // }
-
-
 
         }
 
@@ -804,21 +794,11 @@ const CreateMapPage = () => {
             mapData: savedShapes
 
         }
-
-        console.log(savedShapes);
-
+       
         // Push data to database
         var db = firebase.database();
         var ref = db.ref("MapData");
         var key = ref.push(mapData);
-
-        var data = db.ref("MapData/-MXaS0e6J5M7xETEaft6");
-        // console.log(savedShapes)
-        data.on('value', (snapshot) => {
-            const data = snapshot.val();
-            // console.log(data.mapData);
-            // setSavedShapes([...data.mapData]);
-        });
 
     }
 

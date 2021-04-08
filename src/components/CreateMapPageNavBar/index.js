@@ -53,9 +53,8 @@ const NavBar = (props) => {
                             <ListItem key={2} onClick={props.incrementStep} button divider> Next Step </ListItem>
                             <ListItem key={3} button divider> Option 3 </ListItem>
                         </List>
-
-
                     </div>
+                    
                 </SwipeableDrawer>
 
             </div>

@@ -59,6 +59,7 @@ const ViewMapCanvas = (props) => {
                     {props.shapes != null && props.categories != null &&
                         props.shapes.map((shape, key) => {
 
+                            // Determine shape fill and opacity
                             var shapeFill = null;
                             var opacity = 1;
 
@@ -79,13 +80,10 @@ const ViewMapCanvas = (props) => {
                                     shapeFill = props.categories[shape.category].mainColour;
                                     opacity = 0.5;
                                 }
-                                
                             }
                             else {
                                 shapeFill = props.categories[shape.category].mainColour;
                             }
-
-                            
 
                             return (
                                 <ViewShape
@@ -100,8 +98,6 @@ const ViewMapCanvas = (props) => {
                         })
                     }
                 </Group>
-
-
 
             </Layer>
 

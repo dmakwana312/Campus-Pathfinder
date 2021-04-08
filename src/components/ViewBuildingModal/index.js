@@ -41,11 +41,17 @@ const ViewBuildingModal = (props) => {
 
     };
 
+    // Current floor number
     var floorNumber = 0;
+
+    // Determine number of columns (for displaying floors)
     var cols = Math.ceil(Math.sqrt(props.building.internal.length));
+
+    // Determine initial x and y
     var x = (-props.building.width - 50) + 50;
     var y = 50;
 
+    // Current column number
     var colNumber = 1;
 
     return (
@@ -68,11 +74,12 @@ const ViewBuildingModal = (props) => {
                     draggable
                     x={stageX}
                     y={stageY}
-
                 >
                     <Layer>
+                        
                         {props.building.internal.map((shape, key) => {
 
+                            // If current column is greater than current column, reset values
                             if (colNumber > cols) {
                                 colNumber = 1;
                                 x = 50;
@@ -82,10 +89,10 @@ const ViewBuildingModal = (props) => {
                                 x += props.building.width + 50;
 
                             }
-                            colNumber += 1;
+
+                            // Increment current column number and floor number
+                            colNumber++;
                             floorNumber++;
-
-
 
                             return (
                                 <React.Fragment>
@@ -104,17 +111,13 @@ const ViewBuildingModal = (props) => {
                                         fill={props.categories[props.building.category].mainColour}
                                     />
 
-
-
                                     {props.building.internal[floorNumber - 1].map((shape, key) => {
 
+                                        // Determine shape fill colour and opacity of shape
                                         var shapeFill = null;
                                         var opacity = 1;
 
-
-
                                         if (props.showingResult) {
-                                            console.log(shape);
                                             if (shape.search) {
                                                 shapeFill = '#03b1fc';
                                             }
@@ -166,7 +169,8 @@ const ViewBuildingModal = (props) => {
 
                                         );
                                     })}
-                                    {console.log(props.building.lifts)}
+
+                                    {/* Display lifts */}
                                     {props.building.lifts.map((shape, key) => {
 
                                         if (shape.floors[floorNumber - 1]) {
@@ -185,6 +189,7 @@ const ViewBuildingModal = (props) => {
                                         }
                                     })}
 
+                                    {/* Display lifts */}
                                     {props.building.stairs.map((shape, key) => {
                                         if (shape.floors[floorNumber - 1]) {
                                             return (
@@ -202,6 +207,7 @@ const ViewBuildingModal = (props) => {
                                         }
                                     })}
 
+                                    {/* Display entrance */}
                                     {props.building.entrance !== undefined &&
                                         props.building.entrance.floorNumber === floorNumber - 1 &&
                                         <Rect

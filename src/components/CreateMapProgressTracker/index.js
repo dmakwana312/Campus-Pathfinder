@@ -1,6 +1,6 @@
 import React from 'react';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
@@ -8,7 +8,6 @@ import Check from '@material-ui/icons/Check';
 import StepConnector from '@material-ui/core/StepConnector';
 
 import { useStyles } from '../style.js';
-
 
 const QontoConnector = withStyles({
     alternativeLabel: {
@@ -71,15 +70,8 @@ function QontoStepIcon(props) {
     );
 }
 
-
-
-function getSteps() {
-    return ['Create Campus Map', 'Create For Each Building', 'Final Steps'];
-}
-
-
 const CreateMapProgressTracker = (props) => {
-    const steps = getSteps();
+    const steps = ['Create Campus Map', 'Create For Each Building', 'Final Steps'];
 
     return (
         <React.Fragment>
