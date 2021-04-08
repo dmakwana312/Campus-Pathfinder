@@ -1,13 +1,13 @@
 import logo from './logo.svg';
 import './App.css';
 
-import CreateMapPage from './components/CreateMapPage';
-import ViewMapPage from './components/ViewMapPage';
+import CreateMapPage from './pages/CreateMapPage';
+import ViewMapPage from './pages/ViewMapPage';
 
 function App() {
     return (
         <div className="App">
-            <ViewMapPage />
+            <CreateMapPage />
         </div>
   );
 }

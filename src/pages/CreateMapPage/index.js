@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react';
-import NavBar from '../CreateMapPageNavBar';
-import CreateMapSidebar from '../CreateMapSidebar';
-import CreateMapObjectPropertiesSidebar from '../CreateMapObjectPropertiesSidebar';
-import CreateMapCanvas from '../CreateMapCanvas';
-import { useStyles } from '../style.js';
+import NavBar from '../../components/CreateMapPageNavBar';
+import CreateMapSidebar from '../../components/CreateMapSidebar';
+import CreateMapObjectPropertiesSidebar from '../../components/CreateMapObjectPropertiesSidebar';
+import CreateMapCanvas from '../../components/CreateMapCanvas';
+import { useStyles } from '../../components/style.js';
 import Toolbar from '@material-ui/core/Toolbar';
 import Modal from '@material-ui/core/Modal'
-import CreateMapProgressTracker from '../CreateMapProgressTracker';
+import CreateMapProgressTracker from '../../components/CreateMapProgressTracker';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -17,13 +17,13 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
-import firebase from '../firebase';
+import firebase from '../../utils/firebase';
 
-import { getGuides } from '../snapGuidesGeneration.js';
+import { getGuides } from '../../utils/snapGuidesGeneration.js';
 
-import { categories } from '../categories.js';
+import { categories } from '../../utils/categories.js';
 
-import { isColliding } from '../collisionDetection';
+import { isColliding } from '../../utils/collisionDetection';
 
 const CreateMapPage = () => {
 
@@ -43,7 +43,6 @@ const CreateMapPage = () => {
     const [floorBeingViewed, setFloorBeingViewed] = useState(0);
     const layerRef = useRef();
     const stageRef = useRef();
-
     const [mapName, setMapName] = useState("");
 
     // var collisionTest = false;

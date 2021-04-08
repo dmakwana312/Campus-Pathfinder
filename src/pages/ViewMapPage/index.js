@@ -5,18 +5,18 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import Fab from '@material-ui/core/Fab';
 import SearchIcon from '@material-ui/icons/Search';
 
-import ViewMapCanvas from '../ViewMapCanvas';
-import firebase from '../firebase';
-import { dijkstra_buildingToBuilding, dijkstra_roomToEntrance, getNodesInPathOrder } from '../dijkstra';
-import ViewBuildingModal from '../ViewBuildingModal';
-import CategoryLegend from '../CategoryLegend';
-import RouteFinderCarousel from '../RouteFinderCarousel';
+import ViewMapCanvas from '../../components/ViewMapCanvas';
+import firebase from '../../utils/firebase';
+import { dijkstra_buildingToBuilding, dijkstra_roomToEntrance, getNodesInPathOrder } from '../../utils/dijkstra';
+import ViewBuildingModal from '../../components/ViewBuildingModal';
+import CategoryLegend from '../../components/CategoryLegend';
+import RouteFinderCarousel from '../../components/RouteFinderCarousel';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRoute } from '@fortawesome/free-solid-svg-icons'
 import { faChevronCircleLeft } from '@fortawesome/free-solid-svg-icons'
 
-import { useStyles } from '../style.js';
+import { useStyles } from '../../components/style.js';
 
 const ViewMapPage = () => {
 

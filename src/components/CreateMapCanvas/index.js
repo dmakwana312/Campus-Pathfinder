@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Stage, Layer, Line, Rect } from 'react-konva';
 import { useStyles } from '../style.js';
 import EditShape from '../EditShape';
-import { categories } from '../categories';
 
 
 const CreateMapCanvas = (props) => {
@@ -94,7 +93,7 @@ const CreateMapCanvas = (props) => {
                         y={props.buildingBeingViewed.y}
                         width={props.buildingBeingViewed.width}
                         height={props.buildingBeingViewed.height}
-                        fill={categories[props.buildingBeingViewed.category]["mainColour"]}
+                        fill={props.categories[props.buildingBeingViewed.category]["mainColour"]}
                         closed={true}
                         rotation={0}
 
