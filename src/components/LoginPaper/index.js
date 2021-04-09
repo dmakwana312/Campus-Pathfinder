@@ -88,7 +88,7 @@ const LoginPaper = () => {
     return (
         <React.Fragment>
 
-            <Paper className={classes.loginPaper} >
+            <Paper className={classes.loginPaper} elevation={10}>
 
                 <form className={classes.form}>
                     <TextField error={emailError === "" ? false : true} helperText={ emailError } className={classes.formTextfield} id="emailLogin" label="Email" variant="outlined" onChange={(event) => setEmail(event.target.value)} />
