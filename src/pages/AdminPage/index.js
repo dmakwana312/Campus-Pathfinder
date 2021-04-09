@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import NavBar from '../../components/NavBar';
 
 import { Redirect } from 'react-router-dom';
 
-import Paper from '@material-ui/core/Paper';
-
 import { loggedInUser } from '../../utils/userState';
 import { useStyles } from '../style.js';
+
+import AdminPageTable from '../../components/AdminMapTable';
 
 const AdminPage = (props) => {
     const classes = useStyles();
@@ -16,11 +16,14 @@ const AdminPage = (props) => {
             return <Redirect to='/' />;
         }
     }
+    
+   
 
     return (
         <div className={classes.page}>
             {checkLoggedIn()}
             <NavBar />
+            <AdminPageTable />
         </div>
     );
 };

@@ -11,6 +11,7 @@ import { useStyles } from '../style.js';
 import { loggedInUser, setUser } from '../../utils/userState';
 
 import Firebase from '../../utils/firebase';
+import { Redirect } from 'react-router-dom';
 
 const NavBar = (props) => {
 
@@ -60,7 +61,7 @@ const NavBar = (props) => {
                         onKeyDown={() => { setDrawerOpen(false) }}>
 
                         <List className={classes.list}>
-                            <ListItem key={1} button divider onClick={user === null ? () => {} : logout}>{user === null ? "Login" : "Logout"} </ListItem>
+                            <ListItem key={1} button divider onClick={user === null ? () =>() => {} : logout}>{user === null ? "Login" : "Logout"} </ListItem>
                         </List>
                     </div>
 

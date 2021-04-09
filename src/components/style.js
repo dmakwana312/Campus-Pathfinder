@@ -122,7 +122,7 @@ const useStyles = makeStyles((theme) => ({
     },
 
     // Homepage styling
-    loginPaper: {
+    centerPaper: {
         position: "absolute",
         top: "50%",
         right: "50%",

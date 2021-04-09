@@ -821,7 +821,9 @@ const CreateMapPage = () => {
         var mapData = {
             mapName: mapName,
             categories: objectCategories,
-            mapData: savedShapes
+            mapData: savedShapes,
+            userID: loggedInUser.use().uid,
+            active: true
 
         }
        
