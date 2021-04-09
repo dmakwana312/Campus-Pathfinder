@@ -30,7 +30,7 @@ const NavBar = (props) => {
                             <MenuIcon
                                 className={classes.sideBarIcon}
                                 onClick={() => { setDrawerOpen(true) }} />
-                            <Typography color="inherit">Title</Typography>
+                            <Typography color="inherit">Campus Route Finder</Typography>
                             <Typography color="inherit"></Typography>
                         </Grid>
                     </Toolbar>
@@ -66,7 +66,7 @@ const NavBar = (props) => {
         return (
             <AppBar className={classes.appBar}>
                 <Toolbar>
-                    <Typography style={{ flexGrow: 1 }} color="inherit" >Title</Typography>
+                    <Typography style={{ flexGrow: 1 }} color="inherit" >Campus Route Finder</Typography>
                     <Button onClick={props.decrementStep} className={classes.button} color="inherit">Previous Step</Button>
                     <Button onClick={props.incrementStep} className={classes.button} color="inherit">Next Step</Button>
                     <Button className={classes.button} color="inherit">OPTION 3</Button>

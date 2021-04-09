@@ -4,6 +4,7 @@ import './App.css';
 import HomePage from './pages/HomePage';
 import CreateMapPage from './pages/CreateMapPage';
 import ViewMapPage from './pages/ViewMapPage';
+import AdminPage from './pages/AdminPage';
 
 import {
     HashRouter as Router,
@@ -20,6 +21,9 @@ function App() {
                 </Switch>
                 <Switch>
                     <Route path="/viewmap"><ViewMapPage /></Route>
+                </Switch>
+                <Switch>
+                    <Route path="/admin"><AdminPage /></Route>
                 </Switch>
                 <Switch>
                     <Route path="/" exact><HomePage /></Route>

@@ -25,6 +25,10 @@ import { categories } from '../../utils/categories.js';
 
 import { isColliding } from '../../utils/collisionDetection';
 
+import { loggedInUser, setUser } from '../../utils/userState';
+
+import { Redirect } from 'react-router-dom';
+
 const CreateMapPage = () => {
 
     const [objectCategories, setObjectCategories] = useState(categories);
@@ -828,8 +832,15 @@ const CreateMapPage = () => {
 
     }
 
+    function checkLoggedIn() {
+        if (loggedInUser.use() === null) {
+            return <Redirect to='/' />;
+        }
+    }
+
     return (
         <React.Fragment>
+            {checkLoggedIn()}
             <div className={classes.root}>
                 <NavBar incrementStep={incrementStep} decrementStep={decrementStep} />
                 <CreateMapSidebar activeStep={activeStep} buttonClick={createShape} />

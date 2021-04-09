@@ -1,15 +1,16 @@
-import React, { useState, useRef } from 'react';
-import LoginPaper from '../../components/LoginPaper';
+import React, { useState, useEffect } from 'react';
 
 import NavBar from '../../components/NavBar';
-import { useStyles } from '../style.js';
-import { loggedInUser } from '../../utils/userState';
+
 import { Redirect } from 'react-router-dom';
 
-const HomePage = () => {
+import Paper from '@material-ui/core/Paper';
 
+import { loggedInUser } from '../../utils/userState';
+import { useStyles } from '../style.js';
+
+const AdminPage = (props) => {
     const classes = useStyles();
-
     function checkLoggedIn() {
         if (loggedInUser.use() === null) {
             return <Redirect to='/' />;
@@ -20,11 +21,8 @@ const HomePage = () => {
         <div className={classes.page}>
             {checkLoggedIn()}
             <NavBar />
-            <LoginPaper />
-            
         </div>
-
     );
-}
+};
 
-export default HomePage;
+export default AdminPage;

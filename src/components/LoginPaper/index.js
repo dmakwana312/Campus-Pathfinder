@@ -12,6 +12,8 @@ import Firebase from '../../utils/firebase';
 
 import { loggedInUser, setUser } from '../../utils/userState';
 
+import { Redirect } from 'react-router-dom';
+
 const LoginPaper = () => {
 
     const classes = useStyles();
@@ -49,6 +51,8 @@ const LoginPaper = () => {
                         setPasswordError(error.message);
                 }
             });
+
+
     }
 
     function authListener() {
@@ -85,9 +89,15 @@ const LoginPaper = () => {
         }
     }
 
+    function checkLoggedIn() {
+        if (loggedInUser.use() !== null) {
+            return <Redirect to='/admin' />;
+        }
+    }
+
     return (
         <React.Fragment>
-
+            {checkLoggedIn()}
             <Paper className={classes.loginPaper} elevation={10}>
 
                 <form className={classes.form}>

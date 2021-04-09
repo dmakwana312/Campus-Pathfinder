@@ -41,7 +41,7 @@ const NavBar = (props) => {
                             <MenuIcon
                                 className={classes.sideBarIcon}
                                 onClick={() => { setDrawerOpen(true) }} />
-                            <Typography color="inherit">Title</Typography>
+                            <Typography color="inherit">Campus Route Finder</Typography>
                             <Typography color="inherit"></Typography>
                         </Grid>
                     </Toolbar>
@@ -75,7 +75,7 @@ const NavBar = (props) => {
         return (
             <AppBar className={classes.appBar}>
                 <Toolbar>
-                    <Typography style={{ flexGrow: 1 }} color="inherit" >Title</Typography>
+                    <Typography style={{ flexGrow: 1 }} color="inherit" >Campus Route Finder</Typography>
                     <Button className={classes.button} color="inherit" onClick={user === null ? () => {} : logout}>{user === null ? "Login" : "Logout"}</Button>
                 </Toolbar>
             </AppBar>
