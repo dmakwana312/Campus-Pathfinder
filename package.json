@@ -20,6 +20,7 @@
     "react-material-ui-carousel": "^2.2.2",
     "react-scripts": "4.0.2",
     "react-swipeable-views": "^0.13.9",
+    "simpler-state": "^1.0.0-rc.10",
     "web-vitals": "^1.1.0"
   },
   "scripts": {

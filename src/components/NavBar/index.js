@@ -8,6 +8,10 @@ import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useStyles } from '../style.js';
 
+import { loggedInUser, setUser } from '../../utils/userState';
+
+import Firebase from '../../utils/firebase';
+
 const NavBar = (props) => {
 
     const theme = useTheme();
@@ -18,6 +22,13 @@ const NavBar = (props) => {
 
     // State to track if drawer is open (responsive)
     const [drawerOpen, setDrawerOpen] = useState(false);
+
+    const user = loggedInUser.use();
+
+    function logout() {
+        Firebase.auth().signOut();
+        setUser(null)
+    }
 
     // Create a drawer for mobile devices
     const createDrawer = () => {
@@ -49,7 +60,7 @@ const NavBar = (props) => {
                         onKeyDown={() => { setDrawerOpen(false) }}>
 
                         <List className={classes.list}>
-                            <ListItem key={1} button divider> Login </ListItem>
+                            <ListItem key={1} button divider onClick={user === null ? () => {} : logout}>{user === null ? "Login" : "Logout"} </ListItem>
                         </List>
                     </div>
 
@@ -65,7 +76,7 @@ const NavBar = (props) => {
             <AppBar className={classes.appBar}>
                 <Toolbar>
                     <Typography style={{ flexGrow: 1 }} color="inherit" >Title</Typography>
-                    <Button className={classes.button} color="inherit">Login</Button>
+                    <Button className={classes.button} color="inherit" onClick={user === null ? () => {} : logout}>{user === null ? "Login" : "Logout"}</Button>
                 </Toolbar>
             </AppBar>
         )

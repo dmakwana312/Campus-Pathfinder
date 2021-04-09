@@ -10,13 +10,14 @@ import { Button } from '@material-ui/core';
 
 import Firebase from '../../utils/firebase';
 
+import { loggedInUser, setUser } from '../../utils/userState';
+
 const LoginPaper = () => {
 
     const classes = useStyles();
 
     const [showRegisterModal, setShowRegisterModal] = useState(false);
 
-    const [user, setUser] = useState(null);
     const [email, setEmail] = useState("");
     const [emailError, setEmailError] = useState("");
     const [password, setPassword] = useState("");
@@ -40,21 +41,14 @@ const LoginPaper = () => {
             .catch(error => {
                 switch(error.code){
                     case "auth/invalid-email":
-                    
                     case "auth/user-disabled":
-
                     case "auth/user-not-found":
                         setEmailError(error.message);
                         break;
                     case "auth/wrong-password":
                         setPasswordError(error.message);
-                    
                 }
             });
-    }
-
-    function logout() {
-        Firebase.auth().signOut();
     }
 
     function authListener() {
@@ -63,9 +57,9 @@ const LoginPaper = () => {
                 setUser(user);
             }
             else{
-                setUser("");
+                setUser(null);
             }
-        })
+        });
     }
 
     function register() {
