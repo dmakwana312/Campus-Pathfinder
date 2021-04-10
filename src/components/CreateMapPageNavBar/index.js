@@ -24,7 +24,7 @@ const NavBar = (props) => {
         return (
             <div>
                 {/* Navbar */}
-                <AppBar className={classes.appBar}>
+                <AppBar className={classes.createMapAppBar}>
                     <Toolbar>
                         <Grid container direction="row" justify="space-between" alignItems="center">
                             <MenuIcon
@@ -64,7 +64,7 @@ const NavBar = (props) => {
     // Only create navbar for non-mobile devices
     const destroyDrawer = () => {
         return (
-            <AppBar className={classes.appBar}>
+            <AppBar className={classes.createMapAppBar}>
                 <Toolbar>
                     <Typography style={{ flexGrow: 1 }} color="inherit" >Campus Route Finder</Typography>
                     <Button onClick={props.decrementStep} className={classes.button} color="inherit">Previous Step</Button>

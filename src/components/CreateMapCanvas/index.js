@@ -46,6 +46,7 @@ const CreateMapCanvas = (props) => {
     // Display building shapes (with paths) for when active step is 1
     function displayBuildings() {
         return (
+
             // Map shapes from props and display
             props.shapes.map((shape, key) => {
 

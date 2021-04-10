@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import NavBar from '../../components/CreateMapPageNavBar';
 import CreateMapSidebar from '../../components/CreateMapSidebar';
 import CreateMapObjectPropertiesSidebar from '../../components/CreateMapObjectPropertiesSidebar';
@@ -28,6 +28,7 @@ import { isColliding } from '../../utils/collisionDetection';
 import { loggedInUser, setUser } from '../../utils/userState';
 
 import { Redirect } from 'react-router-dom';
+import { map } from '../../utils/mapState';
 
 const CreateMapPage = () => {
 
@@ -48,6 +49,7 @@ const CreateMapPage = () => {
     const layerRef = useRef();
     const stageRef = useRef();
     const [mapName, setMapName] = useState("");
+    const [editingMap, setEditingMap] = useState(false);
 
     // var collisionTest = false;
 
@@ -66,6 +68,41 @@ const CreateMapPage = () => {
     // else{
     //     console.log("Not Colliding")
     // }
+
+    const mapToEdit = map.use();
+
+    var userID = loggedInUser.use().uid;
+
+    useEffect(() => {
+        if(mapToEdit !== null){
+            
+            for (var i = 0; i < mapToEdit[1]["mapData"].length; i++) {
+
+                if (mapToEdit[1]["mapData"][i].name === "building") {
+                    for (var j = 0; j < mapToEdit[1]["mapData"][i].internal.length; j++) {
+                        if (mapToEdit[1]["mapData"][i].internal[j][0] === "empty") {
+                            mapToEdit[1]["mapData"][i].internal[j][0] = [];
+                        }
+                    }
+
+                    if (mapToEdit[1]["mapData"][i].lifts[0] === "empty") {
+                        mapToEdit[1]["mapData"][i].lifts = [];
+                        console.log(mapToEdit[1]["mapData"][i]);
+                    }
+
+                    if (mapToEdit[1]["mapData"][i].stairs[0] === "empty") {
+                        mapToEdit[1]["mapData"][i].stairs = [];
+                    }
+                }
+            }
+            
+            setShapes([...mapToEdit[1]["mapData"]]);
+            setObjectCategories(mapToEdit[1]["categories"])
+            setMapName(mapToEdit[1]["mapName"])
+            setEditingMap(true);
+            
+        }
+    }, [])
 
     // Create a new shape
     function createShape(shapeType) {
@@ -595,6 +632,7 @@ const CreateMapPage = () => {
 
                     // Check if lifts are connected to at least one pathway
                     for (var l = 0; l < lifts.length; l++) {
+                        console.log(lifts[l]);
                         if (lifts[l].floors[j]) {
 
                             var connected = false;
@@ -715,7 +753,6 @@ const CreateMapPage = () => {
         else if (activeStep === 1) {
             if (step1Validation()) {
                 setActiveStep(activeStep + 1);
-                console.log("Final");
             }
         }
 
@@ -748,7 +785,6 @@ const CreateMapPage = () => {
             }
         }
 
-
         // Update shapes state
         setShapes(floorShapes);
     }
@@ -764,6 +800,15 @@ const CreateMapPage = () => {
     function clearShapes() {
         setShapes([]);
         setBuildingBeingViewed(null);
+    }
+
+    function generateCode(length) {
+        var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        var result = '';
+        for (var i = length; i > 0; --i) {
+            result += chars[Math.round(Math.random() * (chars.length - 1))];
+        }
+        return result;
     }
 
     // Function to save map to firebase
@@ -790,47 +835,43 @@ const CreateMapPage = () => {
 
         }
 
-        var index = 0;
-
-        // Add index to each shape
-        for (var i = 0; i < savedShapes.length; i++) {
-            savedShapes[i].index = index++;
-            if (savedShapes[i].name === "building") {
-                if (savedShapes[i].entrance !== undefined) {
-                    savedShapes[i].entrance.index = index++;
-                }
-
-                for (var j = 0; j < savedShapes[i].internal.length; j++) {
-                    for (var k = 0; k < savedShapes[i].internal[j].length; k++) {
-                        savedShapes[i].internal[j][k].index = index++;
-                    }
-                }
-
-                for (var j = 0; j < savedShapes[i].lifts.length; j++) {
-                    savedShapes[i].lifts[j].index = index++;
-                }
-
-                for (var j = 0; j < savedShapes[i].stairs.length; j++) {
-                    savedShapes[i].stairs[j].index = index++;
-                }
-            }
-
-        }
+        var nowDate = new Date(); 
+        var date = nowDate.getDate()+'/'+(nowDate.getMonth()+1)+'/'+nowDate.getFullYear(); 
 
         // Combine map name, categories and mapdata in to single object
         var mapData = {
             mapName: mapName,
             categories: objectCategories,
             mapData: savedShapes,
-            userID: loggedInUser.use().uid,
-            active: true
-
+            userID: userID,
+            active: true,
+            updatedDate: date,
         }
-       
+
+        if(!editingMap) {
+            mapData.createdDate = date;
+            mapData.code = generateCode(6);
+        }
+
         // Push data to database
         var db = firebase.database();
-        var ref = db.ref("MapData");
-        var key = ref.push(mapData);
+        if(editingMap){
+            db.ref("MapData/" + mapToEdit[0]).update({
+                mapName: mapName,
+                categories: objectCategories,
+                mapData: savedShapes,
+                userID: userID,
+                active: true,
+                updatedDate: date,
+            })
+        }
+        else {
+            var ref = db.ref("MapData");
+            ref.push(mapData);
+        }
+    }
+
+    function getDate() {
 
     }
 
@@ -985,6 +1026,7 @@ const CreateMapPage = () => {
                         className={classes.textField}
                         variant="outlined"
                         label="Map Name"
+                        defaultValue={mapName}
                         onChange={(e) => setMapName(e.target.value)}
                     />
                     <Button className={classes.modalButton} variant="contained" color="primary" onClick={saveMap} style={{ float: "right" }}>Save</Button>

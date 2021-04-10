@@ -75,8 +75,9 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(1),
     },
     // Appbar styling
-    appBar: {
-        zIndex: theme.zIndex.drawer + 100,
+    createMapAppBar: {
+        zIndex: theme.zIndex.drawer + 1,
+        
     },
     list: {
         width: 200,
@@ -101,6 +102,7 @@ const useStyles = makeStyles((theme) => ({
     drawer: {
         width: drawerWidth,
         flexShrink: 0,
+        zIndex: theme.zIndex.appBar -1
     },
     drawerPaper: {
         width: drawerWidth,
@@ -134,7 +136,7 @@ const useStyles = makeStyles((theme) => ({
         width: '30ch',
         margin: theme.spacing(1),
         marginRight: theme.spacing(3),
-        
+
     },
     formTextfield: {
         width: '30ch',
@@ -148,8 +150,15 @@ const useStyles = makeStyles((theme) => ({
         marginRight: "auto",
         width: "80%",
         marginBottom: 10
-        
+
+    },
+
+    speedDial: {
+        position: "absolute",
+        bottom: theme.spacing(2),
+        right: theme.spacing(2),
     }
+
 
 }));
 
