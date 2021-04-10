@@ -4,6 +4,8 @@ import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Fab from '@material-ui/core/Fab';
 import SearchIcon from '@material-ui/icons/Search';
+import Modal from '@material-ui/core/Modal';
+import Button from '@material-ui/core/Button';
 
 import ViewMapCanvas from '../../components/ViewMapCanvas';
 import firebase from '../../utils/firebase';
@@ -22,7 +24,7 @@ const ViewMapPage = () => {
 
     const classes = useStyles();
     const [mapData, setMapData] = useState(null);
-    const [categories, setCategories] = useState(null);
+    const [categories, setCategories] = useState([]);
     const [showTextFields, setShowTextFields] = useState(false);
     const [showSearchTextField, setShowSearchTextField] = useState(false);
     const [showDirectionTextFields, setShowDirectionTextFields] = useState(false);
@@ -35,6 +37,9 @@ const ViewMapPage = () => {
     const [options, setOptions] = useState([]);
     const [showRouteFinderCarousel, setShowRouteFinderCarousel] = useState(false);
     const [pathwayShapes, setPathwayShapes] = useState([]);
+    const [showEnterCodeModal, setShowEnterCodeModal] = useState(true);
+    const [mapCode, setMapCode] = useState("");
+    const [retrieveMapError, setRetrieveMapError] = useState("");
 
 
     useEffect(() => {
@@ -45,73 +50,98 @@ const ViewMapPage = () => {
 
     }, [showBuildingModal, showRouteFinderCarousel])
 
-    useEffect(() => {
+    function retrieveMap() {
+        setRetrieveMapError("");
+        if (mapCode.length !== 6) {
+            setRetrieveMapError("Invalid Map Code")
+            return;
+        }
         var db = firebase.database();
-        var data = db.ref("MapData/-MXbYvL2Ui3HV2y6z6dn");
+        var dbData = db.ref("MapData/");
 
-        data.on('value', (snapshot) => {
-            const data = snapshot.val();
+        dbData.orderByChild('code').equalTo(mapCode).on("value", function (snapshot) {
+            if (snapshot.exists()) {
+                snapshot.forEach(function (mapData) {
 
-            var index = 0;
+                    var retrieveMap = db.ref("MapData/" + mapData.key);
+                    retrieveMap.on('value', (snapshot) => {
+                        var data = snapshot.val();
+                        if (data !== null && data.active) {
+                            
 
-            var searchOptions = [];
+                            var index = 0;
 
-            for (var i = 0; i < data.mapData.length; i++) {
+                            var searchOptions = [];
 
-                if (data.mapData[i].name === "building") {
-                    searchOptions.push(data.mapData[i]);
-                    for (var j = 0; j < data.mapData[i].internal.length; j++) {
-                        if (data.mapData[i].internal[j][0] === "empty") {
-                            data.mapData[i].internal[j][0] = [];
-                        }
-                        else {
-                            for (var k = 0; k < data.mapData[i].internal[j].length; k++) {
-                                if (data.mapData[i].internal[j][k].name === "room") {
-                                    searchOptions.push(data.mapData[i].internal[j][k]);
+                            for (var i = 0; i < data.mapData.length; i++) {
+
+                                if (data.mapData[i].name === "building") {
+                                    searchOptions.push(data.mapData[i]);
+                                    for (var j = 0; j < data.mapData[i].internal.length; j++) {
+                                        if (data.mapData[i].internal[j][0] === "empty") {
+                                            data.mapData[i].internal[j] = [];
+                                        }
+                                        else {
+                                            for (var k = 0; k < data.mapData[i].internal[j].length; k++) {
+                                                if (data.mapData[i].internal[j][k].name === "room") {
+                                                    searchOptions.push(data.mapData[i].internal[j][k]);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    if (data.mapData[i].lifts[0] === "empty") {
+                                        data.mapData[i].lifts = [];
+                                    }
+
+                                    if (data.mapData[i].stairs[0] === "empty") {
+                                        data.mapData[i].stairs = [];
+                                    }
                                 }
                             }
+                            
+
+                            for (var i = 0; i < data.mapData.length; i++) {
+                                data.mapData[i].index = index++;
+                                if (data.mapData[i].name === "building") {
+                                    if (data.mapData[i].entrance !== undefined) {
+                                        data.mapData[i].entrance.index = index++;
+                                    }
+
+                                    for (var j = 0; j < data.mapData[i].internal.length; j++) {
+                                        for (var k = 0; k < data.mapData[i].internal[j].length; k++) {
+                                            data.mapData[i].internal[j][k].index = index++;                                            
+                                        }
+                                    }
+
+                                    for (var j = 0; j < data.mapData[i].lifts.length; j++) {
+                                        data.mapData[i].lifts[j].index = index++;
+                                    }
+
+                                    for (var j = 0; j < data.mapData[i].stairs.length; j++) {
+                                        data.mapData[i].stairs[j].index = index++;
+                                    }
+                                }
+
+                            }
+                            
+                            
+                            setMapData([...data.mapData]);
+                            setCategories([...data.categories]);
+                            setOptions([...searchOptions]);
+                            setShowEnterCodeModal(false);
+                            
                         }
-                    }
+                    })
 
-                    if (data.mapData[i].lifts[0] === "empty") {
-                        data.mapData[i].lifts = [];
-                    }
-
-                    if (data.mapData[i].stairs[0] === "empty") {
-                        data.mapData[i].stairs = [];
-                    }
-                }
+                });
             }
-
-            for (var i = 0; i < data.mapData.length; i++) {
-                data.mapData[i].index = index++;
-                if (data.mapData[i].name === "building") {
-                    if (data.mapData[i].entrance !== undefined) {
-                        data.mapData[i].entrance.index = index++;
-                    }
-
-                    for (var j = 0; j < data.mapData[i].internal.length; j++) {
-                        for (var k = 0; k < data.mapData[i].internal[j].length; k++) {
-                            data.mapData[i].internal[j][k].index = index++;
-                        }
-                    }
-
-                    for (var j = 0; j < data.mapData[i].lifts.length; j++) {
-                        data.mapData[i].lifts[j].index = index++;
-                    }
-
-                    for (var j = 0; j < data.mapData[i].stairs.length; j++) {
-                        data.mapData[i].stairs[j].index = index++;
-                    }
-                }
-
+            else {
+                setRetrieveMapError("Map not Found");
             }
-
-            setMapData([...data.mapData]);
-            setCategories([...data.categories]);
-            setOptions([...searchOptions]);
         });
-    }, [])
+
+    }
 
 
     // Reset search, origin and destination attibutes 
@@ -214,7 +244,7 @@ const ViewMapPage = () => {
 
         // Set showing result to true
         setShowingResult(true);
-        
+
 
     }
 
@@ -254,7 +284,7 @@ const ViewMapPage = () => {
                     break;
                 }
             }
-            
+
             // Run dijktra and determine path
             var visited = dijkstra_buildingToBuilding(mapData, origin, destination);
             var path = getNodesInPathOrder(visited[visited.length - 1]);
@@ -289,7 +319,7 @@ const ViewMapPage = () => {
 
                     // Loop through internal structure of building
                     for (var j = 0; j < mapData[i].internal.length; j++) {
-                        
+
                         // Loop through floor
                         for (var k = 0; k < mapData[i].internal[j].length; k++) {
 
@@ -382,162 +412,182 @@ const ViewMapPage = () => {
 
     return (
         <React.Fragment>
+            {!showEnterCodeModal &&
+                <React.Fragment>
+                    <div className={classes.paper}>
 
-            <div className={classes.paper}>
-                {!showTextFields &&
-                    <React.Fragment>
-                        <Fab color="primary" variant="extended" className={classes.paperComponent} onClick={() => textfieldShowHandler(1)}>
-                            <SearchIcon style={{ marginRight: 1 }} />
+                        {!showTextFields &&
+                            <React.Fragment>
+                                <Fab color="primary" variant="extended" className={classes.paperComponent} onClick={() => textfieldShowHandler(1)}>
+                                    <SearchIcon style={{ marginRight: 1 }} />
                             Search
                         </Fab>
 
-                        <br />
+                                <br />
 
-                        <Fab color="primary" variant="extended" className={classes.paperComponent} onClick={() => textfieldShowHandler(2)}>
-                            <FontAwesomeIcon icon={faRoute} style={{ fontSize: 17, marginRight: 5 }} />
+                                <Fab color="primary" variant="extended" className={classes.paperComponent} onClick={() => textfieldShowHandler(2)}>
+                                    <FontAwesomeIcon icon={faRoute} style={{ fontSize: 17, marginRight: 5 }} />
                             Find Route
                         </Fab>
-                    </React.Fragment>
-                }
+                            </React.Fragment>
+                        }
 
-                {showTextFields && showSearchTextField &&
+                        {showTextFields && showSearchTextField &&
 
-                    <React.Fragment>
-                        <Fab color="secondary" variant="extended" className={classes.paperComponent} onClick={backButtonHandler}>
-                            <FontAwesomeIcon icon={faChevronCircleLeft} style={{ fontSize: 17, marginRight: 5 }} />
+                            <React.Fragment>
+                                <Fab color="secondary" variant="extended" className={classes.paperComponent} onClick={backButtonHandler}>
+                                    <FontAwesomeIcon icon={faChevronCircleLeft} style={{ fontSize: 17, marginRight: 5 }} />
                             Back
                         </Fab>
 
-                        <br />
+                                <br />
 
-                        {mapData &&
-                            <Autocomplete
-                                className={classes.paperComponent}
-                                style={{ width: 300, backgroundColor: "white" }}
-                                options={options}
-                                autoHighlight
-                                getOptionLabel={(option) => option.label}
-                                renderOption={(option) => (
-                                    option.label
-                                )}
-                                onChange={(event, newValue) => {
-                                    setSearch(newValue);
-                                }}
-                                renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        style={{ padding: 0, margin: 0 }}
-                                        label="Search For A Building"
-                                        variant="outlined"
-                                        inputProps={{
-                                            ...params.inputProps,
-                                            // autoComplete: 'new-password', // disable autocomplete and autofill
+                                {mapData &&
+                                    <Autocomplete
+                                        className={classes.paperComponent}
+                                        style={{ width: 300, backgroundColor: "white" }}
+                                        options={options}
+                                        autoHighlight
+                                        getOptionLabel={(option) => option.label}
+                                        renderOption={(option) => (
+                                            option.label
+                                        )}
+                                        onChange={(event, newValue) => {
+                                            setSearch(newValue);
                                         }}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                style={{ padding: 0, margin: 0 }}
+                                                label="Search For A Building"
+                                                variant="outlined"
+                                                inputProps={{
+                                                    ...params.inputProps,
+                                                    // autoComplete: 'new-password', // disable autocomplete and autofill
+                                                }}
+                                            />
+                                        )}
                                     />
-                                )}
-                            />
-                        }
+                                }
 
 
-                        <Fab color="primary" variant="extended" className={classes.paperComponent} onClick={searchFunction}>
-                            <SearchIcon style={{ marginRight: 1 }} />
+                                <Fab color="primary" variant="extended" className={classes.paperComponent} onClick={searchFunction}>
+                                    <SearchIcon style={{ marginRight: 1 }} />
                             Search
                         </Fab>
-                    </React.Fragment>
+                            </React.Fragment>
 
-                }
-
-                {showTextFields && showDirectionTextFields &&
-
-                    <React.Fragment>
-                        <Fab color="secondary" variant="extended" className={classes.paperComponent} onClick={backButtonHandler}>
-                            <FontAwesomeIcon icon={faChevronCircleLeft} style={{ fontSize: 17, marginRight: 5 }} />
-                            Back
-                        </Fab>
-
-                        <br />
-
-                        {mapData &&
-                            <Autocomplete
-                                className={classes.paperComponent}
-                                style={{ width: 300, backgroundColor: "white" }}
-                                options={options}
-                                autoHighlight
-                                getOptionLabel={(option) => option.label}
-                                renderOption={(option) => (
-                                    option.label
-                                )}
-                                onChange={(event, newValue) => {
-                                    setOrigin(newValue);
-                                }}
-                                renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        label="Origin"
-                                        variant="outlined"
-                                        inputProps={{
-                                            ...params.inputProps,
-                                            autoComplete: 'new-password', // disable autocomplete and autofill
-                                        }}
-                                    />
-                                )}
-                            />
                         }
 
+                        {showTextFields && showDirectionTextFields &&
 
+                            <React.Fragment>
+                                <Fab color="secondary" variant="extended" className={classes.paperComponent} onClick={backButtonHandler}>
+                                    <FontAwesomeIcon icon={faChevronCircleLeft} style={{ fontSize: 17, marginRight: 5 }} />
+                                    Back
+                                </Fab>
 
-                        {mapData &&
-                            <Autocomplete
-                                className={classes.paperComponent}
-                                style={{ width: 300, backgroundColor: "white" }}
-                                options={options}
-                                autoHighlight
+                                <br />
 
-                                getOptionLabel={(option) => option.label}
-                                renderOption={(option) => (
-                                    option.label
-                                )}
-                                onChange={(event, newValue) => {
-                                    setDestination(newValue);
-                                }}
-                                renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        color="primary"
-                                        label="Destination"
-                                        variant="outlined"
-                                        inputProps={{
-                                            ...params.inputProps,
-                                            autoComplete: 'new-password', // disable autocomplete and autofill
+                                {mapData &&
+                                    <Autocomplete
+                                        className={classes.paperComponent}
+                                        style={{ width: 300, backgroundColor: "white" }}
+                                        options={options}
+                                        autoHighlight
+                                        getOptionLabel={(option) => option.label}
+                                        renderOption={(option) => (
+                                            option.label
+                                        )}
+                                        onChange={(event, newValue) => {
+                                            setOrigin(newValue);
                                         }}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label="Origin"
+                                                variant="outlined"
+                                                inputProps={{
+                                                    ...params.inputProps,
+                                                    autoComplete: 'new-password', // disable autocomplete and autofill
+                                                }}
+                                            />
+                                        )}
                                     />
-                                )}
-                            />
-                        }
+                                }
 
 
 
-                        <Fab color="primary" variant="extended" className={classes.paperComponent} onClick={getDirectionsFunction}>
-                            <FontAwesomeIcon icon={faRoute} style={{ fontSize: 17, marginRight: 5 }} />
+                                {mapData &&
+                                    <Autocomplete
+                                        className={classes.paperComponent}
+                                        style={{ width: 300, backgroundColor: "white" }}
+                                        options={options}
+                                        autoHighlight
+
+                                        getOptionLabel={(option) => option.label}
+                                        renderOption={(option) => (
+                                            option.label
+                                        )}
+                                        onChange={(event, newValue) => {
+                                            setDestination(newValue);
+                                        }}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                color="primary"
+                                                label="Destination"
+                                                variant="outlined"
+                                                inputProps={{
+                                                    ...params.inputProps,
+                                                    autoComplete: 'new-password', // disable autocomplete and autofill
+                                                }}
+                                            />
+                                        )}
+                                    />
+                                }
+
+
+
+                                <Fab color="primary" variant="extended" className={classes.paperComponent} onClick={getDirectionsFunction}>
+                                    <FontAwesomeIcon icon={faRoute} style={{ fontSize: 17, marginRight: 5 }} />
                             Get Directions
                         </Fab>
-                    </React.Fragment>
+                            </React.Fragment>
 
-                }
-            </div>
+                        }
+                    </div>
 
-            <ViewMapCanvas clickHandler={buildingClickHandler} showingResult={showingResult} shapes={mapData} categories={categories} />
+                    <ViewMapCanvas clickHandler={buildingClickHandler} showingResult={showingResult} shapes={mapData} categories={categories} />
 
-            {showBuildingModal &&
-                <ViewBuildingModal handleClose={() => { setShowBuildingModal(false) }} building={mapData[buildingClicked]} categories={categories} showingResult={showingResult} />
+                    {showBuildingModal &&
+                        <ViewBuildingModal handleClose={() => { setShowBuildingModal(false) }} building={mapData[buildingClicked]} categories={categories} showingResult={showingResult} />
+                    }
+
+                    {showRouteFinderCarousel &&
+                        <RouteFinderCarousel pathway={pathwayShapes} origin={origin} destination={destination} mapData={mapData} categories={categories} handleClose={() => { setShowRouteFinderCarousel(false) }} />
+                    }
+
+                    {categories !== null && <CategoryLegend categories={categories} />}
+                </React.Fragment>
             }
 
-            {showRouteFinderCarousel &&
-                <RouteFinderCarousel pathway={pathwayShapes} origin={origin} destination={destination} mapData={mapData} categories={categories} handleClose={() => { setShowRouteFinderCarousel(false) }} />
+            {showEnterCodeModal &&
+                <Modal
+                    aria-labelledby="transition-modal-title"
+                    aria-describedby="transition-modal-description"
+                    open={true}
+                >
+                    <div className={classes.modalContent}>
+                        <h2>Enter Code</h2>
+                        <TextField error={retrieveMapError === "" ? false : true} helperText={retrieveMapError} className={classes.formTextfield} id="enterMapCode" label="Enter Code" variant="outlined" onChange={(event) => setMapCode(event.target.value)} />
+                        <br />
+                        <Button style={{ marginLeft: 7 }} variant="contained" color="primary" onClick={retrieveMap}>Retrieve Map</Button>
+
+                    </div>
+                </Modal>
+
             }
-
-            {categories !== null && <CategoryLegend categories={categories} />}
-
         </React.Fragment>
 
     );
