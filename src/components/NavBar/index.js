@@ -18,6 +18,8 @@ import { loggedInUser, setUser } from '../../utils/userState';
 
 import Firebase from '../../utils/firebase';
 
+import { Redirect } from 'react-router';
+
 import { useStyles } from '../style.js';
 
 const NavBar = (props) => {
@@ -68,7 +70,10 @@ const NavBar = (props) => {
                         onKeyDown={() => { setDrawerOpen(false) }}>
 
                         <List className={classes.list}>
-                            <ListItem key={1} button divider onClick={user === null ? () =>() => {} : logout}>{user === null ? "Login" : "Logout"} </ListItem>
+                            <ListItem key={1} button divider oonClick={event =>  window.location.href='#/viewmap'}>View Map </ListItem>
+                            <ListItem key={2} button divider onClick={event =>  window.location.href='#/admin'}>Admin </ListItem>
+                            <ListItem key={3} button divider onClick={user === null ? () => {} : logout}>{user === null ? "Login" : "Logout"} </ListItem>
+                            
                         </List>
                     </div>
 
@@ -84,7 +89,10 @@ const NavBar = (props) => {
             <AppBar>
                 <Toolbar>
                     <Typography style={{ flexGrow: 1 }} color="inherit" >Campus Route Finder</Typography>
+                    <Button className={classes.button} color="inherit" onClick={event =>  window.location.href='#/viewmap'}>View Map</Button>
+                    <Button className={classes.button} color="inherit" onClick={event =>  window.location.href='#/admin'}>Admin</Button>
                     <Button className={classes.button} color="inherit" onClick={user === null ? () => {} : logout}>{user === null ? "Login" : "Logout"}</Button>
+
                 </Toolbar>
             </AppBar>
         )

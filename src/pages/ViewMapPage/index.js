@@ -14,6 +14,7 @@ import ViewMapCanvas from '../../components/ViewMapCanvas';
 import ViewBuildingModal from '../../components/ViewBuildingModal';
 import CategoryLegend from '../../components/CategoryLegend';
 import RouteFinderCarousel from '../../components/RouteFinderCarousel';
+import NavBar from '../../components/NavBar';
 
 import firebase from '../../utils/firebase';
 import { dijkstra_buildingToBuilding, dijkstra_roomToEntrance, getNodesInPathOrder } from '../../utils/dijkstra';
@@ -416,6 +417,7 @@ const ViewMapPage = () => {
 
     return (
         <React.Fragment>
+            <NavBar />
             {!showEnterCodeModal &&
                 <React.Fragment>
                     <div className={classes.paper}>
