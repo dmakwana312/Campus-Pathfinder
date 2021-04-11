@@ -1,10 +1,18 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 
-import Modal from '@material-ui/core/Modal';
+import {
+    Modal,
+    Paper
+} from '@material-ui/core';
+
+import { 
+    Stage, 
+    Layer, 
+    Text, 
+    Rect 
+} from 'react-konva';
+
 import Carousel from 'react-material-ui-carousel';
-import Paper from '@material-ui/core/Paper';
-
-import { Stage, Layer, Text, Rect } from 'react-konva';
 
 import ViewMapCanvas from '../ViewMapCanvas';
 import { useStyles } from '../style.js';

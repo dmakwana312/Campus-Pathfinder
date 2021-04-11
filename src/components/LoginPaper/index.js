@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 
-import Paper from '@material-ui/core/Paper';
-import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
-import Modal from '@material-ui/core/Modal';
+import {
+    Paper,
+    TextField,
+    Link,
+    Modal,
+    Button
+} from '@material-ui/core';
 
-import { useStyles } from '../style.js';
-import { Button } from '@material-ui/core';
+import { Redirect } from 'react-router-dom';
 
 import Firebase from '../../utils/firebase';
 
 import { loggedInUser, setUser } from '../../utils/userState';
 
-import { Redirect } from 'react-router-dom';
+import { useStyles } from '../style.js';
 
 const LoginPaper = () => {
 

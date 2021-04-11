@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react';
 
-import TextField from '@material-ui/core/TextField';
+import {
+    TextField,
+    Fab,
+    Modal,
+    Button
+} from '@material-ui/core';
+
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import Fab from '@material-ui/core/Fab';
 import SearchIcon from '@material-ui/icons/Search';
-import Modal from '@material-ui/core/Modal';
-import Button from '@material-ui/core/Button';
 
 import ViewMapCanvas from '../../components/ViewMapCanvas';
-import firebase from '../../utils/firebase';
-import { dijkstra_buildingToBuilding, dijkstra_roomToEntrance, getNodesInPathOrder } from '../../utils/dijkstra';
 import ViewBuildingModal from '../../components/ViewBuildingModal';
 import CategoryLegend from '../../components/CategoryLegend';
 import RouteFinderCarousel from '../../components/RouteFinderCarousel';
+
+import firebase from '../../utils/firebase';
+import { dijkstra_buildingToBuilding, dijkstra_roomToEntrance, getNodesInPathOrder } from '../../utils/dijkstra';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRoute } from '@fortawesome/free-solid-svg-icons'

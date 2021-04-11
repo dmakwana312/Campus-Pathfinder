@@ -1,34 +1,35 @@
 import React, { useState, useRef, useEffect } from 'react';
+
+import {
+    Toolbar,
+    Modal,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    Button,
+    TextField
+} from '@material-ui/core';
+
 import NavBar from '../../components/CreateMapPageNavBar';
 import CreateMapSidebar from '../../components/CreateMapSidebar';
 import CreateMapObjectPropertiesSidebar from '../../components/CreateMapObjectPropertiesSidebar';
 import CreateMapCanvas from '../../components/CreateMapCanvas';
-import { useStyles } from '../../components/style.js';
-import Toolbar from '@material-ui/core/Toolbar';
-import Modal from '@material-ui/core/Modal'
 import CreateMapProgressTracker from '../../components/CreateMapProgressTracker';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 
 import firebase from '../../utils/firebase';
-
 import { getGuides } from '../../utils/snapGuidesGeneration.js';
-
 import { categories } from '../../utils/categories.js';
-
 import { isColliding } from '../../utils/collisionDetection';
-
 import { loggedInUser, setUser } from '../../utils/userState';
+import { map } from '../../utils/mapState';
 
 import { Redirect } from 'react-router-dom';
-import { map } from '../../utils/mapState';
+
+import { useStyles } from '../../components/style.js';
 
 const CreateMapPage = () => {
 

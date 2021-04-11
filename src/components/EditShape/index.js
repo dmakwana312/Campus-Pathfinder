@@ -1,5 +1,10 @@
 import React, { useRef, useEffect } from 'react';
-import { Rect, Group, Text, Transformer, Line, Tag } from 'react-konva';
+import { 
+    Rect, 
+    Group, 
+    Text, 
+    Transformer
+} from 'react-konva';
 
 const EditShape = (props) => {
 

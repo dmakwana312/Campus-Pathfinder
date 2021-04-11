@@ -1,8 +1,13 @@
-import React, { useState, useRef } from 'react';
-import { Stage, Layer, Group } from 'react-konva';
-import { useStyles } from '../style.js';
+import React, { useState } from 'react';
+import { 
+    Stage, 
+    Layer, 
+    Group 
+} from 'react-konva';
 
 import ViewShape from '../ViewShape';
+
+import { useStyles } from '../style.js';
 
 const ViewMapCanvas = (props) => {
 

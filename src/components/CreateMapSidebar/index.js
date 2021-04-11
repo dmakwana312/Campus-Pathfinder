@@ -1,10 +1,14 @@
 import React from 'react';
-import Drawer from '@material-ui/core/Drawer';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
+
+import {
+    Drawer,
+    Toolbar,
+    List,
+    Divider,
+    ListItem,
+    ListItemText
+} from '@material-ui/core';
+
 import { useStyles } from '../style.js';
 
 const CreateMapSidebar = (props) => {

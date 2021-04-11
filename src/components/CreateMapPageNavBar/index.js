@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
 import {
-    AppBar, Toolbar, Typography, List, ListItem,
-    Grid, SwipeableDrawer, Button
+    AppBar, 
+    Toolbar, 
+    Typography, 
+    List, 
+    ListItem,
+    Grid, 
+    SwipeableDrawer, 
+    Button,
+    useTheme,
+    useMediaQuery
 } from '@material-ui/core';
+
 import MenuIcon from '@material-ui/icons/Menu';
-import { useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+
 import { useStyles } from '../style.js';
 
 const NavBar = (props) => {

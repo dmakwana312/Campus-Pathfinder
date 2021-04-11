@@ -1,29 +1,43 @@
 import React, { useState } from 'react';
-import Drawer from '@material-ui/core/Drawer';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import { useStyles } from '../style.js';
-import { TextField, Grid } from '@material-ui/core';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+
+import {
+    TextField,
+    Grid,
+    Drawer,
+    Toolbar,
+    List,
+    Divider,
+    ListItem,
+    ListItemText,
+    FormControl,
+    InputLabel,
+    Select,
+    Input,
+    MenuItem,
+    Chip,
+    Button,
+    Paper,
+    Tab,
+    Tabs
+} from '@material-ui/core';
+
+import {
+    ToggleButton,
+    ToggleButtonGroup
+} from '@material-ui/lab';
+
+import { 
+    FormatAlignLeft, 
+    FormatAlignCenter, 
+    FormatAlignRight 
+} from '@material-ui/icons';
+
 import EditIcon from '@material-ui/icons/Edit';
-import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
-import Input from "@material-ui/core/Input";
-import MenuItem from "@material-ui/core/MenuItem";
-import Chip from "@material-ui/core/Chip";
 
-import { FormatAlignLeft, FormatAlignCenter, FormatAlignRight } from '@material-ui/icons';
+import { useStyles } from '../style.js';
 
 const CreateMapObjectPropertiesSidebar = (props) => {
     const classes = useStyles();
@@ -39,7 +53,7 @@ const CreateMapObjectPropertiesSidebar = (props) => {
 
     // Determine class name of properties tab
     let propertiesClassName = props.properties ? "" : classes.propertiesFormDisabled;
-    
+
     // If properties of a shape are provided and the shape index is 
     // not equal to the shape index already stored, set shape index
     if (props.properties && shapeIndex !== props.properties.index) {
@@ -288,14 +302,14 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                 <h1 style={{ textAlign: "center" }}>Select Building From Below</h1>
                 <List>
                     {props.savedShapes.map((shape, key) => {
-                        if(shape.name != "path"){
+                        if (shape.name != "path") {
                             return (
                                 <ListItem selected={false} button key={shape.label} onClick={() => { props.setBuildingBeingViewed(key) }}>
                                     <ListItemText primary={shape.label} />
                                 </ListItem>
                             )
                         }
-                        
+
                     })}
 
                 </List>

@@ -1,30 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Checkbox from '@material-ui/core/Checkbox';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import Button from '@material-ui/core/Button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+
+import {
+    Paper, 
+    Table, 
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Checkbox,
+    Button,
+    Tooltip
+} from '@material-ui/core';
+
+import {
+    SpeedDial,
+    SpeedDialIcon,
+    SpeedDialAction
+} from '@material-ui/lab';
+
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import EditIcon from '@material-ui/icons/Edit';
-import SpeedDial from '@material-ui/lab/SpeedDial';
-import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
-import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
-import Tooltip from '@material-ui/core/Tooltip';
 
-import { useStyles } from '../style';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 
 import Firebase from '../../utils/firebase';
-
 import { loggedInUser } from '../../utils/userState';
 import { setMap } from '../../utils/mapState';
 import { Redirect } from 'react-router';
+
+import { useStyles } from '../style';
 
 const AdminPageTable = (props) => {
 

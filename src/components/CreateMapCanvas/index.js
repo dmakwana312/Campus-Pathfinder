@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Stage, Layer, Line, Rect } from 'react-konva';
-import { useStyles } from '../style.js';
+
 import EditShape from '../EditShape';
 
+import { useStyles } from '../style.js';
 
 const CreateMapCanvas = (props) => {
 

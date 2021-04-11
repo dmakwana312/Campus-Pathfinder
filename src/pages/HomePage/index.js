@@ -1,10 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import LoginPaper from '../../components/LoginPaper';
 
 import NavBar from '../../components/NavBar';
-import { useStyles } from '../style.js';
+
 import { loggedInUser } from '../../utils/userState';
 import { Redirect } from 'react-router-dom';
+
+import { useStyles } from '../style.js';
 
 const HomePage = () => {
 

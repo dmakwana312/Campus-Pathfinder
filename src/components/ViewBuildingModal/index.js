@@ -1,8 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useStyles } from '../style.js';
+import React, { useState } from 'react';
 
-import { Stage, Layer, Text, Rect } from 'react-konva';
+
+import { 
+    Stage, 
+    Layer, 
+    Text, 
+    Rect 
+} from 'react-konva';
+
 import Modal from '@material-ui/core/Modal';
+
+import { useStyles } from '../style.js';
 
 const ViewBuildingModal = (props) => {
 
