@@ -19,6 +19,7 @@ import CreateMapSidebar from '../../components/CreateMapSidebar';
 import CreateMapObjectPropertiesSidebar from '../../components/CreateMapObjectPropertiesSidebar';
 import CreateMapCanvas from '../../components/CreateMapCanvas';
 import CreateMapProgressTracker from '../../components/CreateMapProgressTracker';
+import ColourPicker from '../../components/ColourPicker';
 
 import firebase from '../../utils/firebase';
 import { getGuides } from '../../utils/snapGuidesGeneration.js';
@@ -961,16 +962,13 @@ const CreateMapPage = () => {
                                                     />
                                                 </TableCell>
                                                 <TableCell component="th" scope="row">
-                                                    <TextField
-                                                        defaultValue={category["mainColour"]}
-                                                        onChange={(e) => editCategory(key, "mainColour", e.target.value)}
-                                                    />
+                                                    
+                                                    <ColourPicker handleColourChange={(colour) => editCategory(key, "mainColour", colour)} colour={category["mainColour"]} />
                                                 </TableCell>
                                                 <TableCell component="th" scope="row">
-                                                    <TextField
-                                                        defaultValue={category["fontColour"]}
-                                                        onChange={(e) => editCategory(key, "fontColour", e.target.value)}
-                                                    />
+                                                    
+                                                    <ColourPicker handleColourChange={(colour) => editCategory(key, "fontColour", colour)} colour={category["fontColour"]} />
+
                                                 </TableCell>
                                             </TableRow>
                                         )
@@ -998,18 +996,16 @@ const CreateMapPage = () => {
                             label="Category Name"
                             onChange={(e) => setNewCategoryName(e.target.value)}
                         />
-                        <TextField
-                            className={classes.textField}
-                            variant="outlined"
-                            label="Main Colour"
-                            onChange={(e) => setNewCategoryMainColour(e.target.value)}
-                        />
-                        <TextField
-                            className={classes.textField}
-                            variant="outlined"
-                            label="Font Colour"
-                            onChange={(e) => setNewCategoryFontColour(e.target.value)}
-                        />
+
+                        <div className={classes.textField}>
+                            <p>Main Colour</p>
+                            <ColourPicker handleColourChange={(colour) => setNewCategoryMainColour(colour)} colour={"#000000"} />
+                        </div>
+
+                        <div className={classes.textField}>
+                            <p>Font Colour</p>
+                            <ColourPicker handleColourChange={(colour) => setNewCategoryFontColour(colour)} colour={"#000000"} />
+                        </div>
                         <Button className={classes.modalButton} variant="contained" color="primary" onClick={addCategory} style={{ float: "right" }}>Save</Button>
 
                     </div>
