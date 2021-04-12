@@ -32,22 +32,22 @@ const CreateMapSidebar = (props) => {
 
     // Options for when active step is 1
     function internalMapOptions() {
-        
+        var disabled = props.buildingBeingViewed === null;
         return (
             <List>
-                <ListItem button key={"entrance"} onClick={() => { props.buttonClick("entrance") }}>
+                <ListItem disabled={disabled} button key={"entrance"} onClick={() => { props.buttonClick("entrance") }}>
                     <ListItemText primary={"Entrance"} />
                 </ListItem>
-                <ListItem button key={"room"} onClick={() => { props.buttonClick("room") }}>
+                <ListItem disabled={disabled} button key={"room"} onClick={() => { props.buttonClick("room") }}>
                     <ListItemText primary={"Room"} />
                 </ListItem>
-                <ListItem button key={"stairs"} onClick={() => { props.buttonClick("stairs") }}>
+                <ListItem disabled={disabled} button key={"stairs"} onClick={() => { props.buttonClick("stairs") }}>
                     <ListItemText primary={"Staircase"} />
                 </ListItem>
-                <ListItem button key={"lift"} onClick={() => { props.buttonClick("lifts") }}>
+                <ListItem disabled={disabled} button key={"lift"} onClick={() => { props.buttonClick("lifts") }}>
                     <ListItemText primary={"Lift"} />
                 </ListItem>
-                <ListItem button key={"path"} onClick={() => { props.buttonClick("path") }}>
+                <ListItem disabled={disabled} button key={"path"} onClick={() => { props.buttonClick("path") }}>
                     <ListItemText primary={"Path"} />
                 </ListItem>
 

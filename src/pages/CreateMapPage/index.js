@@ -75,8 +75,8 @@ const CreateMapPage = () => {
     var userID = loggedInUser.use().uid;
 
     useEffect(() => {
-        if(mapToEdit !== null){
-            
+        if (mapToEdit !== null) {
+
             for (var i = 0; i < mapToEdit[1]["mapData"].length; i++) {
 
                 if (mapToEdit[1]["mapData"][i].name === "building") {
@@ -96,12 +96,12 @@ const CreateMapPage = () => {
                     }
                 }
             }
-            
+
             setShapes([...mapToEdit[1]["mapData"]]);
             setObjectCategories(mapToEdit[1]["categories"])
             setMapName(mapToEdit[1]["mapName"])
             setEditingMap(true);
-            
+
         }
     }, [])
 
@@ -836,8 +836,8 @@ const CreateMapPage = () => {
 
         }
 
-        var nowDate = new Date(); 
-        var date = nowDate.getDate()+'/'+(nowDate.getMonth()+1)+'/'+nowDate.getFullYear(); 
+        var nowDate = new Date();
+        var date = nowDate.getDate() + '/' + (nowDate.getMonth() + 1) + '/' + nowDate.getFullYear();
 
         // Combine map name, categories and mapdata in to single object
         var mapData = {
@@ -849,14 +849,14 @@ const CreateMapPage = () => {
             updatedDate: date,
         }
 
-        if(!editingMap) {
+        if (!editingMap) {
             mapData.createdDate = date;
             mapData.code = generateCode(6);
         }
 
         // Push data to database
         var db = firebase.database();
-        if(editingMap){
+        if (editingMap) {
             db.ref("MapData/" + mapToEdit[0]).update({
                 mapName: mapName,
                 categories: objectCategories,
@@ -887,7 +887,7 @@ const CreateMapPage = () => {
             {checkLoggedIn()}
             <div className={classes.root}>
                 <NavBar incrementStep={incrementStep} decrementStep={decrementStep} />
-                <CreateMapSidebar activeStep={activeStep} buttonClick={createShape} />
+                <CreateMapSidebar activeStep={activeStep} buttonClick={createShape} buildingBeingViewed={buildingBeingViewed} />
                 <main className={classes.content}>
                     <Toolbar />
                     <div>
