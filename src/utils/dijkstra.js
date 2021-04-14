@@ -7,6 +7,14 @@ import { isColliding } from './collisionDetection';
 
 export function dijkstra_buildingToBuilding(shapes, start, finish) {
 
+    var shapesToUse = [];
+
+    for(var i = 0; i < shapes.length; i++){
+        if(shapes.index !== start.index && shapes.index !== finish.index){
+            shapesToUse.push(shapes[i]);
+        }
+    }
+
     var visitedNodesInOrder = [];
     var unvisitedNodes = getAllNodes(shapes, start);
     
@@ -126,7 +134,7 @@ function getBuildingNodes(mapData, start) {
     var building = getBuildingOfNode(mapData, start);
 
     for (var i = 0; i < building.internal.length; i++) {
-        allNodes.push(floorToNodes(building.internal[i]))
+        allNodes.push(floorToNodes(building.internal[i], start))
         
         if (building.entrance !== undefined && building.entrance.floorNumber === i) {
             allNodes[i].push([building.entrance, Infinity, false, null]);
@@ -146,16 +154,16 @@ function getBuildingNodes(mapData, start) {
         
     }
 
-    
-
     return allNodes;
 }
 
-function floorToNodes(floor) {
+function floorToNodes(floor, start) {
     var nodes = [];
     for (var i = 0; i < floor.length; i++) {
-
-        nodes.push([floor[i], Infinity, false, null]);
+        if(floor[i].index === start.index || floor[i].name !== "room"){
+            nodes.push([floor[i], Infinity, false, null]);
+        }
+        
     }
     return nodes;
 }
