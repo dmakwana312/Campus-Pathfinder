@@ -8,7 +8,7 @@ const CategoryLegend = (props) => {
 
     // Loop through categories and display 
     return (
-        <Paper className={classes.paper} style={{ width: 150, top: 0, right: 0 }} elevation={10}>
+        <Paper className={classes.paper} style={{ marginTop: 100, width: 150, top: 0, right: 0 }} elevation={10}>
             <div>
 
                 <div style={{ margin: 10, float: "left", border: "1px solid black", height: "10px", width: "10px", backgroundColor: "#03b1fc" }} />

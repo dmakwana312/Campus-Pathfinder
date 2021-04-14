@@ -4,7 +4,10 @@ import {
     TextField,
     Fab,
     Modal,
-    Button
+    Button,
+    Paper,
+    useTheme,
+    useMediaQuery
 } from '@material-ui/core';
 
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -45,6 +48,7 @@ const ViewMapPage = () => {
     const [showEnterCodeModal, setShowEnterCodeModal] = useState(true);
     const [mapCode, setMapCode] = useState("");
     const [retrieveMapError, setRetrieveMapError] = useState("");
+    const [showSearchDrawer, setShowSearchDrawer] = useState(false);
 
 
     useEffect(() => {
@@ -72,7 +76,7 @@ const ViewMapPage = () => {
                     retrieveMap.on('value', (snapshot) => {
                         var data = snapshot.val();
                         if (data !== null && data.active) {
-                            
+
 
                             var index = 0;
 
@@ -104,7 +108,7 @@ const ViewMapPage = () => {
                                     }
                                 }
                             }
-                            
+
 
                             for (var i = 0; i < data.mapData.length; i++) {
                                 data.mapData[i].index = index++;
@@ -115,7 +119,7 @@ const ViewMapPage = () => {
 
                                     for (var j = 0; j < data.mapData[i].internal.length; j++) {
                                         for (var k = 0; k < data.mapData[i].internal[j].length; k++) {
-                                            data.mapData[i].internal[j][k].index = index++;                                            
+                                            data.mapData[i].internal[j][k].index = index++;
                                         }
                                     }
 
@@ -129,13 +133,13 @@ const ViewMapPage = () => {
                                 }
 
                             }
-                            
-                            
+
+
                             setMapData([...data.mapData]);
                             setCategories([...data.categories]);
                             setOptions([...searchOptions]);
                             setShowEnterCodeModal(false);
-                            
+
                         }
                     })
 
@@ -415,185 +419,228 @@ const ViewMapPage = () => {
 
     }
 
-    return (
-        <React.Fragment>
-            <NavBar />
-            {!showEnterCodeModal &&
-                <React.Fragment>
-                    <div className={classes.paper}>
-
-                        {!showTextFields &&
-                            <React.Fragment>
-                                <Fab color="primary" variant="extended" className={classes.paperComponent} onClick={() => textfieldShowHandler(1)}>
-                                    <SearchIcon style={{ marginRight: 1 }} />
+    function searchDirectionOptions() {
+        return (
+            <React.Fragment>
+                {!showTextFields &&
+                    <React.Fragment>
+                        <Fab color="primary" variant="extended" className={classes.paperComponent} onClick={() => textfieldShowHandler(1)}>
+                            <SearchIcon style={{ marginRight: 1 }} />
                             Search
                         </Fab>
 
-                                <br />
+                        <br />
 
-                                <Fab color="primary" variant="extended" className={classes.paperComponent} onClick={() => textfieldShowHandler(2)}>
-                                    <FontAwesomeIcon icon={faRoute} style={{ fontSize: 17, marginRight: 5 }} />
+                        <Fab color="primary" variant="extended" className={classes.paperComponent} onClick={() => textfieldShowHandler(2)}>
+                            <FontAwesomeIcon icon={faRoute} style={{ fontSize: 17, marginRight: 5 }} />
                             Find Route
                         </Fab>
-                            </React.Fragment>
-                        }
+                    </React.Fragment>
+                }
 
-                        {showTextFields && showSearchTextField &&
+                {showTextFields && showSearchTextField &&
 
-                            <React.Fragment>
-                                <Fab color="secondary" variant="extended" className={classes.paperComponent} onClick={backButtonHandler}>
-                                    <FontAwesomeIcon icon={faChevronCircleLeft} style={{ fontSize: 17, marginRight: 5 }} />
+                    <React.Fragment>
+                        <Fab color="secondary" variant="extended" className={classes.paperComponent} onClick={backButtonHandler}>
+                            <FontAwesomeIcon icon={faChevronCircleLeft} style={{ fontSize: 17, marginRight: 5 }} />
                             Back
                         </Fab>
 
-                                <br />
+                        <br />
 
-                                {mapData &&
-                                    <Autocomplete
-                                        className={classes.paperComponent}
-                                        style={{ width: 300, backgroundColor: "white" }}
-                                        options={options}
-                                        autoHighlight
-                                        getOptionLabel={(option) => option.label}
-                                        renderOption={(option) => (
-                                            option.label
-                                        )}
-                                        onChange={(event, newValue) => {
-                                            setSearch(newValue);
+                        {mapData &&
+                            <Autocomplete
+                                className={classes.paperComponent}
+                                style={{ width: 300, backgroundColor: "white" }}
+                                options={options}
+                                autoHighlight
+                                getOptionLabel={(option) => option.label}
+                                renderOption={(option) => (
+                                    option.label
+                                )}
+                                onChange={(event, newValue) => {
+                                    setSearch(newValue);
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        style={{ padding: 0, margin: 0 }}
+                                        label="Search For A Building"
+                                        variant="outlined"
+                                        inputProps={{
+                                            ...params.inputProps,
+                                            // autoComplete: 'new-password', // disable autocomplete and autofill
                                         }}
-                                        renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                style={{ padding: 0, margin: 0 }}
-                                                label="Search For A Building"
-                                                variant="outlined"
-                                                inputProps={{
-                                                    ...params.inputProps,
-                                                    // autoComplete: 'new-password', // disable autocomplete and autofill
-                                                }}
-                                            />
-                                        )}
                                     />
-                                }
+                                )}
+                            />
+                        }
 
 
-                                <Fab color="primary" variant="extended" className={classes.paperComponent} onClick={searchFunction}>
-                                    <SearchIcon style={{ marginRight: 1 }} />
+                        <Fab color="primary" variant="extended" className={classes.paperComponent} onClick={searchFunction}>
+                            <SearchIcon style={{ marginRight: 1 }} />
                             Search
                         </Fab>
-                            </React.Fragment>
+                    </React.Fragment>
 
+                }
+
+                {showTextFields && showDirectionTextFields &&
+
+                    <React.Fragment>
+                        <Fab color="secondary" variant="extended" className={classes.paperComponent} onClick={backButtonHandler}>
+                            <FontAwesomeIcon icon={faChevronCircleLeft} style={{ fontSize: 17, marginRight: 5 }} />
+                            Back
+                        </Fab>
+
+                        <br />
+
+                        {mapData &&
+                            <Autocomplete
+                                className={classes.paperComponent}
+                                style={{ width: 300, backgroundColor: "white" }}
+                                options={options}
+                                autoHighlight
+                                getOptionLabel={(option) => option.label}
+                                renderOption={(option) => (
+                                    option.label
+                                )}
+                                onChange={(event, newValue) => {
+                                    setOrigin(newValue);
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Origin"
+                                        variant="outlined"
+                                        inputProps={{
+                                            ...params.inputProps,
+                                            autoComplete: 'new-password', // disable autocomplete and autofill
+                                        }}
+                                    />
+                                )}
+                            />
                         }
 
-                        {showTextFields && showDirectionTextFields &&
 
-                            <React.Fragment>
-                                <Fab color="secondary" variant="extended" className={classes.paperComponent} onClick={backButtonHandler}>
-                                    <FontAwesomeIcon icon={faChevronCircleLeft} style={{ fontSize: 17, marginRight: 5 }} />
-                                    Back
-                                </Fab>
 
-                                <br />
+                        {mapData &&
+                            <Autocomplete
+                                className={classes.paperComponent}
+                                style={{ width: 300, backgroundColor: "white" }}
+                                options={options}
+                                autoHighlight
 
-                                {mapData &&
-                                    <Autocomplete
-                                        className={classes.paperComponent}
-                                        style={{ width: 300, backgroundColor: "white" }}
-                                        options={options}
-                                        autoHighlight
-                                        getOptionLabel={(option) => option.label}
-                                        renderOption={(option) => (
-                                            option.label
-                                        )}
-                                        onChange={(event, newValue) => {
-                                            setOrigin(newValue);
+                                getOptionLabel={(option) => option.label}
+                                renderOption={(option) => (
+                                    option.label
+                                )}
+                                onChange={(event, newValue) => {
+                                    setDestination(newValue);
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        color="primary"
+                                        label="Destination"
+                                        variant="outlined"
+                                        inputProps={{
+                                            ...params.inputProps,
+                                            autoComplete: 'new-password', // disable autocomplete and autofill
                                         }}
-                                        renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                label="Origin"
-                                                variant="outlined"
-                                                inputProps={{
-                                                    ...params.inputProps,
-                                                    autoComplete: 'new-password', // disable autocomplete and autofill
-                                                }}
-                                            />
-                                        )}
                                     />
-                                }
+                                )}
+                            />
+                        }
 
 
 
-                                {mapData &&
-                                    <Autocomplete
-                                        className={classes.paperComponent}
-                                        style={{ width: 300, backgroundColor: "white" }}
-                                        options={options}
-                                        autoHighlight
-
-                                        getOptionLabel={(option) => option.label}
-                                        renderOption={(option) => (
-                                            option.label
-                                        )}
-                                        onChange={(event, newValue) => {
-                                            setDestination(newValue);
-                                        }}
-                                        renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                color="primary"
-                                                label="Destination"
-                                                variant="outlined"
-                                                inputProps={{
-                                                    ...params.inputProps,
-                                                    autoComplete: 'new-password', // disable autocomplete and autofill
-                                                }}
-                                            />
-                                        )}
-                                    />
-                                }
-
-
-
-                                <Fab color="primary" variant="extended" className={classes.paperComponent} onClick={getDirectionsFunction}>
-                                    <FontAwesomeIcon icon={faRoute} style={{ fontSize: 17, marginRight: 5 }} />
+                        <Fab color="primary" variant="extended" className={classes.paperComponent} onClick={getDirectionsFunction}>
+                            <FontAwesomeIcon icon={faRoute} style={{ fontSize: 17, marginRight: 5 }} />
                             Get Directions
                         </Fab>
-                            </React.Fragment>
+                    </React.Fragment>
+
+                }
+            </React.Fragment>
+        );
+    }
+
+    const theme = useTheme();
+
+    // Check if device is a mobile device
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+    return (
+        <React.Fragment>
+            <NavBar />
+            <div style={{ marginTop: 56 }}>
+                {!showEnterCodeModal &&
+                    <React.Fragment>
+
+                        {!isMobile &&
+                            <div className={classes.paper}>
+
+                                {searchDirectionOptions()}
+
+                            </div>
 
                         }
-                    </div>
+                        <ViewMapCanvas clickHandler={buildingClickHandler} showingResult={showingResult} shapes={mapData} categories={categories} />
 
-                    <ViewMapCanvas clickHandler={buildingClickHandler} showingResult={showingResult} shapes={mapData} categories={categories} />
+                        {showBuildingModal &&
+                            <ViewBuildingModal handleClose={() => { setShowBuildingModal(false) }} building={mapData[buildingClicked]} categories={categories} showingResult={showingResult} />
+                        }
 
-                    {showBuildingModal &&
-                        <ViewBuildingModal handleClose={() => { setShowBuildingModal(false) }} building={mapData[buildingClicked]} categories={categories} showingResult={showingResult} />
-                    }
+                        {showRouteFinderCarousel &&
+                            <RouteFinderCarousel pathway={pathwayShapes} origin={origin} destination={destination} mapData={mapData} categories={categories} handleClose={() => { setShowRouteFinderCarousel(false) }} />
+                        }
 
-                    {showRouteFinderCarousel &&
-                        <RouteFinderCarousel pathway={pathwayShapes} origin={origin} destination={destination} mapData={mapData} categories={categories} handleClose={() => { setShowRouteFinderCarousel(false) }} />
-                    }
+                        {categories !== null && <CategoryLegend categories={categories} />}
 
-                    {categories !== null && <CategoryLegend categories={categories} />}
-                </React.Fragment>
-            }
+                        {isMobile && !showSearchDrawer &&
+                            <Button style={{ position: "absolute", bottom: 0, width: "100%" }} variant="contained" color="primary" onClick={() => setShowSearchDrawer(true)}>
+                                Search
+                            </Button>
+                        }
 
-            {showEnterCodeModal &&
-                <Modal
-                    aria-labelledby="transition-modal-title"
-                    aria-describedby="transition-modal-description"
-                    open={true}
-                >
-                    <div className={classes.modalContent}>
-                        <h2>Enter Code</h2>
-                        <TextField error={retrieveMapError === "" ? false : true} helperText={retrieveMapError} className={classes.formTextfield} id="enterMapCode" label="Enter Code" variant="outlined" onChange={(event) => setMapCode(event.target.value)} />
-                        <br />
-                        <Button style={{ marginLeft: 7 }} variant="contained" color="primary" onClick={retrieveMap}>Retrieve Map</Button>
+                        {isMobile && showSearchDrawer &&
 
-                    </div>
-                </Modal>
+                            <Modal
+                                aria-labelledby="transition-modal-title"
+                                aria-describedby="transition-modal-description"
+                                open={true}
+                                onClose={() => setShowSearchDrawer(false)}
+                            >
+                                <div className={classes.modalContent}>
 
-            }
+                                    <Paper className={classes.centerPaper}>
+                                        {searchDirectionOptions()}
+                                    </Paper>
+                                </div>
+                            </Modal>
+                        }
+                    </React.Fragment>
+                }
+
+                {showEnterCodeModal &&
+                    <Modal
+                        aria-labelledby="transition-modal-title"
+                        aria-describedby="transition-modal-description"
+                        open={true}
+                    >
+                        <div className={classes.modalContent}>
+                            <h2>Enter Code</h2>
+                            <TextField error={retrieveMapError === "" ? false : true} helperText={retrieveMapError} className={classes.formTextfield} id="enterMapCode" label="Enter Code" variant="outlined" onChange={(event) => setMapCode(event.target.value)} />
+                            <br />
+                            <Button style={{ marginLeft: 7 }} variant="contained" color="primary" onClick={retrieveMap}>Retrieve Map</Button>
+
+                        </div>
+                    </Modal>
+
+                }
+            </div>
+
         </React.Fragment>
 
     );
