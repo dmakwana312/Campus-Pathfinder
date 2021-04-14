@@ -35,7 +35,7 @@ const LoginPaper = () => {
         setPasswordConfirmError("");
     }, [showRegisterModal])
 
-    useEffect(() =>{
+    useEffect(() => {
         authListener();
     }, [])
 
@@ -43,7 +43,7 @@ const LoginPaper = () => {
         Firebase.auth()
             .signInWithEmailAndPassword(email, password)
             .catch(error => {
-                switch(error.code){
+                switch (error.code) {
                     case "auth/invalid-email":
                     case "auth/user-disabled":
                     case "auth/user-not-found":
@@ -59,10 +59,10 @@ const LoginPaper = () => {
 
     function authListener() {
         Firebase.auth().onAuthStateChanged(user => {
-            if(user){
+            if (user) {
                 setUser(user);
             }
-            else{
+            else {
                 setUser(null);
             }
         });
@@ -71,19 +71,19 @@ const LoginPaper = () => {
     function register() {
         if (password === passwordConfirm) {
             Firebase.auth()
-            .createUserWithEmailAndPassword(email, password)
-            .catch(error => {
-                switch(error.code){
+                .createUserWithEmailAndPassword(email, password)
+                .catch(error => {
+                    switch (error.code) {
 
-                    case "auth/email-already-in-use":
-                    case "auth/invalid-email":
-                        setEmailError(error.message);
-                        break;
-                    case "auth/weak-password":
-                        setPasswordError(error.message);
-                    
-                }
-            });
+                        case "auth/email-already-in-use":
+                        case "auth/invalid-email":
+                            setEmailError(error.message);
+                            break;
+                        case "auth/weak-password":
+                            setPasswordError(error.message);
+
+                    }
+                });
         }
         else {
             setPasswordError("Passwords Do Not Match");
@@ -103,8 +103,8 @@ const LoginPaper = () => {
             <Paper className={classes.centerPaper} elevation={10}>
 
                 <form className={classes.form}>
-                    <TextField error={emailError === "" ? false : true} helperText={ emailError } className={classes.formTextfield} id="emailLogin" label="Email" variant="outlined" onChange={(event) => setEmail(event.target.value)} />
-                    <TextField error={passwordError === "" ? false : true} helperText={ passwordError } className={classes.formTextfield} id="passwordLogin" type="password" label="Password" variant="outlined" onChange={(event) => setPassword(event.target.value)} />
+                    <TextField error={emailError === "" ? false : true} helperText={emailError} className={classes.formTextfield} id="emailLogin" label="Email" variant="outlined" onChange={(event) => setEmail(event.target.value)} />
+                    <TextField error={passwordError === "" ? false : true} helperText={passwordError} className={classes.formTextfield} id="passwordLogin" type="password" label="Password" variant="outlined" onChange={(event) => setPassword(event.target.value)} />
 
                     <Button style={{ margin: 18, width: '30ch', marginBottom: 10 }} variant="contained" color="primary" onClick={login}>
                         Login
@@ -127,11 +127,11 @@ const LoginPaper = () => {
                 <div className={classes.modalContent}>
 
                     <Paper className={classes.centerPaper} >
-
-                        <form className={classes.form}>
-                            <TextField error={emailError === "" ? false : true} helperText={ emailError } className={classes.formTextfield} id="emailRegister" label="Email" variant="outlined" onChange={(event) => setEmail(event.target.value)} />
-                            <TextField error={passwordError === "" ? false : true} helperText={ passwordError } className={classes.formTextfield} id="passwordRegister" type="password" label="Password" variant="outlined" onChange={(event) => setPassword(event.target.value)} />
-                            <TextField error={passwordConfirmError === "" ? false : true} helperText={ passwordConfirmError } className={classes.formTextfield} id="passwordRegisterConfirm" type="password" label="Confirm Password" variant="outlined" onChange={(event) => setPasswordConfirm(event.target.value)} />
+                        <Button onClick={() => setShowRegisterModal(false)} style={{ position: "absolute", top: 0, right: 0, margin: 10 }}>X</Button>
+                        <form className={classes.form} style={{ marginTop: 20 }}>
+                            <TextField error={emailError === "" ? false : true} helperText={emailError} className={classes.formTextfield} id="emailRegister" label="Email" variant="outlined" onChange={(event) => setEmail(event.target.value)} />
+                            <TextField error={passwordError === "" ? false : true} helperText={passwordError} className={classes.formTextfield} id="passwordRegister" type="password" label="Password" variant="outlined" onChange={(event) => setPassword(event.target.value)} />
+                            <TextField error={passwordConfirmError === "" ? false : true} helperText={passwordConfirmError} className={classes.formTextfield} id="passwordRegisterConfirm" type="password" label="Confirm Password" variant="outlined" onChange={(event) => setPasswordConfirm(event.target.value)} />
 
 
                             <Button style={{ margin: 18, width: '30ch', marginBottom: 0 }} variant="contained" color="primary" onClick={register}>

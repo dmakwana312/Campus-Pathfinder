@@ -613,6 +613,7 @@ const ViewMapPage = () => {
                                 onClose={() => setShowSearchDrawer(false)}
                             >
                                 <div className={classes.modalContent}>
+                                    <Button onClick={() => setShowSearchDrawer(false)} style={{ position: "absolute", top: 0, right: 0, margin: 10 }}>X</Button>
 
                                     <Paper className={classes.centerPaper}>
                                         {searchDirectionOptions()}
@@ -630,6 +631,7 @@ const ViewMapPage = () => {
                         open={true}
                     >
                         <div className={classes.modalContent}>
+
                             <h2>Enter Code</h2>
                             <TextField error={retrieveMapError === "" ? false : true} helperText={retrieveMapError} className={classes.formTextfield} id="enterMapCode" label="Enter Code" variant="outlined" onChange={(event) => setMapCode(event.target.value)} />
                             <br />

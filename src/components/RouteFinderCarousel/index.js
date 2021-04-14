@@ -2,7 +2,8 @@ import React from 'react';
 
 import {
     Modal,
-    Paper
+    Paper,
+    Button
 } from '@material-ui/core';
 
 import { 
@@ -29,6 +30,8 @@ const RouteFinderCarousel = (props) => {
             onClose={props.handleClose}
         >
             <div className={classes.modalContent}>
+                <Button onClick={props.handleClose} style={{ position: "absolute", top: 0, right: 0, margin: 10 }}>X</Button>
+
                 <h2>Route</h2>
                 <Carousel>
                     {props.pathway.map((path, key) => {

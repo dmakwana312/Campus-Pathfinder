@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-
 import { 
     Stage, 
     Layer, 
@@ -8,7 +7,10 @@ import {
     Rect 
 } from 'react-konva';
 
-import Modal from '@material-ui/core/Modal';
+import {
+    Button, 
+    Modal
+} from '@material-ui/core';
 
 import { useStyles } from '../style.js';
 
@@ -71,6 +73,8 @@ const ViewBuildingModal = (props) => {
             onClose={props.handleClose}
         >
             <div className={classes.modalContent}>
+                <Button onClick={props.handleClose} style={{ position: "absolute", top: 0, right: 0, margin: 10 }}>X</Button>
+
                 <h2>{props.building.label}</h2>
                 <Stage
                     height={500}

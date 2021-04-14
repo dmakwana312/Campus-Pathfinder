@@ -954,6 +954,8 @@ const CreateMapPage = () => {
                     aria-describedby="simple-modal-description"
                 >
                     <div className={classes.modalContent}>
+                        <Button onClick={() => setViewCategoryEditModal(false)} style={{ position: "absolute", top: 0, right: 0, margin: 10 }}>X</Button>
+
                         <h2>View Categories</h2>
                         <TableContainer component={Paper}>
 
@@ -1004,6 +1006,8 @@ const CreateMapPage = () => {
                     aria-describedby="simple-modal-description"
                 >
                     <div className={classes.modalContent}>
+                    <Button onClick={() => setViewAddCategoryModal(false)} style={{ position: "absolute", top: 0, right: 0, margin: 10 }}>X</Button>
+
                         <h2>Add Categories</h2>
                         <TextField
                             className={classes.textField}
