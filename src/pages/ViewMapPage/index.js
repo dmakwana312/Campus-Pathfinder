@@ -7,7 +7,10 @@ import {
     Button,
     Paper,
     useTheme,
-    useMediaQuery
+    useMediaQuery,
+    Checkbox,
+    FormControlLabel,
+    
 } from '@material-ui/core';
 
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -49,6 +52,7 @@ const ViewMapPage = () => {
     const [mapCode, setMapCode] = useState("");
     const [retrieveMapError, setRetrieveMapError] = useState("");
     const [showSearchDrawer, setShowSearchDrawer] = useState(false);
+    const [accessibility, setAccessibility] = useState(false)
 
 
     useEffect(() => {
@@ -254,7 +258,6 @@ const ViewMapPage = () => {
         // Set showing result to true
         setShowingResult(true);
 
-
     }
 
     // Get directions
@@ -370,7 +373,7 @@ const ViewMapPage = () => {
             else if (origin.name === "room" && destination.name === "building") {
 
                 // Get path from origin to entrance of building
-                var nodes = dijkstra_roomToEntrance(mapData, origin);
+                var nodes = dijkstra_roomToEntrance(mapData, origin, accessibility);
                 nodesInPathwayOrder.push(getNodesInPathOrder(nodes[nodes.length - 1]));
 
                 // Get path from origin building to destination
@@ -385,7 +388,7 @@ const ViewMapPage = () => {
                 nodesInPathwayOrder.push(getNodesInPathOrder(nodes[nodes.length - 1]));
 
                 // Get path from destination building entrance to destination
-                nodes = dijkstra_roomToEntrance(mapData, destination);
+                nodes = dijkstra_roomToEntrance(mapData, destination, accessibility);
                 nodesInPathwayOrder.push(getNodesInPathOrder(nodes[nodes.length - 1]));
 
             }
@@ -553,7 +556,19 @@ const ViewMapPage = () => {
                             />
                         }
 
+                        <FormControlLabel
+                            className={classes.paperComponent}
+                            control={
+                                <Checkbox
+                                    name="checkedI"
+                                    onChange={(event) => setAccessibility(event.target.checked)}
+                                    color="primary"
+                                />
+                            }
+                            label="Step Free Access"
+                        />
 
+                        <br />
 
                         <Fab color="primary" variant="extended" className={classes.paperComponent} onClick={getDirectionsFunction}>
                             <FontAwesomeIcon icon={faRoute} style={{ fontSize: 17, marginRight: 5 }} />

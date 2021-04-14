@@ -39,7 +39,7 @@ export function dijkstra_buildingToBuilding(shapes, start, finish) {
     return visitedNodesInOrder;
 }
 
-export function dijkstra_roomToEntrance(mapData, start) {
+export function dijkstra_roomToEntrance(mapData, start, accessibility) {
     var visitedNodesInOrder = [];
     var unvisitedNodes = getBuildingNodes(mapData, start);
 
@@ -63,19 +63,32 @@ export function dijkstra_roomToEntrance(mapData, start) {
 
     var lift = null;
 
-    while (unvisitedNodes[currentFloor].length) {
-        sortNodesByDistance(unvisitedNodes[currentFloor]);
-        var closestNode = unvisitedNodes[currentFloor].shift();
-        closestNode[2] = true;
-        visitedNodesInOrder.push(closestNode);
-
-        if (closestNode[0].name === "lifts" && closestNode[0].floors[floorWithEntrance]) {
-            lift = closestNode[0];
-            break;
+    if(currentFloor !== floorWithEntrance){
+        while (unvisitedNodes[currentFloor].length) {
+            sortNodesByDistance(unvisitedNodes[currentFloor]);
+            var closestNode = unvisitedNodes[currentFloor].shift();
+            closestNode[2] = true;
+            visitedNodesInOrder.push(closestNode);
+    
+            if(accessibility){
+                if (closestNode[0].name === "lifts" && closestNode[0].floors[floorWithEntrance]) {
+                    lift = closestNode[0];
+                    break;
+                }
+            }
+            else{
+                if (closestNode[0].name === "lifts" || closestNode[0].name === "stairs" && closestNode[0].floors[floorWithEntrance]) {
+                    lift = closestNode[0];
+                    break;
+                }
+            }
+            
+    
+            updateUnvisitedNeighbours(unvisitedNodes[currentFloor], closestNode);
         }
-
-        updateUnvisitedNeighbours(unvisitedNodes[currentFloor], closestNode);
     }
+
+    
 
     currentFloor = floorWithEntrance;
 
