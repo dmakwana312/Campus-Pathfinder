@@ -813,6 +813,20 @@ const CreateMapPage = () => {
         return result;
     }
 
+    function deleteSelected(){
+        console.log(shapes[selectedIndex])
+        if(activeStep === 0){
+            var shapesUpdated = [];
+            for(var i = 0; i < shapes.length; i++){
+                if(i !== selectedIndex){
+                    shapesUpdated.push(shapes[i]);
+                }
+            }
+            setShapes([...shapesUpdated])
+            setSelectedIndex(-1);
+        }
+    }
+
     // Function to save map to firebase
     function saveMap() {
 
@@ -929,6 +943,7 @@ const CreateMapPage = () => {
                     setFloorBeingViewed={viewFloor}
                     addFloor={addFloor}
                     updateLiftStaircaseAccessibility={updateLiftStaircaseAccessibility}
+                    deleteSelected={deleteSelected}
                 />
             </div>
             {viewCategoryEditModal &&

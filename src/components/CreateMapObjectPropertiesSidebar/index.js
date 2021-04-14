@@ -26,10 +26,10 @@ import {
     ToggleButtonGroup
 } from '@material-ui/lab';
 
-import { 
-    FormatAlignLeft, 
-    FormatAlignCenter, 
-    FormatAlignRight 
+import {
+    FormatAlignLeft,
+    FormatAlignCenter,
+    FormatAlignRight
 } from '@material-ui/icons';
 
 import EditIcon from '@material-ui/icons/Edit';
@@ -111,6 +111,11 @@ const CreateMapObjectPropertiesSidebar = (props) => {
 
             <div className={classes.drawerContainer + " " + classes.propertiesForm}>
                 <List className={propertiesClassName}>
+
+                    <Button onClick={props.deleteSelected} style={{ backgroundColor:"red", marginTop: 20, marginBottom: 20, marginLeft: 20, marginRight: 20, width: "85%" }} variant="contained" >
+                        Delete
+                    </Button>
+
                     {/* If properties of a shape are for a lift or staircase show the floor selection field */}
                     {props.properties && (props.properties.name === "lifts" || props.properties.name === "stairs") &&
                         <ListItem>
@@ -257,7 +262,11 @@ const CreateMapObjectPropertiesSidebar = (props) => {
 
                     </ListItem>
 
+
+
                 </List>
+
+
 
                 {/* If fields are diabled display message */}
                 {fieldsDisabled ? <h2 className={classes.propertiesFormDisabledText}>Select Shape to View Properties</h2> : ""}
