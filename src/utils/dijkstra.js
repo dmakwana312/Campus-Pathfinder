@@ -10,13 +10,16 @@ export function dijkstra_buildingToBuilding(shapes, start, finish) {
     var shapesToUse = [];
 
     for(var i = 0; i < shapes.length; i++){
-        if(shapes.index !== start.index && shapes.index !== finish.index){
-            shapesToUse.push(shapes[i]);
+        if(shapes[i].name === "path"){
+            shapesToUse.push(shapes[i])
         }
     }
 
+    shapesToUse.push(start);
+    shapesToUse.push(finish);
+
     var visitedNodesInOrder = [];
-    var unvisitedNodes = getAllNodes(shapes, start);
+    var unvisitedNodes = getAllNodes(shapesToUse, start);
     
     while (unvisitedNodes.length) {
 

@@ -112,9 +112,11 @@ const CreateMapObjectPropertiesSidebar = (props) => {
             <div className={classes.drawerContainer + " " + classes.propertiesForm}>
                 <List className={propertiesClassName}>
 
-                    <Button onClick={props.deleteSelected} style={{ backgroundColor:"red", marginTop: 20, marginBottom: 20, marginLeft: 20, marginRight: 20, width: "85%" }} variant="contained" >
-                        Delete
-                    </Button>
+                    {props.activeStep === 0 &&
+                        <Button onClick={props.deleteSelected} style={{ backgroundColor: "red", marginTop: 20, marginBottom: 20, marginLeft: 20, marginRight: 20, width: "85%" }} variant="contained" >
+                            Delete
+                        </Button>
+                    }
 
                     {/* If properties of a shape are for a lift or staircase show the floor selection field */}
                     {props.properties && (props.properties.name === "lifts" || props.properties.name === "stairs") &&
