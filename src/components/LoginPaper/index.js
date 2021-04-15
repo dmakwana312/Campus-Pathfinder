@@ -103,8 +103,8 @@ const LoginPaper = () => {
             <Paper className={classes.centerPaper} elevation={10}>
 
                 <form className={classes.form}>
-                    <TextField id={"emailLoginTextField"} error={emailError === "" ? false : true} helperText={emailError} className={classes.formTextfield} id="emailLogin" label="Email" variant="outlined" onChange={(event) => setEmail(event.target.value)} />
-                    <TextField id={"passwordLoginTextField"} error={passwordError === "" ? false : true} helperText={passwordError} className={classes.formTextfield} id="passwordLogin" type="password" label="Password" variant="outlined" onChange={(event) => setPassword(event.target.value)} />
+                    <TextField id={"emailLogin"} error={emailError === "" ? false : true} helperText={emailError} className={classes.formTextfield} label="Email" variant="outlined" onChange={(event) => setEmail(event.target.value)} />
+                    <TextField id={"passwordLogin"} error={passwordError === "" ? false : true} helperText={passwordError} className={classes.formTextfield} type="password" label="Password" variant="outlined" onChange={(event) => setPassword(event.target.value)} />
                     <Button id={"loginButton"} style={{ margin: 18, width: '30ch', marginBottom: 10 }} variant="contained" color="primary" onClick={login}>
                         Login
                     </Button>
@@ -120,15 +120,16 @@ const LoginPaper = () => {
             {showRegisterModal && <Modal
                 open={true}
                 onClose={() => setShowRegisterModal(false)}
+                id={"registerModal"}
             >
                 <div className={classes.modalContent}>
 
                     <Paper className={classes.centerPaper} >
                         <Button onClick={() => setShowRegisterModal(false)} style={{ position: "absolute", top: 0, right: 0, margin: 10 }}>X</Button>
                         <form className={classes.form} style={{ marginTop: 20 }}>
-                            <TextField id={"emailRegisterTextField"} error={emailError === "" ? false : true} helperText={emailError} className={classes.formTextfield} id="emailRegister" label="Email" variant="outlined" onChange={(event) => setEmail(event.target.value)} />
-                            <TextField id={"passwordRegisterTextField"} error={passwordError === "" ? false : true} helperText={passwordError} className={classes.formTextfield} id="passwordRegister" type="password" label="Password" variant="outlined" onChange={(event) => setPassword(event.target.value)} />
-                            <TextField id={"passwordConfirmRegisterTextField"} error={passwordConfirmError === "" ? false : true} helperText={passwordConfirmError} className={classes.formTextfield} id="passwordRegisterConfirm" type="password" label="Confirm Password" variant="outlined" onChange={(event) => setPasswordConfirm(event.target.value)} />
+                            <TextField id={"emailRegister"} error={emailError === "" ? false : true} helperText={emailError} className={classes.formTextfield} label="Email" variant="outlined" onChange={(event) => setEmail(event.target.value)} />
+                            <TextField id={"passwordRegister"} error={passwordError === "" ? false : true} helperText={passwordError} className={classes.formTextfield} type="password" label="Password" variant="outlined" onChange={(event) => setPassword(event.target.value)} />
+                            <TextField id={"passwordRegisterConfirm"} error={passwordConfirmError === "" ? false : true} helperText={passwordConfirmError} className={classes.formTextfield} type="password" label="Confirm Password" variant="outlined" onChange={(event) => setPasswordConfirm(event.target.value)} />
 
 
                             <Button id={"registerButton"} style={{ margin: 18, width: '30ch', marginBottom: 0 }} variant="contained" color="primary" onClick={register}>
