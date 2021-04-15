@@ -24,13 +24,11 @@ const RouteFinderCarousel = (props) => {
 
     return (
         <Modal
-            aria-labelledby="transition-modal-title"
-            aria-describedby="transition-modal-description"
             open={true}
             onClose={props.handleClose}
         >
             <div className={classes.modalContent}>
-                <Button onClick={props.handleClose} style={{ position: "absolute", top: 0, right: 0, margin: 10 }}>X</Button>
+                <Button id={"closeModalButton"} onClick={props.handleClose} style={{ position: "absolute", top: 0, right: 0, margin: 10 }}>X</Button>
 
                 <h2>Route</h2>
                 <Carousel>

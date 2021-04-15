@@ -122,10 +122,8 @@ const CreateMapObjectPropertiesSidebar = (props) => {
                     {props.properties && (props.properties.name === "lifts" || props.properties.name === "stairs") &&
                         <ListItem>
                             <FormControl className={classes.formControl}>
-                                <InputLabel id="demo-mutiple-chip-label">Chip</InputLabel>
+                                <InputLabel>Chip</InputLabel>
                                 <Select
-                                    labelId="demo-mutiple-chip-label"
-                                    id="demo-mutiple-chip"
                                     multiple
                                     value={accessibleLiftstairsValues}
                                     onChange={handleFloorSelect}
@@ -264,11 +262,7 @@ const CreateMapObjectPropertiesSidebar = (props) => {
 
                     </ListItem>
 
-
-
                 </List>
-
-
 
                 {/* If fields are diabled display message */}
                 {fieldsDisabled ? <h2 className={classes.propertiesFormDisabledText}>Select Shape to View Properties</h2> : ""}

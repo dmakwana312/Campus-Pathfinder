@@ -124,7 +124,7 @@ const AdminPageTable = (props) => {
                 <h2>Admin</h2>
                 <TableContainer component={Paper} elevation={5}>
 
-                    <Table className={classes.table} aria-label="simple table">
+                    <Table id={"mapListTable"} className={classes.table} >
                         <TableHead>
                             <TableRow>
                                 <TableCell align="center">Name</TableCell>
@@ -142,33 +142,33 @@ const AdminPageTable = (props) => {
 
                                 if (map[1] !== null) {
                                     return (
-                                        <TableRow key={key}>
+                                        <TableRow id={"mapRow"+key} key={"mapRow"+key}>
 
-                                            <TableCell component="th" scope="row">
+                                            <TableCell id={"mapRow"+key+"Name"} component="th" scope="row">
                                                 {map[1]["mapName"]}
                                             </TableCell>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell id={"mapRow"+key+"Code"} component="th" scope="row">
                                                 {map[1]["code"]}
                                             </TableCell>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell id={"mapRow"+key+"Created"} component="th" scope="row">
                                                 {map[1]["createdDate"]}
                                             </TableCell>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell id={"mapRow"+key+"Updated"} component="th" scope="row">
                                                 {map[1]["updatedDate"]}
                                             </TableCell>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell id={"mapRow"+key+"Active"} component="th" scope="row">
                                                 <Checkbox
                                                     checked={map[1]["active"]}
                                                     onChange={() => { changeActivePropertyOfMap(map[0]) }}
                                                     name="active"
                                                 />
                                             </TableCell>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell id={"mapRow"+key+"EditButton"} component="th" scope="row">
                                                 <Tooltip title="Edit Map" placement="bottom" arrow>
                                                     <Button onClick={() => { editMap(map[0]) }} variant="contained"><EditIcon fontSize="small" /></Button>
                                                 </Tooltip>
                                             </TableCell>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell id={"mapRow"+key+"DeleteButton"} component="th" scope="row">
                                                 <Tooltip title="Delete Map" placement="bottom" arrow>
                                                     <Button onClick={() => deleteMap(map[0])} variant="contained"><FontAwesomeIcon icon={faTrashAlt} style={{ margin: "auto", color: "#FF0000", fontSize: 17 }} /></Button>
                                                 </Tooltip>
@@ -189,7 +189,8 @@ const AdminPageTable = (props) => {
             </Paper>
 
             <SpeedDial
-                ariaLabel="SpeedDial example"
+                ariaLabel=""
+                id={"speedDialButton"}
                 className={classes.speedDial}
                 // hidden={hidden}
                 icon={<SpeedDialIcon />}
@@ -202,6 +203,7 @@ const AdminPageTable = (props) => {
                     key={
                         "New Map"
                     }
+                    id={"createNewMap"}
                     icon={<AddBoxIcon />}
                     tooltipTitle={"Create New Map"}
                     onClick={() => {

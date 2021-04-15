@@ -57,9 +57,8 @@ const NavBar = (props) => {
                         onKeyDown={() => { setDrawerOpen(false) }}>
 
                         <List className={classes.list}>
-                            <ListItem key={1} onClick={props.decrementStep} button divider> Previous Step </ListItem>
-                            <ListItem key={2} onClick={props.incrementStep} button divider> Next Step </ListItem>
-                            <ListItem key={3} button divider> Option 3 </ListItem>
+                            <ListItem id={"previousStepLink"} key={1} onClick={props.decrementStep} button divider> Previous Step </ListItem>
+                            <ListItem id={"nextStepLink"} key={2} onClick={props.incrementStep} button divider> Next Step </ListItem>
                         </List>
                     </div>
                     

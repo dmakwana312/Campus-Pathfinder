@@ -73,7 +73,7 @@ const CreateMapPage = () => {
 
     const mapToEdit = map.use();
 
-    var userID = loggedInUser.use().uid;
+    var userID = loggedInUser.use()
 
     useEffect(() => {
         if (mapToEdit !== null) {
@@ -887,13 +887,13 @@ const CreateMapPage = () => {
         }
     }
 
-    function getDate() {
-
-    }
-
     function checkLoggedIn() {
-        if (loggedInUser.use() === null) {
+        if (userID === null) {
+            
             return <Redirect to='/' />;
+        }
+        else{
+            userID = userID.uid;
         }
     }
 

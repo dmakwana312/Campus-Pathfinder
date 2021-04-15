@@ -20,10 +20,7 @@ const ColourPicker = (props) => {
         setColour(colour.hex);
         props.handleColourChange(colour.hex);
     }
-
-
-
-
+    
     const styles = reactCSS({
         'default': {
             colour: {
