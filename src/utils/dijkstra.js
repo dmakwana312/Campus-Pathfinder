@@ -9,8 +9,8 @@ export function dijkstra_buildingToBuilding(shapes, start, finish) {
 
     var shapesToUse = [];
 
-    for(var i = 0; i < shapes.length; i++){
-        if(shapes[i].name === "path"){
+    for (var i = 0; i < shapes.length; i++) {
+        if (shapes[i].name === "path") {
             shapesToUse.push(shapes[i])
         }
     }
@@ -20,7 +20,7 @@ export function dijkstra_buildingToBuilding(shapes, start, finish) {
 
     var visitedNodesInOrder = [];
     var unvisitedNodes = getAllNodes(shapesToUse, start);
-    
+
     while (unvisitedNodes.length) {
 
         sortNodesByDistance(unvisitedNodes);
@@ -46,7 +46,7 @@ export function dijkstra_roomToEntrance(mapData, start, accessibility) {
     var floorWithEntrance = -1;
     var floorWithNode = -1;
     var currentFloor = -1;
-    
+
     for (var i = 0; i < unvisitedNodes.length; i++) {
         for (var j = 0; j < unvisitedNodes[i].length; j++) {
             if (unvisitedNodes[i][j][0].name === "entrance") {
@@ -61,34 +61,41 @@ export function dijkstra_roomToEntrance(mapData, start, accessibility) {
 
     currentFloor = floorWithNode;
 
-    var lift = null;
+    var checkPoint = null;
 
-    if(currentFloor !== floorWithEntrance){
+    var sameFloor = true;
+
+    if (currentFloor !== floorWithEntrance) {
+
+        sameFloor = false;
+
         while (unvisitedNodes[currentFloor].length) {
             sortNodesByDistance(unvisitedNodes[currentFloor]);
             var closestNode = unvisitedNodes[currentFloor].shift();
             closestNode[2] = true;
             visitedNodesInOrder.push(closestNode);
-    
-            if(accessibility){
+
+            if (accessibility) {
                 if (closestNode[0].name === "lifts" && closestNode[0].floors[floorWithEntrance]) {
-                    lift = closestNode[0];
+                    checkPoint = closestNode[0];
                     break;
                 }
             }
-            else{
+            else {
                 if (closestNode[0].name === "lifts" || closestNode[0].name === "stairs" && closestNode[0].floors[floorWithEntrance]) {
-                    lift = closestNode[0];
+                    checkPoint = closestNode[0];
                     break;
                 }
             }
-            
-    
+
+
             updateUnvisitedNeighbours(unvisitedNodes[currentFloor], closestNode);
         }
     }
 
-    
+    if (sameFloor) {
+        checkPoint = start;
+    }
 
     currentFloor = floorWithEntrance;
 
@@ -151,10 +158,10 @@ function getBuildingNodes(mapData, start) {
 
     for (var i = 0; i < building.internal.length; i++) {
         allNodes.push(floorToNodes(building.internal[i], start))
-        
+
         if (building.entrance !== undefined && building.entrance.floorNumber === i) {
             allNodes[i].push([building.entrance, Infinity, false, null]);
-            
+
         }
 
         for (var j = 0; j < building.lifts.length; j++) {
@@ -167,7 +174,7 @@ function getBuildingNodes(mapData, start) {
                 allNodes[i].push([building.stairs[j], Infinity, false, null]);
             }
         }
-        
+
     }
 
     return allNodes;
@@ -176,10 +183,10 @@ function getBuildingNodes(mapData, start) {
 function floorToNodes(floor, start) {
     var nodes = [];
     for (var i = 0; i < floor.length; i++) {
-        if(floor[i].index === start.index || floor[i].name !== "room"){
+        if (floor[i].index === start.index || floor[i].name !== "room") {
             nodes.push([floor[i], Infinity, false, null]);
         }
-        
+
     }
     return nodes;
 }
@@ -220,7 +227,7 @@ function getClosestShapes(shapes, start) {
 
         }
 
-    }  
+    }
 
     return closestShapes;
 }
