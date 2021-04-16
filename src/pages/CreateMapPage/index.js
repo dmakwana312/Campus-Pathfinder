@@ -885,6 +885,8 @@ const CreateMapPage = () => {
             var ref = db.ref("MapData");
             ref.push(mapData);
         }
+
+        window.location.href='#/admin'
     }
 
     function checkLoggedIn() {
@@ -1039,13 +1041,14 @@ const CreateMapPage = () => {
                 <div className={classes.modalContent}>
                     <h2>Save Map</h2>
                     <TextField
+                        id={"mapNameTextField"}
                         className={classes.textField}
                         variant="outlined"
                         label="Map Name"
                         defaultValue={mapName}
                         onChange={(e) => setMapName(e.target.value)}
                     />
-                    <Button className={classes.modalButton} variant="contained" color="primary" onClick={saveMap} style={{ float: "right" }}>Save</Button>
+                    <Button id={"createMapButton"} className={classes.modalButton} variant="contained" color="primary" onClick={saveMap} style={{ float: "right" }}>Save</Button>
                 </div>
             </Modal>
         </React.Fragment>

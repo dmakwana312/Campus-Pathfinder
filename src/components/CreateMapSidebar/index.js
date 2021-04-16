@@ -19,10 +19,10 @@ const CreateMapSidebar = (props) => {
         return (
             <List>
 
-                <ListItem button key={"building"} onClick={() => { props.buttonClick("building") }}>
+                <ListItem id={"createBuilding"} button key={"building"} onClick={() => { props.buttonClick("building") }}>
                     <ListItemText primary={"Building"} />
                 </ListItem>
-                <ListItem button key={"path"} onClick={() => { props.buttonClick("path") }}>
+                <ListItem id={"createPath"} button key={"path"} onClick={() => { props.buttonClick("path") }}>
                     <ListItemText primary={"Path"} />
                 </ListItem>
 
@@ -35,19 +35,19 @@ const CreateMapSidebar = (props) => {
         var disabled = props.buildingBeingViewed === null;
         return (
             <List>
-                <ListItem disabled={disabled} button key={"entrance"} onClick={() => { props.buttonClick("entrance") }}>
+                <ListItem id={"createEntrance"} disabled={disabled} button key={"entrance"} onClick={() => { props.buttonClick("entrance") }}>
                     <ListItemText primary={"Entrance"} />
                 </ListItem>
-                <ListItem disabled={disabled} button key={"room"} onClick={() => { props.buttonClick("room") }}>
+                <ListItem id={"createRoom"} disabled={disabled} button key={"room"} onClick={() => { props.buttonClick("room") }}>
                     <ListItemText primary={"Room"} />
                 </ListItem>
-                <ListItem disabled={disabled} button key={"stairs"} onClick={() => { props.buttonClick("stairs") }}>
+                <ListItem id={"createStaircase"} disabled={disabled} button key={"stairs"} onClick={() => { props.buttonClick("stairs") }}>
                     <ListItemText primary={"Staircase"} />
                 </ListItem>
-                <ListItem disabled={disabled} button key={"lift"} onClick={() => { props.buttonClick("lifts") }}>
+                <ListItem id={"createLift"} disabled={disabled} button key={"lift"} onClick={() => { props.buttonClick("lifts") }}>
                     <ListItemText primary={"Lift"} />
                 </ListItem>
-                <ListItem disabled={disabled} button key={"path"} onClick={() => { props.buttonClick("path") }}>
+                <ListItem id={"createPath"} disabled={disabled} button key={"path"} onClick={() => { props.buttonClick("path") }}>
                     <ListItemText primary={"Path"} />
                 </ListItem>
 

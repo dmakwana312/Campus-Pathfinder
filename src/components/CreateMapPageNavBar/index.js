@@ -14,6 +14,10 @@ import {
 
 import MenuIcon from '@material-ui/icons/Menu';
 
+import Firebase from '../../utils/firebase';
+
+import { loggedInUser, setUser } from '../../utils/userState';
+
 import { useStyles } from '../style.js';
 
 const NavBar = (props) => {
@@ -26,6 +30,11 @@ const NavBar = (props) => {
 
     // State to track if drawer is open (responsive)
     const [drawerOpen, setDrawerOpen] = useState(false);
+
+    function logout() {
+        Firebase.auth().signOut();
+        setUser(null)
+    }
 
     // Create a drawer for mobile devices
     const createDrawer = () => {
@@ -59,6 +68,8 @@ const NavBar = (props) => {
                         <List className={classes.list}>
                             <ListItem id={"previousStepLink"} key={1} onClick={props.decrementStep} button divider> Previous Step </ListItem>
                             <ListItem id={"nextStepLink"} key={2} onClick={props.incrementStep} button divider> Next Step </ListItem>
+                            <ListItem id={"loginLogoutButton"} key={3} button divider onClick={loggedInUser === null ? () => {} : logout}>{loggedInUser === null ? "Login" : "Logout"} </ListItem>
+
                         </List>
                     </div>
                     
@@ -74,9 +85,9 @@ const NavBar = (props) => {
             <AppBar className={classes.createMapAppBar}>
                 <Toolbar>
                     <Typography style={{ flexGrow: 1 }} color="inherit" >Campus Route Finder</Typography>
-                    <Button onClick={props.decrementStep} className={classes.button} color="inherit">Previous Step</Button>
-                    <Button onClick={props.incrementStep} className={classes.button} color="inherit">Next Step</Button>
-                    <Button className={classes.button} color="inherit">OPTION 3</Button>
+                    <Button id={"previousStepLink"} onClick={props.decrementStep} className={classes.button} color="inherit">Previous Step</Button>
+                    <Button id={"nextStepLink"} onClick={props.incrementStep} className={classes.button} color="inherit">Next Step</Button>
+                    <Button id={"loginLogoutButton"} className={classes.button} color="inherit" onClick={loggedInUser === null ? () => {} : logout}>{loggedInUser === null ? "Login" : "Logout"}</Button>
                 </Toolbar>
             </AppBar>
         )

@@ -70,9 +70,10 @@ const NavBar = (props) => {
                         onKeyDown={() => { setDrawerOpen(false) }}>
 
                         <List className={classes.list}>
-                            <ListItem key={1} id={"viewMapLink"} button divider oonClick={event =>  window.location.href='#/viewmap'}>View Map </ListItem>
-                            <ListItem key={2} id={"viewAdminLink"} button divider onClick={event =>  window.location.href='#/admin'}>Admin </ListItem>
-                            <ListItem key={3} id={"loginLogoutButton"} button divider onClick={user === null ? () => {} : logout}>{user === null ? "Login" : "Logout"} </ListItem>
+                            <ListItem key={1} id={"createMapLink"} button divider onClick={event =>  window.location.href='#/createmap'}>Create Map Map </ListItem>
+                            <ListItem key={2} id={"viewMapLink"} button divider onClick={event =>  window.location.href='#/viewmap'}>View Map </ListItem>
+                            <ListItem key={3} id={"viewAdminLink"} button divider onClick={event =>  window.location.href='#/admin'}>Admin </ListItem>
+                            <ListItem key={4} id={"loginLogoutButton"} button divider onClick={user === null ? () => {} : logout}>{user === null ? "Login" : "Logout"} </ListItem>
                             
                         </List>
                     </div>
@@ -89,6 +90,7 @@ const NavBar = (props) => {
             <AppBar>
                 <Toolbar>
                     <Typography style={{ flexGrow: 1 }} color="inherit" >Campus Route Finder</Typography>
+                    <Button id={"createMapLink"} className={classes.button} color="inherit" onClick={event =>  window.location.href='#/createmap'}>Create Map</Button>
                     <Button id={"viewMapLink"} className={classes.button} color="inherit" onClick={event =>  window.location.href='#/viewmap'}>View Map</Button>
                     <Button id={"viewAdminLink"} className={classes.button} color="inherit" onClick={event =>  window.location.href='#/admin'}>Admin</Button>
                     <Button id={"loginLogoutButton"} className={classes.button} color="inherit" onClick={user === null ? () => {} : logout}>{user === null ? "Login" : "Logout"}</Button>
