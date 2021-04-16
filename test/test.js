@@ -1,166 +1,221 @@
-// describe('Register Tests', function () {
+describe('Register Tests', function () {
 
-//     beforeEach(function () {
-//         browser.url('./');
-//     })
+    beforeEach(function () {
+        browser.url('./');
+    })
 
-//     it('Register Modal Should Be Shown', function () {
+    it('Register Modal Should Be Shown', function () {
 
-//         const registerHintButton = $('#registerHint');
-//         registerHintButton.click();
+        const registerHintButton = $('#registerHint');
+        registerHintButton.click();
 
-//         const registerModal = $('#registerModal')
-//         expect(registerModal).toExist()
+        const registerModal = $('#registerModal')
+        expect(registerModal).toExist()
 
-//     })
+    })
 
-//     it('Invalid Email Should Not Pass Validation', function () {
-//         const registerHintButton = $('#registerHint');
-//         registerHintButton.click();
+    it('Invalid Email Should Not Pass Validation', function () {
+        const registerHintButton = $('#registerHint');
+        registerHintButton.click();
 
-//         const emailTextField = $('#emailRegister');
-//         emailTextField.setValue("testemail.com");
+        const emailTextField = $('#emailRegister');
+        emailTextField.setValue("testemail.com");
 
-//         const passwordTextField = $('#passwordRegister');
-//         passwordTextField.setValue("password1");
+        const passwordTextField = $('#passwordRegister');
+        passwordTextField.setValue("password1");
 
-//         const passwordConfirmTextField = $('#passwordRegisterConfirm');
-//         passwordConfirmTextField.setValue("password1");
+        const passwordConfirmTextField = $('#passwordRegisterConfirm');
+        passwordConfirmTextField.setValue("password1");
 
-//         const registerButton = $('#registerButton');
-//         registerButton.click()
+        const registerButton = $('#registerButton');
+        registerButton.click()
 
-//         const emailErrorMessage = $('#emailLogin-helper-text');
-//         expect(emailErrorMessage).toHaveText("The email address is badly formatted.")
+        const emailErrorMessage = $('#emailLogin-helper-text');
+        expect(emailErrorMessage).toHaveText("The email address is badly formatted.")
 
-//     })
+    })
 
-//     it('Mismatched Password Should Not Pass Validation', function () {
+    it('Mismatched Password Should Not Pass Validation', function () {
 
-//         const registerHintButton = $('#registerHint');
-//         registerHintButton.click();
+        const registerHintButton = $('#registerHint');
+        registerHintButton.click();
 
-//         const emailTextField = $('#emailRegister');
-//         emailTextField.setValue("test@email.com");
+        const emailTextField = $('#emailRegister');
+        emailTextField.setValue("test@email.com");
 
-//         const passwordTextField = $('#passwordRegister');
-//         passwordTextField.setValue("password1");
+        const passwordTextField = $('#passwordRegister');
+        passwordTextField.setValue("password1");
 
-//         const passwordConfirmTextField = $('#passwordRegisterConfirm');
-//         passwordConfirmTextField.setValue("password2");
+        const passwordConfirmTextField = $('#passwordRegisterConfirm');
+        passwordConfirmTextField.setValue("password2");
 
-//         const registerButton = $('#registerButton');
-//         registerButton.click()
+        const registerButton = $('#registerButton');
+        registerButton.click()
 
-//         const passwordErrorMessage = $('#passwordRegister-helper-text')
-//         const passwordConfirmErrorMessage = $('#passwordRegisterConfirm-helper-text')
+        const passwordErrorMessage = $('#passwordRegister-helper-text')
+        const passwordConfirmErrorMessage = $('#passwordRegisterConfirm-helper-text')
 
-//         expect(passwordErrorMessage).toHaveText("Passwords Do Not Match")
-//         expect(passwordConfirmErrorMessage).toHaveText("Passwords Do Not Match")
-//     });
-
-
-
-//     it('Weak Password Should Not Pass Validation', function () {
-
-//         const registerHintButton = $('#registerHint');
-//         registerHintButton.click();
-
-//         const emailTextField = $('#emailRegister');
-//         emailTextField.setValue("test@email.com");
-
-//         const passwordTextField = $('#passwordRegister');
-//         passwordTextField.setValue("p1");
-
-//         const passwordConfirmTextField = $('#passwordRegisterConfirm');
-//         passwordConfirmTextField.setValue("p1");
-
-//         const registerButton = $('#registerButton');
-//         registerButton.click()
-
-//         const passwordErrorMessage = $('#passwordRegister-helper-text')
-
-//         expect(passwordErrorMessage).toHaveText("Password should be at least 6 characters")
-//     });
-
-//     it('Successful Registration Should Redirect To Admin Page', function() {
-//         const registerHintButton = $('#registerHint');
-//         registerHintButton.click();
-
-//         const emailTextField = $('#emailRegister');
-//         emailTextField.setValue("testRegister@email.com");
-
-//         const passwordTextField = $('#passwordRegister');
-//         passwordTextField.setValue("password");
-
-//         const passwordConfirmTextField = $('#passwordRegisterConfirm');
-//         passwordConfirmTextField.setValue("password");
-
-//         const registerButton = $('#registerButton');
-//         registerButton.click()
-
-//         expect(browser).toHaveUrl('http://localhost:3000/#/admin')
-
-//         const logoutButton = $('#loginLogoutButton');
-//         logoutButton.click();
-//     });
+        expect(passwordErrorMessage).toHaveText("Passwords Do Not Match")
+        expect(passwordConfirmErrorMessage).toHaveText("Passwords Do Not Match")
+    });
 
 
-// })
 
-// describe('Login Tests', function () {
+    it('Weak Password Should Not Pass Validation', function () {
 
-//     beforeEach(function () {
-//         browser.url('./');
-//     })
+        const registerHintButton = $('#registerHint');
+        registerHintButton.click();
 
-//     it('Login Should Fail When Account Does Not Exist', function () {
-//         const emailTextField = $('#emailLogin');
-//         emailTextField.setValue("nonExistantAccount@email.com");
+        const emailTextField = $('#emailRegister');
+        emailTextField.setValue("test@email.com");
 
-//         const passwordTextField = $('#passwordLogin');
-//         passwordTextField.setValue("password");
+        const passwordTextField = $('#passwordRegister');
+        passwordTextField.setValue("p1");
 
-//         const loginButton = $('#loginButton');
-//         loginButton.click();
+        const passwordConfirmTextField = $('#passwordRegisterConfirm');
+        passwordConfirmTextField.setValue("p1");
 
-//         const errorMessage = $('#emailLogin-helper-text')
-//         expect(errorMessage).toHaveText("There is no user record corresponding to this identifier. The user may have been deleted.")
+        const registerButton = $('#registerButton');
+        registerButton.click()
 
-//     })
+        const passwordErrorMessage = $('#passwordRegister-helper-text')
 
-//     it('Login Should Fail When Password Incorrect', function () {
-//         const emailTextField = $('#emailLogin');
-//         emailTextField.setValue("testRegister@email.com");
+        expect(passwordErrorMessage).toHaveText("Password should be at least 6 characters")
+    });
 
-//         const passwordTextField = $('#passwordLogin');
-//         passwordTextField.setValue("incorrectPassword");
+    it('Successful Registration Should Redirect To Admin Page', function() {
+        const registerHintButton = $('#registerHint');
+        registerHintButton.click();
 
-//         const loginButton = $('#loginButton');
-//         loginButton.click();
+        const emailTextField = $('#emailRegister');
+        emailTextField.setValue("testRegister@email.com");
 
-//         const errorMessage = $('#passwordLogin-helper-text')
-//         expect(errorMessage).toHaveText("The password is invalid or the user does not have a password.")
+        const passwordTextField = $('#passwordRegister');
+        passwordTextField.setValue("password");
 
-//     })
+        const passwordConfirmTextField = $('#passwordRegisterConfirm');
+        passwordConfirmTextField.setValue("password");
 
-//     it('SuccessFul Login Should Redirect To Admin Page', function () {
-//         const emailTextField = $('#emailLogin');
-//         emailTextField.setValue("testRegister@email.com");
+        const registerButton = $('#registerButton');
+        registerButton.click()
 
-//         const passwordTextField = $('#passwordLogin');
-//         passwordTextField.setValue("password");
+        expect(browser).toHaveUrl('http://localhost:3000/#/admin')
 
-//         const loginButton = $('#loginButton');
-//         loginButton.click();
+        const logoutButton = $('#loginLogoutButton');
+        logoutButton.click();
+    });
 
-//         expect(browser).toHaveUrl('http://localhost:3000/#/admin')
 
-//         const logoutButton = $('#loginLogoutButton');
-//         logoutButton.click();
-//     })
+})
 
-// })
+describe('Login Tests', function () {
+
+    beforeEach(function () {
+        browser.url('./');
+    })
+
+    it('Login Should Fail When Account Does Not Exist', function () {
+        const emailTextField = $('#emailLogin');
+        emailTextField.setValue("nonExistantAccount@email.com");
+
+        const passwordTextField = $('#passwordLogin');
+        passwordTextField.setValue("password");
+
+        const loginButton = $('#loginButton');
+        loginButton.click();
+
+        const errorMessage = $('#emailLogin-helper-text')
+        expect(errorMessage).toHaveText("There is no user record corresponding to this identifier. The user may have been deleted.")
+
+    })
+
+    it('Login Should Fail When Password Incorrect', function () {
+        const emailTextField = $('#emailLogin');
+        emailTextField.setValue("testRegister@email.com");
+
+        const passwordTextField = $('#passwordLogin');
+        passwordTextField.setValue("incorrectPassword");
+
+        const loginButton = $('#loginButton');
+        loginButton.click();
+
+        const errorMessage = $('#passwordLogin-helper-text')
+        expect(errorMessage).toHaveText("The password is invalid or the user does not have a password.")
+
+    })
+
+    it('SuccessFul Login Should Redirect To Admin Page', function () {
+        const emailTextField = $('#emailLogin');
+        emailTextField.setValue("testRegister@email.com");
+
+        const passwordTextField = $('#passwordLogin');
+        passwordTextField.setValue("password");
+
+        const loginButton = $('#loginButton');
+        loginButton.click();
+
+        expect(browser).toHaveUrl('http://localhost:3000/#/admin')
+
+        const logoutButton = $('#loginLogoutButton');
+        logoutButton.click();
+    })
+
+    it('Clicking On Reset Password Text Should Show Reset Password Modal', function() {
+        const resetPasswordHint = $('#resetPasswordHint');
+        resetPasswordHint.click();
+
+        const resetPasswordModal = $('#resetPasswordModal');
+        expect(resetPasswordModal).toExist();
+    })
+
+    it('Entering Invalid Email For Password Reset Should Show Error Message', function() {
+        const resetPasswordHint = $('#resetPasswordHint');
+        resetPasswordHint.click();
+
+        const emailTextField = $('#emailResetPasswordTextField');
+        emailTextField.setValue("invalidEmail");
+
+        const resetPasswordButton = $('#resetPasswordButton');
+        resetPasswordButton.click();
+
+        const emailErrorMessage = $('#emailResetPasswordTextField-helper-text');
+        expect(emailErrorMessage).toHaveText("The email address is badly formatted.")
+    })
+    
+    it('Entering Email For Non-Existant Account For Password Reset Should Show Error Message', function() {
+        const resetPasswordHint = $('#resetPasswordHint');
+        resetPasswordHint.click();
+
+        const emailTextField = $('#emailResetPasswordTextField');
+        emailTextField.setValue("nonExistantAccount@email.com");
+
+        const resetPasswordButton = $('#resetPasswordButton');
+        resetPasswordButton.click();
+
+        const emailErrorMessage = $('#emailResetPasswordTextField-helper-text');
+        expect(emailErrorMessage).toHaveText("There is no user record corresponding to this identifier. The user may have been deleted.")
+        
+    })
+
+    it('Entering Valid Email Should Show Alert Dialog', function() {
+        const resetPasswordHint = $('#resetPasswordHint');
+        resetPasswordHint.click();
+
+        const emailTextField = $('#emailResetPasswordTextField');
+        emailTextField.setValue("testRegister@email.com");
+
+        const resetPasswordButton = $('#resetPasswordButton');
+        resetPasswordButton.click();
+
+        browser.pause(1000)
+
+        const alertText = browser.getAlertText()
+        console.log("Text is : " +alertText)
+
+        expect(alertText).toEqual('Reset Password Link Sent To Email. Please Check Your Junk Folder As Well');
+    })
+
+})
 
 describe('Admin Tests', function () {
 
@@ -192,6 +247,7 @@ describe('Admin Tests', function () {
     })
 
     it('Create New Map Button Should Redirect To Create Map Page', function () {
+        browser.pause(500)
         const createMapLink = $('#createMapLink')
         createMapLink.click()
 
@@ -201,7 +257,6 @@ describe('Admin Tests', function () {
 
     it('Created Map Should Be Shown In Admin Table', function() {
         
-
         const createMapLink = $('#createMapLink')
         createMapLink.click()
 
@@ -225,7 +280,6 @@ describe('Admin Tests', function () {
 
         const mapRow = $('#mapRow0');
         expect(mapRow).toExist()
-
 
     })
 

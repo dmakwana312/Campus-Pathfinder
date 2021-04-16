@@ -152,6 +152,16 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: 10
 
     },
+    resetPasswordText: {
+        display: "block",
+        marginLeft: "auto",
+        marginRight: "auto",
+        width: 150,
+        paddingLeft: 20
+        
+        
+
+    },
 
     speedDial: {
         position: "absolute",
