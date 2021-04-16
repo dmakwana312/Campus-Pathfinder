@@ -644,13 +644,14 @@ const ViewMapPage = () => {
                         aria-labelledby="transition-modal-title"
                         aria-describedby="transition-modal-description"
                         open={true}
+                        id={"enterCodeModal"}
                     >
                         <div className={classes.modalContent}>
 
                             <h2>Enter Code</h2>
                             <TextField error={retrieveMapError === "" ? false : true} helperText={retrieveMapError} className={classes.formTextfield} id="enterMapCode" label="Enter Code" variant="outlined" onChange={(event) => setMapCode(event.target.value)} />
                             <br />
-                            <Button style={{ marginLeft: 7 }} variant="contained" color="primary" onClick={retrieveMap}>Retrieve Map</Button>
+                            <Button style={{ marginLeft: 7 }} id={"retrieveMap"} variant="contained" color="primary" onClick={retrieveMap}>Retrieve Map</Button>
 
                         </div>
                     </Modal>

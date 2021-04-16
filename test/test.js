@@ -210,7 +210,6 @@ describe('Login Tests', function () {
         browser.pause(1000)
 
         const alertText = browser.getAlertText()
-        console.log("Text is : " +alertText)
 
         expect(alertText).toEqual('Reset Password Link Sent To Email. Please Check Your Junk Folder As Well');
     })
@@ -247,7 +246,7 @@ describe('Admin Tests', function () {
     })
 
     it('Create New Map Button Should Redirect To Create Map Page', function () {
-        browser.pause(500)
+        browser.pause(1000)
         const createMapLink = $('#createMapLink')
         createMapLink.click()
 
@@ -304,4 +303,40 @@ describe('Admin Tests', function () {
 
 })
 
+describe("View Map Page Tests", function() {
+    beforeEach(function() {
 
+        browser.url('./#viewmap');
+        browser.pause(500);
+
+    })
+
+    it("Enter Code Modal Should Be Shown", function() {
+
+        const enterCodeModal = $('#enterCodeModal')
+        expect(enterCodeModal).toExist()
+
+    })
+
+    it("Map Code Not 6 Digits In Length Should Show Error", function() {
+        const mapCodeTextField = $('#enterMapCode');
+        mapCodeTextField.setValue("123");
+
+        const retrieveMapButton = $('#retrieveMap')
+        retrieveMapButton.click()
+
+        const mapCodeError = $('#enterMapCode-helper-text');
+        expect(mapCodeError).toHaveText("Invalid Map Code")
+    })
+
+    it("Invalid 6 Digits In Length Should Show Error", function() {
+        const mapCodeTextField = $('#enterMapCode');
+        mapCodeTextField.setValue("123456");
+
+        const retrieveMapButton = $('#retrieveMap')
+        retrieveMapButton.click()
+
+        const mapCodeError = $('#enterMapCode-helper-text');
+        expect(mapCodeError).toHaveText("Map not Found")
+    })
+})
