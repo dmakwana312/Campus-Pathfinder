@@ -47,7 +47,7 @@ const NavBar = (props) => {
                             <MenuIcon
                                 className={classes.sideBarIcon}
                                 onClick={() => { setDrawerOpen(true) }} />
-                            <Typography color="inherit">Campus Route Finder</Typography>
+                            <Typography color="inherit">Capus Pathfinder</Typography>
                             <Typography color="inherit"></Typography>
                         </Grid>
                     </Toolbar>
@@ -84,7 +84,7 @@ const NavBar = (props) => {
         return (
             <AppBar className={classes.createMapAppBar}>
                 <Toolbar>
-                    <Typography style={{ flexGrow: 1 }} color="inherit" >Campus Route Finder</Typography>
+                    <Typography style={{ flexGrow: 1 }} color="inherit" >Capus Pathfinder</Typography>
                     <Button id={"previousStepLink"} onClick={props.decrementStep} className={classes.button} color="inherit">Previous Step</Button>
                     <Button id={"nextStepLink"} onClick={props.incrementStep} className={classes.button} color="inherit">Next Step</Button>
                     <Button id={"loginLogoutButton"} className={classes.button} color="inherit" onClick={loggedInUser === null ? () => {} : logout}>{loggedInUser === null ? "Login" : "Logout"}</Button>
