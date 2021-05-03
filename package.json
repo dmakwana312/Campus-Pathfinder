@@ -1,4 +1,5 @@
 {
+"homepage": "http://${{secrets.SECRETS_USERNAME}}.github.io/Campus-Pathfinder",
   "name": "final",
   "version": "0.1.0",
   "private": true,
