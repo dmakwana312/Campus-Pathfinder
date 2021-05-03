@@ -1,3 +1,9 @@
+# About
+
+This repository contains the source code for my final year project. 
+
+It is a web application that can be accessed at the following url: [https://dmakwana312.github.io/Campus-Pathfinder/#/](https://dmakwana312.github.io/Campus-Pathfinder/#/).
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
